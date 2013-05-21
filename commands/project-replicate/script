@@ -66,38 +66,40 @@ rerun_options_parse "$@"
 # The credentials used to login to the rundecks
 CREDS="--user ${USER} --password ${PASSWORD}"
 
-# List the existing projects in the source rundeck.
-from_list=( $(rerun rundeck-archive:project-list $CREDS --url $URL) )
-target_list=( $(rerun rundeck-archive:project-list $CREDS --url $TO_URL) )
+# List the projects in the source rundeck.
+rundeck1_projects=( $(rerun rundeck-archive:project-list $CREDS --url $URL) )
 
-# Match them against the name or bash regexp.
-projects=( )
-for p in ${from_list[*]}
+# Generate the list of projects matching the specified name or regexp.
+projects_to_replicate=( )
+for p in ${rundeck1_projects[*]}
 do
-    [[ $p =~ $PROJECT ]] && projects=( ${projects[*]:-} $p )
+    [[ $p =~ $PROJECT ]] && projects_to_replicate=( ${projects_to_replicate[*]:-} $p )
 done
 
-if [ ${#projects[*]} -lt 1 ]
+if [ ${#projects_to_replicate[*]} -lt 1 ]
 then
-    echo >&2 "Project \"$PROJECT\" did not match any in the list: [${from_list[*]}]"
+    echo >&2 "Project \"$PROJECT\" did not match any of: [${rundeck1_projects[*]}]"
     exit 0
 fi
 
-echo >&2 "Replicating projects: [${projects[*]:-}] ..."
+# List the existing projects in the target rundecks.
+rundeck2_projects=( $(rerun rundeck-archive:project-list $CREDS --url $TO_URL) )
 
-for project in ${projects[*]:-}
+echo >&2 "Replicating projects: [${projects_to_replicate[*]:-}] ..."
+
+for project in ${projects_to_replicate[*]:-}
 do
      rerun rundeck-archive:project-export $CREDS --url $URL \
         --project ${project} --archive $project.zip
 
-     # Check if the project exists in the target
-     if ! rerun_list_contains $project ${target_list[*]} 
+     # Check if the project exists in the target...
+     if ! rerun_list_contains $project ${rundeck2_projects[*]} 
      then
-         # Create the project in the target.
+         # and create the project if it doesn't exist.
          rerun rundeck-archive:project-create $CREDS \
              --url $TO_URL --project $project
      fi
-
+     # Import the archive to the target rundeck.
      rerun rundeck-archive:project-import $CREDS --url $TO_URL \
         --project ${project} --archive $project.zip 
 done
