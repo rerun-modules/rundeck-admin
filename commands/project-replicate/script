@@ -92,12 +92,13 @@ do
      rerun rundeck-archive:project-export $CREDS --url $URL \
         --project ${project} --archive $project.zip
 
-     # Check if the project exists in the target...
+     # Check if the project exists in the target and...
      if ! rerun_list_contains $project ${rundeck2_projects[*]} 
      then
-         # and create the project if it doesn't exist.
+         # ... create the project in the target rundeck.
          rerun rundeck-archive:project-create $CREDS \
              --url $TO_URL --project $project
+         echo >&2 "You may need to replicate $URL project configuration to $TO_URL"
      fi
      # Import the archive to the target rundeck.
      rerun rundeck-archive:project-import $CREDS --url $TO_URL \

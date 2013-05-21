@@ -3,6 +3,10 @@ rundeck to another one.
 If the project does not exist on the target rundeck,
 it will be automatically created for you.
 
+*Warning*: Projects automatically created in the target rundeck do
+not contain project configuration you might need. This might
+be resource model setup or plugin configurations.
+
 Examples:
 ---------
 
