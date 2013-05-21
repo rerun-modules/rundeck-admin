@@ -79,7 +79,7 @@ done
 
 if [ ${#projects[*]} -lt 1 ]
 then
-    echo >&2 "Project \"$PROJECT\" did not match any in the list: [$list]"
+    echo >&2 "Project \"$PROJECT\" did not match any in the list: [${from_list[*]}]"
     exit 0
 fi
 
