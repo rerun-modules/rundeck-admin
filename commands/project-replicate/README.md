@@ -12,7 +12,7 @@ Replicate a project named 'qa1' from an instance "rundeck1" to
 a target instance on "rundeck2":
 
     rerun rundeck-archive:project-replicate --project 'qa1' \
-        --from-url http://rundeck1:4440 \
+        --url http://rundeck1:4440 \
         --to-url http://rundeck2:4440 \
         --user admin --password admin
 
@@ -23,6 +23,6 @@ and you want to replicate just the projects that begin with the
 characters "qa". Below `qa[12]` is used to match both qa1 and qa2:
 
     rerun rundeck-archive:project-replicate --project 'qa[12]' \
-        --from-url http://rundeck1:4440 \
+        --url http://rundeck1:4440 \
         --to-url http://rundeck2:4440 \
         --user admin --password admin

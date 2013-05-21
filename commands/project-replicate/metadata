@@ -3,4 +3,4 @@
 # Tue May 21 13:37:40 PDT 2013
 NAME=project-replicate
 DESCRIPTION="replicate the project(s) from one rundeck to another."
-OPTIONS="from-url to-url project user password"
+OPTIONS="url to-url project user password"
