@@ -98,7 +98,7 @@ do
          # ... create the project in the target rundeck.
          rerun rundeck-archive:project-create $CREDS \
              --url $TO_URL --project $project
-         echo >&2 "You may need to replicate $URL project configuration to $TO_URL"
+         echo >&2 "You may need to replicate $URL $PROJECT project configuration to $TO_URL"
      fi
      # Import the archive to the target rundeck.
      rerun rundeck-archive:project-import $CREDS --url $TO_URL \
