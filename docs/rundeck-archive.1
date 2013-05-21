@@ -1,0 +1,178 @@
+.TH rundeck-archive 1 "Tue May 21 15:47:06 PDT 2013" "Version 1.0.0" "RERUN User Manual" 
+.SH NAME
+rundeck-archive \- rundeck commands to manage project archives
+.PP
+.SH SYNOPSIS
+.PP
+\f[CR] 
+rerun [ARGS] rundeck-archive: [ project-create | project-export | project-import | project-list | project-replicate ] [OPTIONS]
+\f[]
+
+.SH COMMANDS
+.SH rundeck-archive:project-create \f[]--project <> --url <> --user <> --password <>
+
+create a project
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--project \f[]the project name\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--url \f[]rundeck server url\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--user \f[]the login user name\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--password \f[]the login password\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.SH rundeck-archive:project-export \f[]--project <> --url <> --user <> --password <> [--archive <>]
+
+export a project
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--project \f[]the project name\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--url \f[]rundeck server url\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--user \f[]the login user name\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--password \f[]the login password\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--archive \f[]the archive file\f[]
+required: \f[I]false\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.SH rundeck-archive:project-import \f[]--project <> --url <> --user <> --password <> [--archive <>]
+
+import a project archive
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--project \f[]the project name\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--url \f[]rundeck server url\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--user \f[]the login user name\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--password \f[]the login password\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--archive \f[]the archive file\f[]
+required: \f[I]false\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.SH rundeck-archive:project-list \f[]--url <> --user <> --password <>
+
+list the projects
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--url \f[]rundeck server url\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--user \f[]the login user name\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--password \f[]the login password\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.SH rundeck-archive:project-replicate \f[]--from-url <> --to-url <> --project <> --user <> --password <>
+
+replicate the project(s) from one rundeck to another.
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--from-url \f[]source rundeck instance\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--to-url \f[]target rundeck instance\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--project \f[]the project name\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--user \f[]the login user name\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--password \f[]the login password\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE ; # command section done.
+
+.SH RETURN VALUES
+.PP
+Successful completion: 0
+.SH AUTHORS
+alexh
+.SH "SEE ALSO"
+rerun
+.SH KEYWORDS
+rundeck-archive
