@@ -75,7 +75,7 @@ then
     exit 2
 fi
 
-CURLOPTS="-f -s -S -L -c cookies -b cookies"
+CURLOPTS="-k -f -s -S -L -c cookies -b cookies"
 CURL="curl $CURLOPTS"
     
 # Authenticate

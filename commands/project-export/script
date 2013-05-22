@@ -63,7 +63,7 @@ rerun_options_parse "$@"
 # Put the command implementation here.
 # - - -
 
-CURLOPTS="-f -s -S -L -c cookies -b cookies"
+CURLOPTS="-k -f -s -S -L -c cookies -b cookies"
 CURL="curl $CURLOPTS"
     
 # Authenticate

@@ -63,14 +63,14 @@ rerun_options_parse "$@"
 # Put the command implementation here.
 # - - -
 
-CURLOPTS="-f -s -S -L -c cookies -b cookies"
+CURLOPTS="-k -f -s -S -L -c cookies -b cookies"
 CURL="curl $CURLOPTS"
     
 # Authenticate
 # ------------
 loginurl="${URL}/j_security_check"
 $CURL $loginurl > curl.out
-$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > curl.out
+$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > /dev/null
 
 
 # Create
@@ -82,6 +82,7 @@ $CURL -F project=$PROJECT -X POST $createurl > /dev/null
 projecturl="${URL}/api/1/project/$PROJECT"
 $CURL -X GET $projecturl > curl.out
 xmlstarlet val curl.out >/dev/null
+xmlstarlet sel -t -m "/result[@success='true']"  -v . curl.out >/dev/null
 
 echo >&2 "Project created."
 
