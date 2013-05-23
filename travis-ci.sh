@@ -34,7 +34,7 @@ export RERUN=$WORK_DIR/rerun/rerun
 
 # Add bintray module into the $RERUN_MODULES directory
 pushd $RERUN_MODULES
-git clone git@github.com:rerun-modules/bintray.git bintray
+git clone git://github.com/rerun-modules/bintray.git bintray
 popd
 
 # Build the module.
