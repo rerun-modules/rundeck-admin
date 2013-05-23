@@ -7,7 +7,8 @@ set -u
 
 # The module we're building.
 MODULE=rundeck-archive
-
+# The bintray info.
+BINTRAY_USER=ahonor BINTRAY_ORG=ahonor BINTRAY_REPO=rerun-modules
 
 # Prepare.
 # --------
