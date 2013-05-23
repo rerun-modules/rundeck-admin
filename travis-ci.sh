@@ -56,6 +56,9 @@ $RERUN stubbs:archive --modules $MODULE
     echo >&2 "ERROR: archive was not created."; exit 1
 }
 
+# Test the archive by making it do a command list.
+./rerun.bin $MODULE
+
 # Upload and publish to bintray
 echo "Uploading the build to bintray: /${BINTRAY_ORG}/${BINTRAY_REPO}/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
