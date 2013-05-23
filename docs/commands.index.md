@@ -1,3 +1,5 @@
+* [apitoken-create](commands/apitoken-create/index.html): Create an API token
+* [apitoken-list](commands/apitoken-list/index.html): List the API tokens.
 * [project-create](commands/project-create/index.html): create a project
 * [project-export](commands/project-export/index.html): export a project
 * [project-import](commands/project-import/index.html): import a project archive

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
-    <title>project-create</title>
+    <title>apitoken-create</title>
     <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <table cellspacing=0 cellpadding=0>
     <thead>
       <tr>
-        <th class=docs><h1>project-create</h1></th>
+        <th class=docs><h1>apitoken-create</h1></th>
         <th class=code></th>
       </tr>
     </thead>
@@ -35,8 +35,8 @@ The <code>command</code> and <code>usage</code> comments describe the command
 and show its options.</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="c">#/ command: rundeck:project-create: &quot;create a project&quot;</span>
-<span class="c">#/ usage: rerun rundeck:project-create  --project &lt;&gt;  --url &lt;&gt;  --user &lt;&gt;  --password &lt;&gt;</span>
+<span class="c">#/ command: rundeck-archive:apitoken-create: &quot;Create an API token.&quot;</span>
+<span class="c">#/ usage: rerun rundeck-archive:apitoken-create  --password &lt;&gt;  --url &lt;&gt;  --user &lt;&gt; </span>
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -50,7 +50,7 @@ and show its options.</p>
 This loads rerun functions, too.</p>
 
 </td><td class=code><div class=highlight><pre>
-. <span class="nv">$RERUN_MODULE_DIR</span>/lib/functions.sh project-create <span class="o">||</span> <span class="o">{</span> 
+. <span class="nv">$RERUN_MODULE_DIR</span>/lib/functions.sh apitoken-create <span class="o">||</span> <span class="o">{</span> 
   <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Failed loading function library.&quot;</span> ; <span class="nb">exit </span>1 ; 
 <span class="o">}</span>
 
@@ -73,7 +73,7 @@ the error message and exit with the error command exit status. </p>
 
 </td><td class=code><div class=highlight><pre>
 
-<span class="nb">trap</span> <span class="s1">&#39;rerun_die $? &quot;*** command failed: rundeck:project-create. ***&quot;&#39;</span> ERR
+<span class="nb">trap</span> <span class="s1">&#39;rerun_die $? &quot;*** command failed: rundeck-archive:apitoken-create. ***&quot;&#39;</span> ERR
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -99,7 +99,7 @@ declared by <code>rerun</code> or by the option parser function.</p>
 </td><td class=code><div class=highlight><pre>
 
 <span class="c">#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR</span>
-<span class="c">#/ option-variables: PROJECT URL USER PASSWORD </span>
+<span class="c">#/ option-variables: PASSWORD URL USER</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -118,48 +118,54 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </td><td class=code><div class=highlight><pre>
 
-</pre></div></td></tr><tr><td class=docs>
-
-<hr />
-
-<p>Put the command implementation here.</p>
-
-<hr />
-
-</td><td class=code><div class=highlight><pre>
-
-<span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-k -f -s -S -L -c cookies -b cookies&quot;</span>
+<span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-f -s -S -L -c cookies -b cookies&quot;</span>
 <span class="nv">CURL</span><span class="o">=</span><span class="s2">&quot;curl $CURLOPTS&quot;</span>
     
+<span class="nv">CURLOUT</span><span class="o">=</span><span class="k">$(</span>mktemp -t curl.out.XXXXXXXXXX<span class="k">)</span>
+
 </pre></div></td></tr><tr><td class=docs>
 
-<h2>Authenticate</h2>
+<p>Authenticate.</p>
 
 </td><td class=code><div class=highlight><pre>
 <span class="nv">loginurl</span><span class="o">=</span><span class="s2">&quot;${URL}/j_security_check&quot;</span>
-<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; curl.out
-<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="k">${</span><span class="nv">PASSWORD</span><span class="k">}</span> <span class="nv">$loginurl</span> &gt; /dev/null
+<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; /dev/null
+<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="nv">$USER</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="nv">$PASSWORD</span> <span class="nv">$loginurl</span> &gt; /dev/null
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Request a new token.</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="nv">tokenurl</span><span class="o">=</span><span class="s2">&quot;$URL/user/generateApiToken&quot;</span>
+<span class="nv">$CURL</span> <span class="nv">$tokenurl</span>?login<span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> &gt; <span class="nv">$CURLOUT</span>
+xmlstarlet fo -R -H <span class="nv">$CURLOUT</span> &gt; <span class="nv">$CURLOUT</span>.userprofile 2&gt;/dev/null
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Check the result from the user profile.
+Tokens are printed in the order they were created.</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="nv">tokens</span><span class="o">=(</span> <span class="k">$(</span>xmlstarlet sel -N <span class="nv">x</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/1999/xhtml&quot;</span> -t -m <span class="s2">&quot;//x:span[@class=&#39;apitoken&#39;]&quot;</span> -v . -n <span class="nv">$CURLOUT</span>.userprofile<span class="k">)</span> <span class="o">)</span>
+<span class="o">[</span> -z <span class="s2">&quot;${tokens:-}&quot;</span> -a <span class="k">${#</span><span class="nv">tokens</span><span class="p">[*]</span><span class="k">}</span> -lt 1 <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">{</span>
+    rerun_die <span class="s2">&quot;Failed to generate a token.&quot;</span>
+<span class="o">}</span>
 
 
 </pre></div></td></tr><tr><td class=docs>
 
-<h2>Create</h2>
+<p>Print token. It was the last created token.</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">createurl</span><span class="o">=</span><span class="s2">&quot;${URL}/resources/createProject&quot;</span>
-<span class="nv">$CURL</span> -F <span class="nv">project</span><span class="o">=</span><span class="nv">$PROJECT</span> -X POST <span class="nv">$createurl</span> &gt; /dev/null
+<span class="nb">echo</span> <span class="k">${</span><span class="nv">tokens</span><span class="p">[</span><span class="k">${#</span><span class="nv">tokens</span><span class="p">[*]</span><span class="k">}</span><span class="p"> -1]</span><span class="k">}</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
-<p>Check the project by getting its info.</p>
+<p>Clean up.</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">projecturl</span><span class="o">=</span><span class="s2">&quot;${URL}/api/1/project/$PROJECT&quot;</span>
-<span class="nv">$CURL</span> -X GET <span class="nv">$projecturl</span> &gt; curl.out
-xmlstarlet val curl.out &gt;/dev/null
-xmlstarlet sel -t -m <span class="s2">&quot;/result[@success=&#39;true&#39;]&quot;</span>  -v . curl.out &gt;/dev/null
-
-<span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Project created.&quot;</span>
+rm <span class="nv">$CURLOUT</span> <span class="nv">$CURLOUT</span>.userprofile
 
 </pre></div></td></tr><tr><td class=docs>
 
