@@ -5,6 +5,7 @@ Use the `apitoken-*` commands to create and list API tokens.
 Use the `project-*` commands to create, list, export, import and replicate
 projects.
 
+[![Build Status](https://travis-ci.org/ahonor/rundeck-archive.png?branch=master)](https://travis-ci.org/ahonor/rundeck-archive)
 
 **Requirements**
 
@@ -14,4 +15,3 @@ projects.
 
 **Notes**
 
-* This module should probably be renamed given its widening scope.
