@@ -1,0 +1,10 @@
+lang: c
+env:
+  - secure: "bwWHzoO612K3byJvFW3XQHD0CbLuPq/QPh17dfewomdp5B3E89BtuSsGMYq5\nAlMIvLq8nToYd6pPPV/kJit74/OSj9MDxEBTwK/YQn+B16EBjPPt4LIn8dmC\nWQX4fTVA7DtgCt8UHPgyR3F9/3QmaE2VGfKVVifBiRkgUYN2H9Q="
+  - BINTRAY_USER=ahonor
+  - BINTRAY_ORG=ahonor
+  - BINTRAY_REPO=rerun-modules
+script: ./travis-ci.sh
+#notifications:
+#  irc:
+#    - "irc.freenode.org#rerun"
