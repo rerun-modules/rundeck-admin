@@ -9,8 +9,8 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 # 
-#/ command: rundeck:project-import: "import a project"
-#/ usage: rerun rundeck:project-import  --project <>  --url <>  --user <>  --password <> [ --archive <>] 
+#/ command: rundeck-admin:project-import: "import a project"
+#/ usage: rerun rundeck-admin:project-import  --project <>  --url <>  --user <>  --password <> [ --admin <>] 
 
 # Load common functions
 # ---------------------

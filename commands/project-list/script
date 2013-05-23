@@ -9,8 +9,8 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 # 
-#/ command: rundeck:project-list: "list the projects"
-#/ usage: rerun rundeck:project-list  --project <>  --url <>  --user <>  --password <>
+#/ command: rundeck-admin:project-list: "list the projects"
+#/ usage: rerun rundeck-admin:project-list  --project <>  --url <>  --user <>  --password <>
 
 # Load common functions
 # ---------------------

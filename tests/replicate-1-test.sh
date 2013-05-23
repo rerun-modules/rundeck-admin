@@ -1,6 +1,6 @@
 #!/usr/bin/env roundup
 #
-#/ usage:  rerun stubbs:test -m rundeck-archive -p replicate [--answers <>]
+#/ usage:  rerun stubbs:test -m rundeck-admin -p replicate [--answers <>]
 #
 
 # Helpers

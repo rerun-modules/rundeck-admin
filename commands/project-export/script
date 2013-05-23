@@ -9,8 +9,8 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 # 
-#/ command: rundeck:project-export: "export a project"
-#/ usage: rerun rundeck:project-export  --project <>  --url <>  --user <>  --password <> [ --archive <>] 
+#/ command: rundeck-admin:project-export: "export a project"
+#/ usage: rerun rundeck-admin:project-export  --project <>  --url <>  --user <>  --password <> [ --admin <>] 
 
 # Load common functions
 # ---------------------

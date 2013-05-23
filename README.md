@@ -1,4 +1,4 @@
-The *rundeck-archive* commands help you manage rundeck deployments.
+The *rundeck-admin* commands help you manage rundeck deployments.
 
 Use the `apitoken-*` commands to create and list API tokens.
 

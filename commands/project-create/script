@@ -9,7 +9,7 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 # 
-#/ command: rundeck:project-create: "create a project"
+#/ command: rundeck-archive:project-create: "create a project"
 #/ usage: rerun rundeck:project-create  --project <>  --url <>  --user <>  --password <>
 
 # Load common functions

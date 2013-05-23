@@ -3,7 +3,7 @@ Example
 
 List the API tokens for the "admin" user:
 
-    rerun rundeck-archive: apitoken-list --url http://localhost:4440 --user admin --password admin
+    rerun rundeck-admin: apitoken-list --url http://localhost:4440 --user admin --password admin
     
 Each token is printed on a separate line.
 In this example there are 3:

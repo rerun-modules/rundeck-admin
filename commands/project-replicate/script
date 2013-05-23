@@ -9,8 +9,8 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 # 
-#/ command: rundeck-archive:project-replicate: "replicate the projects from one rundeck to another."
-#/ usage: rerun rundeck-archive:project-replicate  --url <>  --to-url <>  --project <>  --user <>  --password <> 
+#/ command: rundeck-admin:project-replicate: "replicate the projects from one rundeck to another."
+#/ usage: rerun rundeck-admin:project-replicate  --url <>  --to-url <>  --project <>  --user <>  --password <> 
 
 # Load common functions
 # ---------------------
@@ -29,7 +29,7 @@
 # Trap errors and exit. The call to `rerun_die` will print the
 # the error message and exit with the error command exit status. 
 
-trap 'rerun_die $? "*** command failed: rundeck-archive:project-replicate. ***"' ERR
+trap 'rerun_die $? "*** command failed: rundeck-admin:project-replicate. ***"' ERR
 
 # Run [set] `nounset` to treat unset variables as errors. Set [pipefail]
 # so a pipeline return status is the value of the last 
@@ -67,7 +67,7 @@ rerun_options_parse "$@"
 CREDS="--user ${USER} --password ${PASSWORD}"
 
 # List the projects in the source rundeck.
-rundeck1_projects=( $(rerun rundeck-archive:project-list $CREDS --url $URL) )
+rundeck1_projects=( $(rerun rundeck-admin:project-list $CREDS --url $URL) )
 
 # Generate the list of projects matching the specified name or regexp.
 projects_to_replicate=( )
@@ -83,26 +83,26 @@ then
 fi
 
 # List the existing projects in the target rundecks.
-rundeck2_projects=( $(rerun rundeck-archive:project-list $CREDS --url $TO_URL) )
+rundeck2_projects=( $(rerun rundeck-admin:project-list $CREDS --url $TO_URL) )
 
 echo >&2 "Replicating projects: [${projects_to_replicate[*]:-}] ..."
 
 for project in ${projects_to_replicate[*]:-}
 do
-     rerun rundeck-archive:project-export $CREDS --url $URL \
-        --project ${project} --archive $project.zip
+     rerun rundeck-admin:project-export $CREDS --url $URL \
+        --project ${project} --admin $project.zip
 
      # Check if the project exists in the target and...
      if ! rerun_list_contains $project ${rundeck2_projects[*]} 
      then
          # ... create the project in the target rundeck.
-         rerun rundeck-archive:project-create $CREDS \
+         rerun rundeck-admin:project-create $CREDS \
              --url $TO_URL --project $project
          echo >&2 "You may need to replicate $URL $PROJECT project configuration to $TO_URL"
      fi
      # Import the archive to the target rundeck.
-     rerun rundeck-archive:project-import $CREDS --url $TO_URL \
-        --project ${project} --archive $project.zip 
+     rerun rundeck-admin:project-import $CREDS --url $TO_URL \
+        --project ${project} --admin $project.zip 
 done
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env roundup
 #
-#/ usage:  rerun stubbs:test -m rundeck -p project-export [--answers <>]
+#/ usage:  rerun stubbs:test -m rundeck-admin -p project-export [--answers <>]
 #
 
 # Helpers

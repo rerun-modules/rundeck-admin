@@ -1,7 +1,7 @@
 
 Use the `stubbs:test` command to to run test plans.
 
-    rerun stubbs:test -m rundeck-archive -p apitoken-list-1
+    rerun stubbs:test -m rundeck-admin -p apitoken-list-1
 
 *Test plan sources*
 
