@@ -26,7 +26,7 @@ rerun_options_parse() {
             --url) rerun_option_check $# $1; URL=$2 ; shift ;;
             --user) rerun_option_check $# $1; USER=$2 ; shift ;;
             --password) rerun_option_check $# $1; PASSWORD=$2 ; shift ;;
-            --admin) rerun_option_check $# $1; ARCHIVE=$2 ; shift ;;
+            --archive) rerun_option_check $# $1; ARCHIVE=$2 ; shift ;;
             # help option
             -?)
                 rerun_option_usage
