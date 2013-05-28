@@ -1,3 +1,6 @@
+Use **project-import** to load a project archive to the specified
+rundeck instance.
+
 Examples
 --------
 

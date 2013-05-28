@@ -1,7 +1,9 @@
+Use **project-list** to list all projects in the specified rundeck.
+
 Examples
 --------
 
-List projects on rundeck1:
+List the projects on rundeck1:
 
     rerun rundeck-admin:project-list --url http://rundeck1:4440 \
         --user admin --password admin 

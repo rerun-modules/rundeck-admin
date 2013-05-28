@@ -1,3 +1,7 @@
+Use **project-export** to export a project into an archive you
+can import using `project-import`. If no `--archive` option
+is specified one will be written to the current working directory.
+
 Examples
 --------
 

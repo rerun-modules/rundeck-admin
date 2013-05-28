@@ -1,3 +1,4 @@
+Use **project-create** to create a project in the specified rundeck.
 
 Examples
 --------

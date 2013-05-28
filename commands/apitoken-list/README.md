@@ -1,3 +1,5 @@
+Use **apitoken-list** to list all API tokens for the specified user.
+
 Example
 -------
 

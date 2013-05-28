@@ -1,3 +1,5 @@
+Use **apitoken-create** to create a new API token for the specified user.
+
 Example
 -------
 
