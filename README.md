@@ -9,8 +9,9 @@ projects.
 **Requirements**
 
 * [rerun](http://github.com/rerun/rerun)
-* curl
-* xmlstarlet
+* [curl](http://curl.haxx.se/docs/manpage.html)
+* [xmlstarlet](http://xmlstar.sourceforge.net/)
+* [expect](http://en.wikipedia.org/wiki/Expect) (for ssh-copy-id)
 
 **Download**
 
