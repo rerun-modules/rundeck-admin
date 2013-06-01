@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+# To implement this command, edit the "Command implementation" section below. 
+
+# Usage
+# -----
+
+# Comments prefixed with `#/` are managed by stubbs.
+# The `command` and `usage` comments describe the command
+# and show its options.
+# 
+#/ command: rundeck-admin:schedule-takeover: "Claim all scheduled jobs from another cluster server."
+#/ usage: rerun rundeck-admin:schedule-takeover  --uuid <>  --user <>  --url <>  --password <> 
+
+# Load common functions
+# ---------------------
+
+# Load the function library for this module.
+# This loads rerun functions, too.
+. $RERUN_MODULE_DIR/lib/functions.sh schedule-takeover || { 
+  echo >&2 "Failed loading function library." ; exit 1 ; 
+}
+
+# Error handling
+# ---------------
+
+# This script is designed to _fail-fast_.
+
+# Trap errors and exit. The call to `rerun_die` will print the
+# the error message and exit with the error command exit status. 
+
+trap 'rerun_die $? "*** command failed: rundeck-admin:schedule-takeover. ***"' ERR
+
+# Run [set] `nounset` to treat unset variables as errors. Set [pipefail]
+# so a pipeline return status is the value of the last 
+# (rightmost) command to exit with non-zero status.
+#
+# [set]: http://ss64.com/bash/set.html
+# [pipefail]: http://www.gnu.org/software/bash/manual/html_node/Pipelines.html
+
+set -o nounset -o pipefail
+
+# Command variables
+# -----------------
+
+# This command script can access the following variables
+# declared by `rerun` or by the option parser function.
+
+#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
+#/ option-variables: UUID USER URL PASSWORD
+
+# The `rerun_options_parse` function processes the command line
+# arguments. Each accepted command line flag results in setting 
+# one the corresponding option variables.
+
+rerun_options_parse "$@"
+
+
+# Command implementation
+# ----------------------
+
+CURLOPTS="-f -s -S -L -c cookies -b cookies"
+CURL="curl $CURLOPTS"
+
+CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
+
+
+# Authenticate.
+loginurl="${URL}/j_security_check"
+$CURL $loginurl > $CURL_OUT
+$CURL -X POST -d j_username=$USER -d j_password=$PASSWORD $loginurl > $CURL_OUT
+
+# Takeover schedule.
+# See http://rundeck.org/docs/api/index.html#takeover-schedule-in-cluster-mode
+APIURL="${URL}/api/7/incubator/jobs/takeoverSchedule"
+$CURL -X PUT -H "Content-Type: application/xml" \
+            --data "<server uuid=\"$UUID\"/>" $APIURL > $CURL_OUT
+
+xmlstarlet val -q $CURL_OUT
+
+if ! xmlstarlet sel -T -t -v "/result/@success" $CURL_OUT >/dev/null
+then
+    printf >&2 "FAIL: API error: $APIURL"
+    xmlstarlet sel -T -t -m "/result/error/message" -v "."  $CURL_OUT
+    exit 1
+fi
+
+declare -i successful failed
+successful=$(xmlstarlet sel -t -m "/result/takeoverSchedule/jobs/successful" -v @count $CURL_OUT)
+failed=$(xmlstarlet sel -t -m "/result/takeoverSchedule/jobs/failed" -v @count $CURL_OUT)
+if [ "$failed" -ne 0 ]
+then
+    rerun_die 3 "Not all jobs taken over: $failed out of $((successful+failed))"
+else
+    echo "Took over schedule for $successful jobs."
+fi
+
+# Done. Exit with last command exit status.
+exit $?
+
