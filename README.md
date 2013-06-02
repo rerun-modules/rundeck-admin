@@ -1,11 +1,5 @@
 The *rundeck-admin* commands help you manage your rundecks.
 
-Use the `apitoken-*` commands to create and list API tokens.
-
-Use the `project-*` commands to create, list, export, import and replicate
-projects.
-
-
 **Requirements**
 
 * [rerun](http://github.com/rerun/rerun)
