@@ -65,19 +65,20 @@ rerun_options_parse "$@"
 
 CURLOPTS="-k -f -s -S -L -c cookies -b cookies"
 CURL="curl $CURLOPTS"
+CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
     
 # Authenticate
 loginurl="${URL}/j_security_check"
-$CURL $loginurl > curl.out
-$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > curl.out
+$CURL $loginurl > $CURL_OUT
+$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > $CURL_OUT
 
 # List
 listurl="${URL}/api/1/projects"
 
-$CURL -X GET $listurl > curl.out
-xmlstarlet val curl.out >/dev/null
+$CURL -X GET $listurl > $CURL_OUT
+xmlstarlet val $CURL_OUT >/dev/null
 
-xmlstarlet sel -t -m '//project' -v name -n curl.out
+xmlstarlet sel -t -m '//project' -v name -n $CURL_OUT
 
 # Done. Exit with last command exit status.
 exit $?

@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+
+# To implement this command, edit the "Command implementation" section below. 
+
+# Usage
+# -----
+
+# Comments prefixed with `#/` are managed by stubbs.
+# The `command` and `usage` comments describe the command
+# and show its options.
+# 
+#/ command: rundeck-admin:resource-add: "add a resource."
+#/ usage: rerun rundeck-admin:resource-add  --password <>  --project <>  --user <>  --url <>  --data <> 
+
+# Load common functions
+# ---------------------
+
+# Load the function library for this module.
+# This loads rerun functions, too.
+. $RERUN_MODULE_DIR/lib/functions.sh resource-add || { 
+  echo >&2 "Failed loading function library." ; exit 1 ; 
+}
+
+# Error handling
+# ---------------
+
+# This script is designed to _fail-fast_.
+
+# Trap errors and exit. The call to `rerun_die` will print the
+# the error message and exit with the error command exit status. 
+
+trap 'rerun_die $? "*** command failed: rundeck-admin:resource-add. ***"' ERR
+
+# Run [set] `nounset` to treat unset variables as errors. Set [pipefail]
+# so a pipeline return status is the value of the last 
+# (rightmost) command to exit with non-zero status.
+#
+# [set]: http://ss64.com/bash/set.html
+# [pipefail]: http://www.gnu.org/software/bash/manual/html_node/Pipelines.html
+
+set -o nounset -o pipefail
+
+# Command variables
+# -----------------
+
+# This command script can access the following variables
+# declared by `rerun` or by the option parser function.
+
+#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
+#/ option-variables: PASSWORD PROJECT USER URL DATA
+
+# The `rerun_options_parse` function processes the command line
+# arguments. Each accepted command line flag results in setting 
+# one the corresponding option variables.
+
+rerun_options_parse "$@"
+
+
+# Command implementation
+# ----------------------
+
+function quote_whitespace() {
+    if [[ "$*" =~ \ |\' ]]
+    then  echo \"$*\"
+    else  echo $*
+    fi
+}
+
+# Parse the resource metadata.
+eval set -- $DATA
+# XML_ED_ATTRS contains the xmlstarlet edit options
+declare -a XML_ED_ATTRS
+
+# Each metadata property is prefixed with a leading dash.
+while [ "$#" -gt 1 ]
+do
+    PROP="$1" VALUE="$2"
+    case "$PROP" in
+        -name) NAME=${VALUE} 
+            shift;;
+        -description) DESCRIPTION=${VALUE} 
+            shift;;
+        -*) XML_ED_ATTRS=( ${XML_ED_ATTRS[*]:-} 
+                -i //NodeTMP -t attr -n ${PROP#-*} -v $(quote_whitespace ${VALUE}) )
+            shift;;
+    esac
+    shift
+done
+
+# Make sure -name was declared.
+[ -z "${NAME:-}" ] && { 
+    rerun_die 2 "--data did not contain a required property: -name <>"
+}
+
+
+CURLOPTS="-k -f -s -S -L -c cookies -b cookies"
+CURL="curl $CURLOPTS"
+
+CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
+RESOURCES=$(mktemp "/tmp/resources.xml.XXXXX")
+
+
+# Authenticate.
+loginurl="${URL}/j_security_check"
+$CURL $loginurl > $CURL_OUT
+$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > $CURL_OUT
+
+# Get the resources for the project.
+APIURL="${URL}/api/3/resources?project=$PROJECT&name=.*"
+#APIURL="${URL}/api/3/project/$PROJECT/resources" ;#buggy?
+$CURL -o $RESOURCES $APIURL
+
+
+# Check if the resource is already defined.
+if ! xmlstarlet sel -t -m "/project/node[@name='${NAME}']" -v @name $RESOURCES
+then
+
+    # Generate a new node definition.
+    # An xml element called `NodeTMP` is used to declare node attributes
+    # and later renamed back to `node`.
+    xmlstarlet ed -L -s /project -t elem -n NodeTMP -v ""\
+       -i //NodeTMP -t attr -n name -v "$NAME" \
+       -i //NodeTMP -t attr -n description -v "${DESCRIPTION:-none}" \
+       ${XML_ED_ATTRS[*]:-} -r //NodeTMP -v node $RESOURCES
+    #cat $RESOURCES ;# debug
+else
+    echo "node:$NAME already defined in project:$PROJECT."
+    exit 0
+fi
+
+
+
+# Post the updated resources.xml back to rundeck.
+APIURL="${URL}/api/3/project/$PROJECT/resources"
+$CURL -X POST -H "Content-Type: text/xml" -d @$RESOURCES -o $CURL_OUT $APIURL
+
+# Check results.
+
+if ! xmlstarlet sel -T -t -v "/result/@success" $CURL_OUT
+then
+    echo >&2 "ERROR: Request failed: "
+    xmlstarlet sel -T -t -m "/result/error/message" -v "." -n  $CURL_OUT
+    exit 2
+fi
+
+# Done. Exit with last command exit status.
+exit $?
+

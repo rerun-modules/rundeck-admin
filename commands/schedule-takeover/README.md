@@ -25,6 +25,8 @@ Output will show how many job schedules were taken over:
         
 It is safe to run the command again.
 
-    rundeck2 $ rerun rundeck-admin:schedule-takeover --user admin --password --admin
-        --url http://rundeck2:4440 --uuid 1d9b13c5-782f-408b-999f-50451d4c5daf
+    rundeck2 $ !!
+
+No other jobs to take over.
+
     Took over schedule for 0 jobs.

@@ -65,26 +65,33 @@ rerun_options_parse "$@"
 
 CURLOPTS="-k -f -s -S -L -c cookies -b cookies"
 CURL="curl $CURLOPTS"
+CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
     
 # Authenticate
 # ------------
 loginurl="${URL}/j_security_check"
-$CURL $loginurl > curl.out
+$CURL $loginurl > $CURL_OUT
 $CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > /dev/null
 
 
-# Create
-# ------
+# Request the projet. 
+# -------------------
 createurl="${URL}/resources/createProject"
 $CURL -F project=$PROJECT -X POST $createurl > /dev/null
 
-# Check the project by getting its info.
+# Check the project was created.
 projecturl="${URL}/api/1/project/$PROJECT"
-$CURL -X GET $projecturl > curl.out
-xmlstarlet val curl.out >/dev/null
-xmlstarlet sel -t -m "/result[@success='true']"  -v . curl.out >/dev/null
+$CURL -X GET $projecturl > $CURL_OUT
+xmlstarlet val $CURL_OUT >/dev/null
 
-echo >&2 "Project created."
+if ! xmlstarlet sel -t -m "/result[@success='true']"  -v . $CURL_OUT >/dev/null
+then
+    rerun_die 3 "Failed to create project $PROJECT."
+else
+    xmlstarlet sel -t -m "/result/projects/project"  -v name $CURL_OUT 
+fi
+
+
 
 # Done. Exit with last command exit status.
 exit $?

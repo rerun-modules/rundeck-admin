@@ -61,20 +61,24 @@ rerun_options_parse "$@"
 
 CURLOPTS="-f -s -S -L -c cookies -b cookies"
 CURL="curl $CURLOPTS"
+CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
     
 
 # Authenticate.
 loginurl="${URL}/j_security_check"
-$CURL $loginurl > curl.out
-$CURL -X POST -d j_username=$USER -d j_password=$PASSWORD $loginurl > curl.out
+$CURL $loginurl > /dev/null
+$CURL -X POST -d j_username=$USER -d j_password=$PASSWORD $loginurl > /dev/null
 
 # Get the profile.
 profileurl="${URL}/user/profile"
-$CURL -X GET $profileurl > curl.out
-xmlstarlet fo -R -H curl.out > userprofile.html 2>/dev/null
+$CURL -X GET $profileurl > $CURL_OUT
+xmlstarlet fo -R -H $CURL_OUT > $CURL_OUT.userprofile.html 2>/dev/null
 
 # List the tokens.
-xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" -t -m "//x:span[@class='apitoken']" -v . -n userprofile.html
+if ! xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" -t -m "//x:span[@class='apitoken']" -v . -n $CURL_OUT.userprofile.html
+then
+    :; # no tokens
+fi
 
 # Done. Exit with last command exit status.
 exit $?

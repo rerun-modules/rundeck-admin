@@ -68,13 +68,13 @@ CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
 # Authenticate.
 loginurl="${URL}/j_security_check"
 $CURL $loginurl > $CURL_OUT
-$CURL -X POST -d j_username=$USER -d j_password=$PASSWORD $loginurl > $CURL_OUT
+$CURL -d j_username=$USER -d j_password=$PASSWORD  -X POST $loginurl > $CURL_OUT
 
 # Takeover schedule.
 # See http://rundeck.org/docs/api/index.html#takeover-schedule-in-cluster-mode
 APIURL="${URL}/api/7/incubator/jobs/takeoverSchedule"
-$CURL -X PUT -H "Content-Type: application/xml" \
-            --data "<server uuid=\"$UUID\"/>" $APIURL > $CURL_OUT
+$CURL -H "Content-Type: application/xml" \
+    --data "<server uuid=\"$UUID\"/>" -X PUT $APIURL > $CURL_OUT
 
 xmlstarlet val -q $CURL_OUT
 
@@ -85,14 +85,22 @@ then
     exit 1
 fi
 
+# Success/failure counters about schedule takeovers.
 declare -i successful failed
 successful=$(xmlstarlet sel -t -m "/result/takeoverSchedule/jobs/successful" -v @count $CURL_OUT)
 failed=$(xmlstarlet sel -t -m "/result/takeoverSchedule/jobs/failed" -v @count $CURL_OUT)
+
+# Print out the job IDs for the successfully taken over.
+if [ "$successful" -gt 0 ] 
+then
+    xmlstarlet sel -t -m "/result/takeoverSchedule/jobs/successful/job" -v @id -n $CURL_OUT
+fi
+
+# Bail out but print the job IDs for the failed ones.
 if [ "$failed" -ne 0 ]
 then
-    rerun_die 3 "Not all jobs taken over: $failed out of $((successful+failed))"
-else
-    echo "Took over schedule for $successful jobs."
+    failed_ids=$(xmlstarlet sel -t -m "/result/takeoverSchedule/jobs/failed/job" -v @id -n $CURL_OUT)
+    rerun_die 3 "Not all jobs taken over: $failed out of $((successful+failed)). jobs: $failed_ids"
 fi
 
 # Done. Exit with last command exit status.

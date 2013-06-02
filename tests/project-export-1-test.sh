@@ -11,10 +11,21 @@
 # --------
 describe "project-export"
 
-# ------------------------------
-# Replace this test. 
-it_fails_without_a_real_test() {
-    exit 1
+# Global settings.
+# ----------------
+CREDS="--user admin --password admin --url http://localhost:4440"
+
+rerun rundeck-admin:project-create $CREDS --project test-$$
+
+# Tests.
+# ------
+
+it_exports_a_project() {
+
+    ARCHIVE=$(mktemp "/tmp/project.archive.XXXX")
+
+    rerun rundeck-admin:project-export $CREDS --project test-$$ --archive $ARCHIVE
+    test -f $ARCHIVE
+    file $ARCHIVE | grep -i zip
 }
-# ------------------------------
 

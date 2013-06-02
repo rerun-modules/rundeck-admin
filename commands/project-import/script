@@ -77,27 +77,28 @@ fi
 
 CURLOPTS="-k -f -s -S -L -c cookies -b cookies"
 CURL="curl $CURLOPTS"
+CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
     
 # Authenticate
 # ------------
 loginurl="${URL}/j_security_check"
-$CURL $loginurl > curl.out
-$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > curl.out
+$CURL $loginurl > $CURL_OUT
+$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > $CURL_OUT
 
 
 # Import
 # ------
 importurl="${URL}/project/importArchive"
 : ${ARCHIVE:=${PROJECT}.zip}
-$CURL -F zipFile=@$ARCHIVE -F name=$PROJECT -X POST $importurl > curl.out
+$CURL -F zipFile=@$ARCHIVE -F name=$PROJECT -X POST $importurl > $CURL_OUT
 
-xmlstarlet fo -R -H curl.out > result.html 2>/dev/null
+xmlstarlet fo -R -H $CURL_OUT > $CURL_OUT.result 2>/dev/null
 
 if xmlstarlet sel  -N x="http://www.w3.org/1999/xhtml" \
-    -t -m "//x:div[@id='error']" result.html
+    -t -m "//x:div[@id='error']" $CURL_OUT.result
 then
     mesg=$(xmlstarlet sel  -N x="http://www.w3.org/1999/xhtml" \
-        -t -m "//x:div[@id='error']" -v . -n result.html)
+        -t -m "//x:div[@id='error']" -v . -n $CURL_OUT.result)
     echo >&2 "Error importing archive: ${mesg}"
     exit 1
 fi
