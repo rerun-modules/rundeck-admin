@@ -14,13 +14,14 @@ describe "resource-get"
 # Global settings.
 # ----------------
 CREDS="--user admin --password admin --url http://localhost:4440"
-rerun rundeck-admin:project-create $CREDS --project test-$$
+PROJECT="test-resource-get"
+rerun rundeck-admin:project-create $CREDS --project $PROJECT
 
 # Tests.
 # ------
 
 it_fails_for_unpported_format() {
-    if ! rerun rundeck-admin:resource-get $CREDS --project test-$$ --resource skipper --format B0GUS --file skipper.xml
+    if ! rerun rundeck-admin:resource-get $CREDS --project $PROJECT --resource skipper --format B0GUS --file skipper.xml
     then
         :;#yay
     else
@@ -30,26 +31,28 @@ it_fails_for_unpported_format() {
 
 it_gets_a_resource() {
     
-    name="skipper"
+    name="skipper-$$"
     description="a bumbling captain"
     resultfile=$(mktemp "/tmp/resource.xml.XXXX")
 
     # Add a resource.
-    rerun rundeck-admin:resource-add $CREDS --project test-$$  --data "-name ${name} -description '${description}'"
+    rerun rundeck-admin:resource-add $CREDS --project $PROJECT  --model "-name ${name} -description '${description}'"
 
     # Get the resource.
     
-    # Sepcify an output file.
-    rerun rundeck-admin:resource-get $CREDS --project test-$$ --resource ${name} --format xml --file ${resultfile}
+    # Specify an output file store the result.
+    rerun rundeck-admin:resource-get $CREDS --project $PROJECT --resource ${name} --format xml --file ${resultfile}
     xmlstarlet val ${resultfile}
 
+    # Confirm the model has the input data.
     test "$name" = "$(xmlstarlet sel -t -m "/project/node" -v @name ${resultfile})"
     test "$description" = "$(xmlstarlet sel -t -m "/project/node" -v @description ${resultfile})"
 
-    # Redirect standard output to a file.
-    rerun rundeck-admin:resource-get $CREDS --project test-$$ --resource ${name} --format xml > $resultfile
+    # Test it writes to standard out when no --file is specified. Redirect standard output to a file.
+    rerun rundeck-admin:resource-get $CREDS --project $PROJECT --resource ${name} --format xml > $resultfile
     xmlstarlet val ${resultfile}
 
+    rm ${resultfile}
 }
 # ------------------------------
 

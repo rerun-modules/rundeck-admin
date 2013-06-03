@@ -1,6 +1,8 @@
+
 Use **schedule-takeover** to tell a Rundeck server in 
 cluster mode to claim all scheduled jobs from another cluster server.
 
+INCUBATOR STATUS: This command may change, go away, or turn into something else.
 
 Example
 -------
