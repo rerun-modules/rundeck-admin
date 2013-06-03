@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:resource-add: "add a resource."
-#/ usage: rerun rundeck-admin:resource-add  --password <>  --project <>  --user <>  --url <>  --data <> 
+#/ usage: rerun rundeck-admin:resource-add  --password <>  --project <>  --user <>  --url <>  --model <> 
 
 # Load common functions
 # ---------------------
@@ -47,7 +47,7 @@ set -o nounset -o pipefail
 # declared by `rerun` or by the option parser function.
 
 #/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
-#/ option-variables: PASSWORD PROJECT USER URL DATA
+#/ option-variables: PASSWORD PROJECT USER URL MODEL
 
 # The `rerun_options_parse` function processes the command line
 # arguments. Each accepted command line flag results in setting 
@@ -66,12 +66,12 @@ function quote_whitespace() {
     fi
 }
 
-# Parse the resource metadata.
-eval set -- $DATA
+# Parse the resource metamodel.
+eval set -- $MODEL
 # XML_ED_ATTRS contains the xmlstarlet edit options
 declare -a XML_ED_ATTRS
 
-# Each metadata property is prefixed with a leading dash.
+# Each metamodel property is prefixed with a leading dash.
 while [ "$#" -gt 1 ]
 do
     PROP="$1" VALUE="$2"
@@ -89,7 +89,7 @@ done
 
 # Make sure -name was declared.
 [ -z "${NAME:-}" ] && { 
-    rerun_die 2 "--data did not contain a required property: -name <>"
+    rerun_die 2 "--model did not contain a required property: -name <>"
 }
 
 
