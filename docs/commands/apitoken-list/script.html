@@ -120,6 +120,7 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 <span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-f -s -S -L -c cookies -b cookies&quot;</span>
 <span class="nv">CURL</span><span class="o">=</span><span class="s2">&quot;curl $CURLOPTS&quot;</span>
+<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp -t curl.out.XXXXXXXXXX<span class="k">)</span>
     
 
 </pre></div></td></tr><tr><td class=docs>
@@ -128,8 +129,8 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </td><td class=code><div class=highlight><pre>
 <span class="nv">loginurl</span><span class="o">=</span><span class="s2">&quot;${URL}/j_security_check&quot;</span>
-<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; curl.out
-<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="nv">$USER</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="nv">$PASSWORD</span> <span class="nv">$loginurl</span> &gt; curl.out
+<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; /dev/null
+<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="nv">$USER</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="nv">$PASSWORD</span> <span class="nv">$loginurl</span> &gt; /dev/null
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -137,15 +138,18 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </td><td class=code><div class=highlight><pre>
 <span class="nv">profileurl</span><span class="o">=</span><span class="s2">&quot;${URL}/user/profile&quot;</span>
-<span class="nv">$CURL</span> -X GET <span class="nv">$profileurl</span> &gt; curl.out
-xmlstarlet fo -R -H curl.out &gt; userprofile.html 2&gt;/dev/null
+<span class="nv">$CURL</span> -X GET <span class="nv">$profileurl</span> &gt; <span class="nv">$CURL_OUT</span>
+xmlstarlet fo -R -H <span class="nv">$CURL_OUT</span> &gt; <span class="nv">$CURL_OUT</span>.userprofile.html 2&gt;/dev/null
 
 </pre></div></td></tr><tr><td class=docs>
 
 <p>List the tokens.</p>
 
 </td><td class=code><div class=highlight><pre>
-xmlstarlet sel -N <span class="nv">x</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/1999/xhtml&quot;</span> -t -m <span class="s2">&quot;//x:span[@class=&#39;apitoken&#39;]&quot;</span> -v . -n userprofile.html
+<span class="k">if</span> ! xmlstarlet sel -N <span class="nv">x</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/1999/xhtml&quot;</span> -t -m <span class="s2">&quot;//x:span[@class=&#39;apitoken&#39;]&quot;</span> -v . -n <span class="nv">$CURL_OUT</span>.userprofile.html
+<span class="k">then</span>
+    :; <span class="c"># no tokens</span>
+<span class="k">fi</span>
 
 </pre></div></td></tr><tr><td class=docs>
 

@@ -31,31 +31,43 @@
 
 <h2>The Plan</h2>
 
-<h2>##### DIVIDER</h2>
-
-<p>Replace this test. </p>
-
-<h2>##### DIVIDER</h2>
-
 </td><td class=code><div class=highlight><pre>
 <span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
 
 </pre></div></td></tr><tr><td class=docs>
 
-</pre></div></td></tr><tr><td class=docs>
+<h2>Global settings.</h2>
+
 </td><td class=code><div class=highlight><pre>
 describe <span class="s2">&quot;project-export&quot;</span>
 
 </pre></div></td></tr><tr><td class=docs>
+
+<h2>Tests.</h2>
+
 </td><td class=code><div class=highlight><pre>
-it_fails_without_a_real_test<span class="o">()</span> <span class="o">{</span>
-    <span class="nb">exit </span>1
+<span class="nv">CREDS</span><span class="o">=</span><span class="s2">&quot;--user admin --password admin --url http://localhost:4440&quot;</span>
+
+rerun rundeck-admin:project-create <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre>
+
+it_exports_a_project<span class="o">()</span> <span class="o">{</span>
+
+    <span class="nv">ARCHIVE</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/project.archive.XXXX&quot;</span><span class="k">)</span>
+
+    rerun rundeck-admin:project-export <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span> --archive <span class="nv">$ARCHIVE</span>
+    <span class="nb">test</span> -f <span class="nv">$ARCHIVE</span>
+    file <span class="nv">$ARCHIVE</span> | grep -i zip
 <span class="o">}</span>
-</td><td class=code><div class=highlight><pre>
 
 
 
 </td><td class=code><div class=highlight><pre>
+</pre></div></td></tr><tr><td class=docs>
 </td><td class=code><div class=highlight><pre></td><td class='code'></td></tr>
     </tbody>
     </table>

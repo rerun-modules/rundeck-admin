@@ -23,15 +23,13 @@ If you want yaml, use the --format option:
     rerun rundeck-admin: resource-get --user admin --password admin \
        --url http://localhost:4440 --resource Targa.local --format yaml
 
-```
-Targa.local:
-  osFamily: unix
-  tags: ''
-  username: alexh
-  osArch: x86_64
-  osVersion: 10.8.3
-  description: Rundeck server node
-  nodename: Targa.local
-  hostname: Targa.local
-  osName: Mac OS X
-```
+    Targa.local:
+      osFamily: unix
+      tags: ''
+      username: alexh
+      osArch: x86_64
+      osVersion: 10.8.3
+      description: Rundeck server node
+      nodename: Targa.local
+      hostname: Targa.local
+      osName: Mac OS X

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <title>schedule-takeover-1</title>
+    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+</head>
+<body>
+<div id=container>
+    <div id=background></div>
+    <table cellspacing=0 cellpadding=0>
+    <thead>
+      <tr>
+        <th class=docs><h1>schedule-takeover-1</h1></th>
+        <th class=code></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr><td class='docs'></pre></div></td></tr><tr><td class=docs>
+
+</td><td class=code><div class=highlight><pre>
+<span class="c">#!/usr/bin/env roundup</span>
+<span class="c">#/ usage:  rerun stubbs:test -m rundeck-admin -p schedule-takeover [--answers &lt;&gt;]</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Helpers</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>The Plan</h2>
+
+</td><td class=code><div class=highlight><pre>
+<span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Global settings.</h2>
+
+</td><td class=code><div class=highlight><pre>
+describe <span class="s2">&quot;schedule-takeover&quot;</span>
+
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Tests.</h2>
+
+</td><td class=code><div class=highlight><pre>
+<span class="nv">CREDS</span><span class="o">=</span><span class="s2">&quot;--user admin --password admin --url http://localhost:4440&quot;</span>
+
+rerun rundeck-admin:project-create <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre>
+
+it_takes_over_bogus<span class="o">()</span> <span class="o">{</span>
+    <span class="nv">job_ids</span><span class="o">=(</span> <span class="k">$(</span>rerun rundeck-admin:schedule-takeover <span class="nv">$CREDS</span> --uuid XXXXXXXX<span class="k">)</span> <span class="o">)</span>
+    <span class="nb">test</span> -z <span class="s2">&quot;$job_ids&quot;</span>
+<span class="o">}</span>
+
+
+
+
+</td><td class=code><div class=highlight><pre>
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre></td><td class='code'></td></tr>
+    </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -130,6 +130,7 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 <span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-k -f -s -S -L -c cookies -b cookies&quot;</span>
 <span class="nv">CURL</span><span class="o">=</span><span class="s2">&quot;curl $CURLOPTS&quot;</span>
+<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp -t curl.out.XXXXXXXXXX<span class="k">)</span>
     
 </pre></div></td></tr><tr><td class=docs>
 
@@ -137,8 +138,8 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </td><td class=code><div class=highlight><pre>
 <span class="nv">loginurl</span><span class="o">=</span><span class="s2">&quot;${URL}/j_security_check&quot;</span>
-<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; curl.out
-<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="k">${</span><span class="nv">PASSWORD</span><span class="k">}</span> <span class="nv">$loginurl</span> &gt; curl.out
+<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; <span class="nv">$CURL_OUT</span>
+<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="k">${</span><span class="nv">PASSWORD</span><span class="k">}</span> <span class="nv">$loginurl</span> &gt; <span class="nv">$CURL_OUT</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -147,10 +148,10 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 </td><td class=code><div class=highlight><pre>
 <span class="nv">listurl</span><span class="o">=</span><span class="s2">&quot;${URL}/api/1/projects&quot;</span>
 
-<span class="nv">$CURL</span> -X GET <span class="nv">$listurl</span> &gt; curl.out
-xmlstarlet val curl.out &gt;/dev/null
+<span class="nv">$CURL</span> -X GET <span class="nv">$listurl</span> &gt; <span class="nv">$CURL_OUT</span>
+xmlstarlet val <span class="nv">$CURL_OUT</span> &gt;/dev/null
 
-xmlstarlet sel -t -m <span class="s1">&#39;//project&#39;</span> -v name -n curl.out
+xmlstarlet sel -t -m <span class="s1">&#39;//project&#39;</span> -v name -n <span class="nv">$CURL_OUT</span>
 
 </pre></div></td></tr><tr><td class=docs>
 

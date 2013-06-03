@@ -6,5 +6,5 @@ Use the `stubbs:test` command to to run test plans.
 *Test plan sources*
 
 * [project-export-1](tests/project-export-1.html)
-  * it fails without a real test
+  * it exports a project
 

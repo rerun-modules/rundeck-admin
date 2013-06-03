@@ -1,11 +1,11 @@
-.TH rundeck-admin 1 "Thu May 23 21:25:40 PDT 2013" "Version 1.0.2" "RERUN User Manual" 
+.TH rundeck-admin 1 "Mon Jun  3 11:01:13 PDT 2013" "Version 1.0.5" "RERUN User Manual" 
 .SH NAME
 rundeck-admin \- commands to manage your rundecks
 .PP
 .SH SYNOPSIS
 .PP
 \f[CR] 
-rerun [ARGS] rundeck-admin: [ apitoken-create | apitoken-list | project-create | project-export | project-import | project-list | project-replicate | ssh-copy-id ] [OPTIONS]
+rerun [ARGS] rundeck-admin: [ apitoken-create | apitoken-list | apitoken-remove | project-create | project-export | project-import | project-list | project-replicate | resource-add | resource-get | schedule-takeover | ssh-copy-id ] [OPTIONS]
 \f[]
 
 .SH COMMANDS
@@ -51,6 +51,35 @@ arguments: \f[I]true\f[]
 .RE
 .TP
 .B \--user \f[]the login user name.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.SH rundeck-admin:apitoken-remove \f[]--user <> --password <> --token <> --url <>
+
+remove an api token
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--user \f[]the login user name.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--password \f[]the login password.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--token \f[]the login token.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--url \f[]rundeck server url.\f[]
 required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
@@ -212,6 +241,117 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
+.SH rundeck-admin:resource-add \f[]--user <> --password <> --url <> --project <> --model <>
+
+add a resource to a project resource model.
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--user \f[]the login user name.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--password \f[]the login password.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--url \f[]rundeck server url.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--project \f[]the project name.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--model \f[]the resource model.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.SH rundeck-admin:resource-get \f[]--user <> --password <> --url <> --resource <> --project <> [--format <>] [--file <>]
+
+get resource info.
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--user \f[]the login user name.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--password \f[]the login password.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--url \f[]rundeck server url.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--resource \f[]the resource name.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--project \f[]the project name.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--format \f[]the file format.\f[]
+required: \f[I]false\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--file \f[]file to store result.\f[]
+required: \f[I]false\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.SH rundeck-admin:schedule-takeover \f[]--uuid <> --user <> --url <> --password <>
+
+Claim all scheduled jobs from another cluster server.
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--uuid \f[]the cluster server uuid.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--user \f[]the login user name.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--url \f[]rundeck server url.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--password \f[]the login password.\f[]
+required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
 .SH rundeck-admin:ssh-copy-id \f[]--user <> --password <> --keyfile <> --hostname <>
 
 Copy an SSH key to another server.
@@ -246,7 +386,7 @@ arguments: \f[I]true\f[]
 .PP
 Successful completion: 0
 .SH AUTHORS
-alexh
+admin
 .SH "SEE ALSO"
 rerun
 .SH KEYWORDS

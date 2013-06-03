@@ -142,6 +142,7 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 <span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-k -f -s -S -L -c cookies -b cookies&quot;</span>
 <span class="nv">CURL</span><span class="o">=</span><span class="s2">&quot;curl $CURLOPTS&quot;</span>
+<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp -t curl.out.XXXXXXXXXX<span class="k">)</span>
     
 </pre></div></td></tr><tr><td class=docs>
 
@@ -149,8 +150,8 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </td><td class=code><div class=highlight><pre>
 <span class="nv">loginurl</span><span class="o">=</span><span class="s2">&quot;${URL}/j_security_check&quot;</span>
-<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; curl.out
-<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="k">${</span><span class="nv">PASSWORD</span><span class="k">}</span> <span class="nv">$loginurl</span> &gt; curl.out
+<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; <span class="nv">$CURL_OUT</span>
+<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="k">${</span><span class="nv">PASSWORD</span><span class="k">}</span> <span class="nv">$loginurl</span> &gt; <span class="nv">$CURL_OUT</span>
 
 
 </pre></div></td></tr><tr><td class=docs>
@@ -160,15 +161,15 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 </td><td class=code><div class=highlight><pre>
 <span class="nv">importurl</span><span class="o">=</span><span class="s2">&quot;${URL}/project/importArchive&quot;</span>
 : <span class="k">${</span><span class="nv">ARCHIVE</span><span class="p">:=</span><span class="k">${</span><span class="nv">PROJECT</span><span class="k">}</span><span class="p">.zip</span><span class="k">}</span>
-<span class="nv">$CURL</span> -F <span class="nv">zipFile</span><span class="o">=</span>@<span class="nv">$ARCHIVE</span> -F <span class="nv">name</span><span class="o">=</span><span class="nv">$PROJECT</span> -X POST <span class="nv">$importurl</span> &gt; curl.out
+<span class="nv">$CURL</span> -F <span class="nv">zipFile</span><span class="o">=</span>@<span class="nv">$ARCHIVE</span> -F <span class="nv">name</span><span class="o">=</span><span class="nv">$PROJECT</span> -X POST <span class="nv">$importurl</span> &gt; <span class="nv">$CURL_OUT</span>
 
-xmlstarlet fo -R -H curl.out &gt; result.html 2&gt;/dev/null
+xmlstarlet fo -R -H <span class="nv">$CURL_OUT</span> &gt; <span class="nv">$CURL_OUT</span>.result 2&gt;/dev/null
 
 <span class="k">if </span>xmlstarlet sel  -N <span class="nv">x</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/1999/xhtml&quot;</span> <span class="se">\</span>
-    -t -m <span class="s2">&quot;//x:div[@id=&#39;error&#39;]&quot;</span> result.html
+    -t -m <span class="s2">&quot;//x:div[@id=&#39;error&#39;]&quot;</span> <span class="nv">$CURL_OUT</span>.result
 <span class="k">then</span>
 <span class="k">    </span><span class="nv">mesg</span><span class="o">=</span><span class="k">$(</span>xmlstarlet sel  -N <span class="nv">x</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/1999/xhtml&quot;</span> <span class="se">\</span>
-        -t -m <span class="s2">&quot;//x:div[@id=&#39;error&#39;]&quot;</span> -v . -n result.html<span class="k">)</span>
+        -t -m <span class="s2">&quot;//x:div[@id=&#39;error&#39;]&quot;</span> -v . -n <span class="nv">$CURL_OUT</span>.result<span class="k">)</span>
     <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Error importing archive: ${mesg}&quot;</span>
     <span class="nb">exit </span>1
 <span class="k">fi</span>

@@ -33,10 +33,6 @@
 
 <h2>##### DIVIDER</h2>
 
-<p>Replace this test. </p>
-
-<h2>##### DIVIDER</h2>
-
 </td><td class=code><div class=highlight><pre>
 <span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
 
@@ -46,12 +42,33 @@
 </td><td class=code><div class=highlight><pre>
 describe <span class="s2">&quot;apitoken-list&quot;</span>
 
+before<span class="o">()</span> <span class="o">{</span>
+    apitoken_remove_all admin admin http://localhost:4440
+<span class="o">}</span>
+
 </pre></div></td></tr><tr><td class=docs>
 </td><td class=code><div class=highlight><pre>
-it_fails_without_a_real_test<span class="o">()</span> <span class="o">{</span>
-    <span class="nb">exit </span>1
+
+it_prints_blank_when_no_tokens<span class="o">()</span> <span class="o">{</span>
+
+    <span class="nv">toks</span><span class="o">=(</span><span class="k">$(</span>rerun rundeck-admin:apitoken-list --user admin --password admin --url http://localhost:4440<span class="k">)</span><span class="o">)</span>
+    <span class="nb">test</span> -z <span class="s2">&quot;$toks&quot;</span>
 <span class="o">}</span>
-</td><td class=code><div class=highlight><pre>
+
+it_lists_multiple_tokens<span class="o">()</span> <span class="o">{</span>
+
+    <span class="nv">API_KEY1</span><span class="o">=</span><span class="k">$(</span>rerun rundeck-admin:apitoken-create --user admin --password admin --url http://localhost:4440<span class="k">)</span>
+    <span class="nv">API_KEY2</span><span class="o">=</span><span class="k">$(</span>rerun rundeck-admin:apitoken-create --user admin --password admin --url http://localhost:4440<span class="k">)</span>
+
+    <span class="nv">toks</span><span class="o">=(</span> <span class="k">$(</span>rerun rundeck-admin:apitoken-list --user admin --password admin --url http://localhost:4440<span class="k">)</span> <span class="o">)</span>
+    <span class="nb">test</span> <span class="s2">&quot;${#toks[*]}&quot;</span> -eq 2
+
+    <span class="nb">echo</span> <span class="k">${</span><span class="nv">toks</span><span class="p">[*]</span><span class="k">}</span> | grep <span class="nv">$API_KEY1</span>
+    <span class="nb">echo</span> <span class="k">${</span><span class="nv">toks</span><span class="p">[*]</span><span class="k">}</span> | grep <span class="nv">$API_KEY2</span>
+<span class="o">}</span>
+
+
+
 
 
 

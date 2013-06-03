@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <title>apitoken-remove-1</title>
+    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+</head>
+<body>
+<div id=container>
+    <div id=background></div>
+    <table cellspacing=0 cellpadding=0>
+    <thead>
+      <tr>
+        <th class=docs><h1>apitoken-remove-1</h1></th>
+        <th class=code></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr><td class='docs'></pre></div></td></tr><tr><td class=docs>
+
+</td><td class=code><div class=highlight><pre>
+<span class="c">#!/usr/bin/env roundup</span>
+<span class="c">#/ usage:  rerun stubbs:test -m rundeck-admin -p apitoken-remove [--answers &lt;&gt;]</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Helpers</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>The Plan</h2>
+
+</td><td class=code><div class=highlight><pre>
+<span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
+
+</pre></div></td></tr><tr><td class=docs>
+
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre>
+describe <span class="s2">&quot;apitoken-remove&quot;</span>
+
+
+it_removes_a_token<span class="o">()</span> <span class="o">{</span>
+
+    <span class="nv">API_KEY1</span><span class="o">=</span><span class="k">$(</span>rerun rundeck-admin:apitoken-create --user admin --password admin --url http://localhost:4440<span class="k">)</span>
+    rerun rundeck-admin:apitoken-remove --user admin --password admin --url http://localhost:4440 --token <span class="nv">$API_KEY1</span>
+    <span class="nv">toks</span><span class="o">=(</span> <span class="k">$(</span>rerun rundeck-admin:apitoken-list --user admin --password admin --url http://localhost:4440<span class="k">)</span> <span class="o">)</span>
+    <span class="nb">echo</span> <span class="k">${</span><span class="nv">toks</span><span class="p">[*]</span><span class="k">}</span> | grep -v <span class="nv">$API_KEY1</span>
+
+<span class="o">}</span>
+
+</td><td class=code><div class=highlight><pre>
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre></td><td class='code'></td></tr>
+    </tbody>
+    </table>
+</div>
+</body>
+</html>
