@@ -65,26 +65,20 @@ case $FORMAT in
     *) rerun_die 2 "invalid argument. --format <xml|yaml>"
 esac
 
-# - - -
-# Put the command implementation here.
-# - - -
-COOKIES=$(mktemp "/tmp/cookies.XXXXX")
-
-CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
-
-CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
-
-
-
 # Authenticate.
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > /dev/null
-$CURL -d j_username=${USER} -d j_password=${PASSWORD} -X POST $loginurl > /dev/null
+# --------------
+rundeck_login $URL $USER $PASSWORD
+
 
 # Get the resources for the project.
+# ----------------------------------
 APIURL="${URL}/api/3/resource/$RESOURCE?project=${PROJECT}&format=${FORMAT}"
-$CURL -o $CURL_OUT -X GET $APIURL
+CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
+
+if ! rundeck_curl -o $CURL_OUT -X GET $APIURL
+then
+    rerun_die 3 "API error: $APIURL"
+fi    
 
 # Check if the result is an xml file.
 # It might be valid xml containing api error information.

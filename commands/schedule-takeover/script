@@ -58,36 +58,30 @@ rerun_options_parse "$@"
 
 # Command implementation
 # ----------------------
-CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
-COOKIES=$(mktemp "/tmp/cookies.XXXXX")
-CURLOPTS="-f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
-
-
 
 # Authenticate.
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > $CURL_OUT
-if ! $CURL -d j_username=$USER -d j_password=$PASSWORD  -X POST $loginurl > $CURL_OUT
-then
-    rerun_die 3 "FAIL: login unsuccessful."
-fi
+# --------------
+rundeck_login $URL $USER $PASSWORD
 
 # Takeover schedule.
+# -------------------
+
+CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
+
 # See http://rundeck.org/docs/api/index.html#takeover-schedule-in-cluster-mode
 APIURL="${URL}/api/7/incubator/jobs/takeoverSchedule"
 
-if ! $CURL -H "Content-Type: application/xml" \
+if ! rundeck_curl -H "Content-Type: application/xml" \
     --data "<server uuid=\"$UUID\"/>" -X PUT $APIURL > $CURL_OUT
 then
-    rerun_die 3 "FAIL: API error: $APIURL"
+    rerun_die 3 "API error: $APIURL"
 fi
 
 xmlstarlet val -q $CURL_OUT
 
 if ! xmlstarlet sel -T -t -v "/result/@success" $CURL_OUT >/dev/null
 then
-    printf >&2 "FAIL: API error: $APIURL"
+    printf >&2 "API error: $APIURL"
     xmlstarlet sel -T -t -m "/result/error/message" -v "."  $CURL_OUT
     exit 1
 fi

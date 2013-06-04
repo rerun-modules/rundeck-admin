@@ -59,31 +59,26 @@ rerun_options_parse "$@"
 # Command implementation
 # ----------------------
 
-# - - -
-# Put the command implementation here.
-# - - -
-COOKIES=$(mktemp "/tmp/cookies.XXXXX")
-CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
-CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
-    
 # Authenticate
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > $CURL_OUT
-$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > $CURL_OUT
+# ------------
+rundeck_login $URL $USER $PASSWORD
 
 # Export
-exporturl="${URL}/project/export"
+# ------
+
 : ${ARCHIVE:=${PROJECT}.zip}
-$CURL -X GET $exporturl/export?name=$PROJECT > $ARCHIVE
+if ! rundeck_curl -X GET ${URL}/project/export?name=$PROJECT > $ARCHIVE
+then
+    rerun_die 3 "API error: ${URL}/project/export"
+fi
 
 if [ ! -f $ARCHIVE ]
 then
-    echo >&2 "Unexpected error. Archive file not found after export request"
+   	rerun_die 3 "Unexpected error. Archive file not found after export requested."
     exit 1
 fi
 
-echo >&2 "Project exported to archive: $ARCHIVE"
+echo "Project exported to archive: $ARCHIVE"
 
 # Done. Exit with last command exit status.
 exit $?

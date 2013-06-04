@@ -92,24 +92,24 @@ done
     rerun_die 2 "--model did not contain a required property: -name <>"
 }
 
-COOKIES=$(mktemp "/tmp/cookies.XXXXX")
-CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
+# Authenticate.
+# --------------
+rundeck_login $URL $USER $PASSWORD
+
+
+
+# Get the resources for the project.
+# -----------------------------------
+APIURL="${URL}/api/3/resources?project=$PROJECT&name=.*"
+#APIURL="${URL}/api/3/project/$PROJECT/resources" ;#buggy?
 
 CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
 RESOURCES=$(mktemp "/tmp/resources.xml.XXXXX")
 
-
-# Authenticate.
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > $CURL_OUT
-$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > $CURL_OUT
-
-# Get the resources for the project.
-APIURL="${URL}/api/3/resources?project=$PROJECT&name=.*"
-#APIURL="${URL}/api/3/project/$PROJECT/resources" ;#buggy?
-$CURL -o $RESOURCES $APIURL
-
+if ! rundeck_curl -o $RESOURCES $APIURL
+then
+    rerun_die 3 "API error: $APIURL"
+fi
 
 # Check if the resource is already defined.
 if ! xmlstarlet sel -t -m "/project/node[@name='${NAME}']" -v @name $RESOURCES
@@ -129,10 +129,12 @@ else
 fi
 
 
-
 # Post the updated resources.xml back to rundeck.
 APIURL="${URL}/api/3/project/$PROJECT/resources"
-$CURL -X POST -H "Content-Type: text/xml" -d @$RESOURCES -o $CURL_OUT $APIURL
+if ! rundeck_curl -X POST -H "Content-Type: text/xml" -d @$RESOURCES -o $CURL_OUT $APIURL
+then
+    rerun_die 3 "API error: $APIURL"
+fi
 
 # Check results.
 

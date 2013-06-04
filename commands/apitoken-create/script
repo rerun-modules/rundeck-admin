@@ -58,24 +58,26 @@ rerun_options_parse "$@"
 
 # Command implementation
 # ----------------------
-COOKIES=$(mktemp "/tmp/coookies.XXXXX")
-CURLOPTS="-f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
-    
-CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
 # Authenticate.
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > /dev/null
-$CURL -X POST -d j_username=$USER -d j_password=$PASSWORD $loginurl > /dev/null
+# --------------
+rundeck_login $URL $USER $PASSWORD
+ 
 
 # Request a new token.
-tokenurl="$URL/user/generateApiToken"
-$CURL $tokenurl?login=${USER} > $CURLOUT
+# ---------------------
+
+CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX)
+
+if ! rundeck_curl $URL/user/generateApiToken?login=${USER} > $CURLOUT
+then
+    rerun_die 3 "API error: $URL/user/generateApiToken"
+fi
 xmlstarlet fo -R -H $CURLOUT > $CURLOUT.userprofile 2>/dev/null
 
 # Check the result from the user profile.
 # Tokens are printed in the order they were created.
+declare -a tokens
 tokens=( $(xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" -t -m "//x:span[@class='apitoken']" -v . -n $CURLOUT.userprofile) )
 [ -z "${tokens:-}" -a ${#tokens[*]} -lt 1 ] && {
     rerun_die "Failed to generate a token."

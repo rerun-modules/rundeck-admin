@@ -58,19 +58,22 @@ rerun_options_parse "$@"
 
 # Command implementation
 # ----------------------
-COOKIES=$(mktemp "/tmp/cookies.XXXXX")
-CURLOPTS="-f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
-CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
-# Authenticate.
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > /dev/null
-$CURL -X POST -d j_username=$USER -d j_password=$PASSWORD $loginurl > /dev/null
+# Authenticate
+# ------------
+rundeck_login $URL $USER $PASSWORD
+
 
 # Request token removal
-APIURL=$URL/user/clearApiToken
-$CURL -d login=${USER} -d token=${TOKEN} -d Yes=yes -X POST $APIURL > $CURLOUT
+# ----------------------
+
+CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX)
+
+if ! rundeck_curl -d login=${USER} -d token=${TOKEN} -d Yes=yes \
+	-X POST $URL/user/clearApiToken > $CURLOUT
+then
+    rerun_die 3 "API error: $URL/user/clearApiToken"
+fi
 xmlstarlet fo -R -H $CURLOUT > $CURLOUT.userprofile 2>/dev/null
 
 # Check the result from the user profile.

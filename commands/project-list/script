@@ -59,24 +59,22 @@ rerun_options_parse "$@"
 # Command implementation
 # ----------------------
 
-# - - -
-# Put the command implementation here.
-# - - -
-COOKIES=$(mktemp "/tmp/cookies.XXXXX")
-CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
-CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
+# Authenticate.
+# --------------
+rundeck_login $URL $USER $PASSWORD
+
     
-# Authenticate
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > $CURL_OUT
-$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > $CURL_OUT
 
 # List
-listurl="${URL}/api/1/projects"
+# -----
 
-$CURL -X GET $listurl > $CURL_OUT
-xmlstarlet val $CURL_OUT >/dev/null
+CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
+
+if ! rundeck_curl -X GET ${URL}/api/1/projects > $CURL_OUT
+then
+    rerun_die 3 "API error: ${URL}/api/1/projects"
+fi	
+xmlstarlet val -q $CURL_OUT
 
 xmlstarlet sel -t -m '//project' -v name -n $CURL_OUT
 

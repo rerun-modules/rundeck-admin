@@ -95,12 +95,12 @@ SSH_OPTIONS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 # Test if this server can already ssh to the remote one.
 if ! timeout 60s sudo -u ${SSH_HOST_USER} ssh ${SSH_OPTIONS} ${SSH_HOST} /bin/true 2>&1 >/dev/null
 then
-    echo "Copying secondary's ssh key to ${SSH_HOST_USER}@${SSH_HOST}..."
+    echo >&2 "Copying secondary's ssh key to ${SSH_HOST_USER}@${SSH_HOST}..."
 
     expect $EXPECT_SCRIPT ${SSH_HOST} ${SSH_HOST_USER} ${SSH_HOST_PASSWD} ${SSH_KEY_PATH_PUB}
 
     # Test the key-based ssh access to the primary.
-    echo "Testing ssh access..."
+    echo >&2 "Testing ssh access..."
     if ! timeout 60s sudo -u ${SSH_HOST_USER} ssh ${SSH_OPTIONS} ${SSH_HOST_USER}@${SSH_HOST} uptime
     then 
         rerun_die "Could not ssh to ${SSH_HOST} after key was copied."

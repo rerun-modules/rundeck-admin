@@ -24,5 +24,83 @@ fi
 # Your functions declared here.
 # - - -
 
+# Where to store the login cookies
+COOKIES=$(mktemp "/tmp/cookies.XXXXX")
+# Curl opts to use a cookie jar, follow redirects, showing only errors, failing fast.
+CURLOPTS="-f -s -S -L -c $COOKIES -b $COOKIES"
 
+
+#
+# _rundeck_curl_ - The curl wrapper function
+#
+#     rundeck_curl ?curl-args?
+#
+# Arguments:
+#
+# * curl-args: Any valid set of curl arguments
+#
+# Notes: 
+rundeck_curl() {
+	command curl $CURLOPTS "$@"
+}
+
+#
+# - - -
+#
+
+#
+# _rundeck_login_ - Login to rundeck
+#
+#     rundeck_login url user password
+#
+# Arguments:
+#
+# * url:      The URL to rundeck.
+# * user:     The login user name.
+# * password: The password for login.
+#
+# Notes: 
+rundeck_login(){
+	[[ $# -ne 3 ]] && {
+		rerun_die 2 "usage: rundeck_login: url user password"
+	}
+	local -r url=$1 user=$2 password=$3
+
+	local errors
+
+	# Request the login form.
+	local -r loginurl="${url}/j_security_check"
+	if ! errors=$(rundeck_curl $loginurl 2>&1> /dev/null)
+	then
+		rerun_die 3 "login failure. error: $errors"
+    fi
+
+    # Temporary file to store results.
+    local -r curl_out=$(mktemp "/tmp/login.out.XXXXX")
+
+    # Submit the username and password to the login form.
+	if ! errors=$(rundeck_curl -d j_username=$user -d j_password=$password \
+		-X POST $loginurl 2>&1> $curl_out)
+	then
+		rerun_die 3 "login failure. error: $errors"
+	fi
+
+	# Parse the login result page. It might contain an error.
+	# Convert the result into well formed xhtml so we can query it.
+	if ! errors=$(xmlstarlet fo -R -H $curl_out 2>/dev/null |
+		# Query the result page for the error message.
+		xmlstarlet sel -N x=http://www.w3.org/1999/xhtml \
+			-t -m "//x:div[@class='login']/x:form/x:div[@class='message']/x:span[@class='error']" -v .)
+    then
+    	:; # no login error message. successfully logged in.
+    fi
+    rm "${curl_out}"; # clean up.
+
+    # Fail if there was an error.
+    [[ -n "${errors:-}" ]] && {
+		rerun_die 3 "Login failure. error: $errors"
+	}
+
+	return 0
+}
 

@@ -75,24 +75,23 @@ then
     exit 2
 fi
 
-COOKIES=$(mktemp "/tmp/cookies.XXXXX")
-CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
-CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
-    
+
 # Authenticate
 # ------------
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > $CURL_OUT
-$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > $CURL_OUT
+rundeck_login $URL $USER $PASSWORD
 
 
 # Import
 # ------
 importurl="${URL}/project/importArchive"
 : ${ARCHIVE:=${PROJECT}.zip}
-$CURL -F zipFile=@$ARCHIVE -F name=$PROJECT -X POST $importurl > $CURL_OUT
+CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
+if ! rundeck_curl -F zipFile=@$ARCHIVE -F name=$PROJECT \
+    -X POST ${URL}/project/importArchive > $CURL_OUT
+then
+    rerun_die 3 "API error: ${URL}/project/importArchive"
+fi
 xmlstarlet fo -R -H $CURL_OUT > $CURL_OUT.result 2>/dev/null
 
 if xmlstarlet sel  -N x="http://www.w3.org/1999/xhtml" \

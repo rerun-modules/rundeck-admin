@@ -58,20 +58,21 @@ rerun_options_parse "$@"
 
 # Command implementation
 # ----------------------
-COOKIES=$(mktemp "/tmp/coookies.XXXXX")
-CURLOPTS="-f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
-CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
-    
 
-# Authenticate.
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > /dev/null
-$CURL -X POST -d j_username=$USER -d j_password=$PASSWORD $loginurl > /dev/null
+# Authenticate
+# ------------
+rundeck_login $URL $USER $PASSWORD
+
 
 # Get the profile.
-profileurl="${URL}/user/profile"
-$CURL -X GET $profileurl > $CURL_OUT
+# ----------------
+
+CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
+
+if ! rundeck_curl -X GET ${URL}/user/profile > $CURL_OUT
+then
+    rerun_die 3 "API error: ${URL}/user/profile"
+fi
 xmlstarlet fo -R -H $CURL_OUT > $CURL_OUT.userprofile.html 2>/dev/null
 
 # List the tokens.

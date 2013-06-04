@@ -59,29 +59,25 @@ rerun_options_parse "$@"
 # Command implementation
 # ----------------------
 
-# - - -
-# Put the command implementation here.
-# - - -
-COOKIES=$(mktemp "/tmp/cookies.XXXXX")
-CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
-CURL="curl $CURLOPTS"
-CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
-    
 # Authenticate
 # ------------
-loginurl="${URL}/j_security_check"
-$CURL $loginurl > $CURL_OUT
-$CURL -X POST -d j_username=${USER} -d j_password=${PASSWORD} $loginurl > /dev/null
-
+rundeck_login $URL $USER $PASSWORD
 
 # Request the projet. 
 # -------------------
-createurl="${URL}/resources/createProject"
-$CURL -F project=$PROJECT -X POST $createurl > /dev/null
+if ! rundeck_curl -F project=$PROJECT -X POST ${URL}/resources/createProject > /dev/null
+then
+    rerun_die 3 "API error: ${URL}/resources/createProject"
+fi
 
 # Check the project was created.
-projecturl="${URL}/api/1/project/$PROJECT"
-$CURL -X GET $projecturl > $CURL_OUT
+
+CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
+
+if ! rundeck_curl -X GET ${URL}/api/1/project/$PROJECT > $CURL_OUT
+then
+	rerun_die 3 "API error: ${URL}/api/1/project/$PROJECT"
+fi
 xmlstarlet val $CURL_OUT >/dev/null
 
 if ! xmlstarlet sel -t -m "/result[@success='true']"  -v . $CURL_OUT >/dev/null

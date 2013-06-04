@@ -64,14 +64,14 @@ rerun_options_parse "$@"
 # - - -
 
 # The credentials used to login to the rundecks
-CREDS="--user ${USER} --password ${PASSWORD}"
+declare -r CREDS="--user ${USER} --password ${PASSWORD}"
 
 # List the projects in the source rundeck.
-rundeck1_projects=( $(rerun rundeck-admin:project-list $CREDS --url $URL) )
+declare -ar rundeck1_projects=( $(rerun rundeck-admin:project-list $CREDS --url $URL) )
 
 # Generate the list of projects matching the specified name or regexp.
-projects_to_replicate=( )
-for p in ${rundeck1_projects[*]}
+declare -a projects_to_replicate
+for p in ${rundeck1_projects[*]:-}
 do
     [[ $p =~ $PROJECT ]] && projects_to_replicate=( ${projects_to_replicate[*]:-} $p )
 done
@@ -83,7 +83,7 @@ then
 fi
 
 # List the existing projects in the target rundecks.
-rundeck2_projects=( $(rerun rundeck-admin:project-list $CREDS --url $TO_URL) )
+declare -ar rundeck2_projects=( $(rerun rundeck-admin:project-list $CREDS --url $TO_URL) )
 
 echo >&2 "Replicating projects: [${projects_to_replicate[*]:-}] ..."
 
