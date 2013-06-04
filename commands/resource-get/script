@@ -85,13 +85,13 @@ fi
 # Fail the command if the api returned an error.
 
 if ! xmlstarlet val -q $CURL_OUT
-then :;# do nothing. it's not xml.
+then :; # do nothing. it is not xml.
 else
-    # it's xml. check if it has an api result.
+    # it is xml. check if it has an api result.
     if ! error=$(xmlstarlet sel -t -m "/result" -v @error $CURL_OUT)
-    then :;# do nothing. it is not a result xml.
+    then :; # do nothing. it is not a result xml.
     else
-        # fail the command if the api returned an error.
+        # it is an api result. fail the command if the api returned an error.
         [ "$error" = "true" ] && {
             rerun_die 3 $(xmlstarlet sel -t -m "/result/error" -v message $CURL_OUT)
         }

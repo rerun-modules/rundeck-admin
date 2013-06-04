@@ -145,6 +145,8 @@ then
     exit 2
 fi
 
+
+rm $CURL_OUT $RESOURCES
 # Done. Exit with last command exit status.
 exit $?
 

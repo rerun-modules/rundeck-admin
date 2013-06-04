@@ -69,16 +69,19 @@ rundeck_login $URL $USER $PASSWORD
 
 CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
-if ! rundeck_curl $URL/user/generateApiToken?login=${USER} > $CURLOUT
+if ! rundeck_curl $URL/user/generateApiToken?login=${USER} |
+	# Convert the result into well formed xhtml so we can query it.
+	xmlstarlet fo -R -H > $CURLOUT 2>/dev/null
 then
     rerun_die 3 "API error: $URL/user/generateApiToken"
 fi
-xmlstarlet fo -R -H $CURLOUT > $CURLOUT.userprofile 2>/dev/null
 
 # Check the result from the user profile.
 # Tokens are printed in the order they were created.
 declare -a tokens
-tokens=( $(xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" -t -m "//x:span[@class='apitoken']" -v . -n $CURLOUT.userprofile) )
+tokens=( $(xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" \
+	-t -m "//x:span[@class='apitoken']" -v . -n $CURLOUT) )
+
 [ -z "${tokens:-}" -a ${#tokens[*]} -lt 1 ] && {
     rerun_die "Failed to generate a token."
 }
@@ -88,7 +91,7 @@ tokens=( $(xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" -t -m "//x:span[@c
 echo ${tokens[${#tokens[*]} -1]}
 
 # Clean up.
-rm $CURLOUT $CURLOUT.userprofile
+rm $CURLOUT
 
 # Done. Exit with last command exit status.
 exit $?

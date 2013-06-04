@@ -70,21 +70,23 @@ rundeck_login $URL $USER $PASSWORD
 CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
 if ! rundeck_curl -d login=${USER} -d token=${TOKEN} -d Yes=yes \
-	-X POST $URL/user/clearApiToken > $CURLOUT
+	-X POST $URL/user/clearApiToken |
+	# Convert the result into well formed xhtml so we can query it.
+	xmlstarlet fo -R -H > $CURLOUT 2>/dev/null
 then
     rerun_die 3 "API error: $URL/user/clearApiToken"
 fi
-xmlstarlet fo -R -H $CURLOUT > $CURLOUT.userprofile 2>/dev/null
 
 # Check the result from the user profile.
 
-if ! xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" -t -m "//x:span[@class='apitoken']" -v . -n $CURLOUT.userprofile | grep -q -v $TOKEN
+if ! xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" \
+	-t -m "//x:span[@class='apitoken']" -v . -n $CURLOUT | grep -q -v $TOKEN
 then
     rerun_die 3 "failed to remove token."
 fi
 
 
-
+rm $CURLOUT
 
 # Done. Exit with last command exit status.
 exit $?

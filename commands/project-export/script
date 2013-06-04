@@ -66,7 +66,11 @@ rundeck_login $URL $USER $PASSWORD
 # Export
 # ------
 
-: ${ARCHIVE:=${PROJECT}.zip}
+[[ -z "$ARCHIVE" ]] && {
+	ARCHIVE=${PROJECT}.zip}
+	echo "Project export to archive: $ARCHIVE"
+}
+
 if ! rundeck_curl -X GET ${URL}/project/export?name=$PROJECT > $ARCHIVE
 then
     rerun_die 3 "API error: ${URL}/project/export"
@@ -78,7 +82,6 @@ then
     exit 1
 fi
 
-echo "Project exported to archive: $ARCHIVE"
 
 # Done. Exit with last command exit status.
 exit $?

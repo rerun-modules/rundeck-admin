@@ -78,6 +78,8 @@ xmlstarlet val -q $CURL_OUT
 
 xmlstarlet sel -t -m '//project' -v name -n $CURL_OUT
 
+
+rm $CURL_OUT
 # Done. Exit with last command exit status.
 exit $?
 

@@ -104,6 +104,7 @@ then
     rerun_die 3 "Not all jobs taken over: $failed out of $((successful+failed)). jobs: $failed_ids"
 fi
 
+rm $CURL_OUT
 # Done. Exit with last command exit status.
 exit $?
 

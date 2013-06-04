@@ -103,6 +103,7 @@ do
      # Import the archive to the target rundeck.
      rerun rundeck-admin:project-import $CREDS --url $TO_URL \
         --project ${project} --archive $project.zip 
+        echo >&2 "Imported ${project} to $TO_URL."
 done
 
 

@@ -88,23 +88,24 @@ importurl="${URL}/project/importArchive"
 CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
 if ! rundeck_curl -F zipFile=@$ARCHIVE -F name=$PROJECT \
-    -X POST ${URL}/project/importArchive > $CURL_OUT
+    -X POST ${URL}/project/importArchive  | 
+    # Convert the result into well formed xhtml so we can query it.
+    xmlstarlet fo -R -H > $CURL_OUT 2>/dev/null
 then
     rerun_die 3 "API error: ${URL}/project/importArchive"
 fi
-xmlstarlet fo -R -H $CURL_OUT > $CURL_OUT.result 2>/dev/null
 
 if xmlstarlet sel  -N x="http://www.w3.org/1999/xhtml" \
-    -t -m "//x:div[@id='error']" $CURL_OUT.result
+    -t -m "//x:div[@id='error']" $CURL_OUT
 then
     mesg=$(xmlstarlet sel  -N x="http://www.w3.org/1999/xhtml" \
-        -t -m "//x:div[@id='error']" -v . -n $CURL_OUT.result)
+        -t -m "//x:div[@id='error']" -v . -n $CURL_OUT)
     echo >&2 "Error importing archive: ${mesg}"
     exit 1
 fi
 
-echo >&2 "Project imported from archive: $ARCHIVE"
 
+rm $CURL_OUT
 # Done. Exit with last command exit status.
 exit $?
 

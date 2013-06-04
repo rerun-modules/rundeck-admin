@@ -87,7 +87,7 @@ else
     xmlstarlet sel -t -m "/result/projects/project"  -v name $CURL_OUT 
 fi
 
-
+rm $CURL_OUT
 
 # Done. Exit with last command exit status.
 exit $?
