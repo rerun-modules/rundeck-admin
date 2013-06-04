@@ -117,8 +117,8 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 <h2>Command implementation</h2>
 
 </td><td class=code><div class=highlight><pre>
-
-<span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-f -s -S -L -c cookies -b cookies&quot;</span>
+<span class="nv">COOKIES</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/coookies.XXXXX&quot;</span><span class="k">)</span>
+<span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-f -s -S -L -c $COOKIES -b $COOKIES&quot;</span>
 <span class="nv">CURL</span><span class="o">=</span><span class="s2">&quot;curl $CURLOPTS&quot;</span>
 <span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp -t curl.out.XXXXXXXXXX<span class="k">)</span>
     

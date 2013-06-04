@@ -57,12 +57,12 @@ rerun rundeck-admin:project-create <span class="nv">$CREDS</span> --project <spa
 </td><td class=code><div class=highlight><pre>
 
 it_creates_a_resource<span class="o">()</span> <span class="o">{</span>
-    rerun rundeck-admin:resource-add <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span> --data <span class="s2">&quot;-name gilligan -description &#39;silly sailor&#39;&quot;</span>
+    rerun rundeck-admin:resource-add <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span> --model <span class="s2">&quot;-name gilligan -description &#39;silly sailor&#39;&quot;</span>
 <span class="o">}</span>
 
 it_updates_a_resource<span class="o">()</span> <span class="o">{</span>
     <span class="nv">CREDS</span><span class="o">=</span><span class="s2">&quot;--user admin --password admin --url http://localhost:4440&quot;</span>
-    rerun rundeck-admin:resource-add <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span> --data <span class="s2">&quot;-name gilligan -description &#39;silly sailor&#39; -osFamily comedian -blar blar&quot;</span>
+    rerun rundeck-admin:resource-add <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span> --model <span class="s2">&quot;-name gilligan -description &#39;silly sailor&#39; -osFamily comedian -blar blar&quot;</span>
 <span class="o">}</span>
 
 </pre></div></td></tr><tr><td class=docs>
