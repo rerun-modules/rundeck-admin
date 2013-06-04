@@ -13,4 +13,8 @@ The *rundeck-admin* commands help you manage your rundecks.
 
 [Download a shell archive from bintray](http://dl.bintray.com/ahonor/rerun-modules). 
 
+Or install it via yum:
+
+    curl -s -f -L -o /etc/yum.repos.d/rerun.repo "https://bintray.com/ahonor/rerun-rpm/rpm"
+    yum -y install rerun rerun-rundeck-admin
 
