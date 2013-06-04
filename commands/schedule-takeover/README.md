@@ -1,13 +1,17 @@
 
 Use **schedule-takeover** to tell a Rundeck server in 
 cluster mode to claim all scheduled jobs from another cluster server.
+This configuration is relevant if you have more than one rundeck
+sharing a database and hence each rundeck sees the same job definitions.
+The rundeck server where you load the jobs will be the server that executes
+any scheduled job runs as that servers server UUID is stored with the job. 
 
 INCUBATOR STATUS: This command may change, go away, or turn into something else.
 
 Example
 -------
 
-The UUID option specifies the server uuid from which you want to takeover scheduling jobs.
+The UUID option specifies the rundeck server from which you want to takeover scheduling jobs.
 You can obtain the server uuid from the framework.properties file:
 
     rundeck1 $ awk -F= '/rundeck.server.uuid/ {print $2}' /etc/rundeck/framework.properties
