@@ -58,8 +58,8 @@ rerun_options_parse "$@"
 
 # Command implementation
 # ----------------------
-
-CURLOPTS="-f -s -S -L -c cookies -b cookies"
+COOKIES=$(mktemp "/tmp/coookies.XXXXX")
+CURLOPTS="-f -s -S -L -c $COOKIES -b $COOKIES"
 CURL="curl $CURLOPTS"
     
 CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX)

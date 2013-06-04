@@ -75,7 +75,8 @@ then
     exit 2
 fi
 
-CURLOPTS="-k -f -s -S -L -c cookies -b cookies"
+COOKIES=$(mktemp "/tmp/cookies.XXXXX")
+CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
 CURL="curl $CURLOPTS"
 CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
     

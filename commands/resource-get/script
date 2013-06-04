@@ -68,8 +68,9 @@ esac
 # - - -
 # Put the command implementation here.
 # - - -
+COOKIES=$(mktemp "/tmp/cookies.XXXXX")
 
-CURLOPTS="-k -f -s -S -L -c cookies -b cookies"
+CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
 CURL="curl $CURLOPTS"
 
 CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
