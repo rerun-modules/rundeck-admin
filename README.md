@@ -14,7 +14,7 @@ the module contents.
 
 [![Build Status](https://travis-ci.org/ahonor/rundeck-admin.png?branch=master)](https://travis-ci.org/ahonor/rundeck-admin)
 
-[Download a shell archive from bintray](http://dl.bintray.com/ahonor/rerun-modules). 
+[Download a shell archive from bintray](http://dl.bintray.com/ahonor/rerun-modules). This is a self-contained module and does not require a rerun installation
 
 Or install it via yum:
 
@@ -27,17 +27,26 @@ To list the commands in the module:
 
     rerun rundeck-admin
 
-If you downloaded the shell archive it is similar, except rerun.bin is the
+If you downloaded the shell archive , command listing is similar except rerun.bin is the
 executable that contains the module:
 
     rerun.bin rundeck-admin
 
-The rundeck-admin commands require three options for accessing rundeck:
---user, --password, --url. 
-It can be repetitive to always specify these options each time you run a command.
-Rerun can help populate them via an answer file. For example,
+**Options**
 
-    cat >rundeck-admin.answers<<EOF
+The rundeck-admin commands require three common options used to access rundeck:
+--user, --password, --url. 
+
+* `--user`: The user login (eg admin). Many commands require this user to be in the "admin" group.
+* `--password`: The login password (eg admin).
+* `--url`: The rundeck base url (eg, http://localhost:4440)
+
+It can be repetitive to always specify these options each time you run a command
+or you may not like passing the credential information on the command line.
+Rerun can help populate options and their arguments via an answer file. For example,
+here is an answers files that stores the user, password and url values:
+
+    cat >creds<<EOF
     USER=admin
     PASSWORD=admin
     URL=http://localhost:4440
@@ -45,5 +54,6 @@ Rerun can help populate them via an answer file. For example,
 
 Here's an example showing `project-list` using input from the answers file:
 
-    rerun --answers rundeck-admin.answers rundeck-admin:project-list
+    $ rerun --answers creds rundeck-admin:project-list
+    examples
 
