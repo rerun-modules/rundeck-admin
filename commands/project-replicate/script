@@ -90,7 +90,7 @@ echo >&2 "Replicating projects: [${projects_to_replicate[*]:-}] ..."
 for project in ${projects_to_replicate[*]:-}
 do
      rerun rundeck-admin:project-export $CREDS --url $URL \
-        --project ${project} --admin $project.zip
+        --project ${project} --archive $project.zip
 
      # Check if the project exists in the target and...
      if ! rerun_list_contains $project ${rundeck2_projects[*]} 
@@ -102,7 +102,7 @@ do
      fi
      # Import the archive to the target rundeck.
      rerun rundeck-admin:project-import $CREDS --url $TO_URL \
-        --project ${project} --admin $project.zip 
+        --project ${project} --archive $project.zip 
 done
 
 
