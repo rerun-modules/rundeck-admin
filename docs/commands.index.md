@@ -1,6 +1,7 @@
 * [apitoken-create](commands/apitoken-create/index.html): Create an API token.
 * [apitoken-list](commands/apitoken-list/index.html): List the API tokens.
 * [apitoken-remove](commands/apitoken-remove/index.html): remove an api token
+* [jobs-archive](commands/jobs-archive/index.html): Archive job files suitable for project import.
 * [project-create](commands/project-create/index.html): Create a project.
 * [project-export](commands/project-export/index.html): Export a project.
 * [project-import](commands/project-import/index.html): Import a project archive.

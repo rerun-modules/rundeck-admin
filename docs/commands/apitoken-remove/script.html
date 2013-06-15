@@ -117,28 +117,34 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 <h2>Command implementation</h2>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">COOKIES</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/cookies.XXXXX&quot;</span><span class="k">)</span>
-<span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-f -s -S -L -c $COOKIES -b $COOKIES&quot;</span>
-<span class="nv">CURL</span><span class="o">=</span><span class="s2">&quot;curl $CURLOPTS&quot;</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Authenticate</h2>
+
+</td><td class=code><div class=highlight><pre>
+rundeck_login <span class="nv">$URL</span> <span class="nv">$USER</span> <span class="nv">$PASSWORD</span>
+
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Request token removal</h2>
+
+</td><td class=code><div class=highlight><pre>
+
 <span class="nv">CURLOUT</span><span class="o">=</span><span class="k">$(</span>mktemp -t curl.out.XXXXXXXXXX<span class="k">)</span>
 
+<span class="k">if</span> ! rundeck_curl -d <span class="nv">login</span><span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> -d <span class="nv">token</span><span class="o">=</span><span class="k">${</span><span class="nv">TOKEN</span><span class="k">}</span> -d <span class="nv">Yes</span><span class="o">=</span>yes <span class="se">\</span>
+	-X POST <span class="nv">$URL</span>/user/clearApiToken |
 </pre></div></td></tr><tr><td class=docs>
 
-<p>Authenticate.</p>
+<p>Convert the result into well formed xhtml so we can query it.</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">loginurl</span><span class="o">=</span><span class="s2">&quot;${URL}/j_security_check&quot;</span>
-<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; /dev/null
-<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="nv">$USER</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="nv">$PASSWORD</span> <span class="nv">$loginurl</span> &gt; /dev/null
-
-</pre></div></td></tr><tr><td class=docs>
-
-<p>Request token removal</p>
-
-</td><td class=code><div class=highlight><pre>
-<span class="nv">APIURL</span><span class="o">=</span><span class="nv">$URL</span>/user/clearApiToken
-<span class="nv">$CURL</span> -d <span class="nv">login</span><span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> -d <span class="nv">token</span><span class="o">=</span><span class="k">${</span><span class="nv">TOKEN</span><span class="k">}</span> -d <span class="nv">Yes</span><span class="o">=</span>yes -X POST <span class="nv">$APIURL</span> &gt; <span class="nv">$CURLOUT</span>
-xmlstarlet fo -R -H <span class="nv">$CURLOUT</span> &gt; <span class="nv">$CURLOUT</span>.userprofile 2&gt;/dev/null
+	xmlstarlet fo -R -H &gt; <span class="nv">$CURLOUT</span> 2&gt;/dev/null
+<span class="k">then</span>
+<span class="k">    </span>rerun_die 3 <span class="s2">&quot;API error: $URL/user/clearApiToken&quot;</span>
+<span class="k">fi</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -146,13 +152,14 @@ xmlstarlet fo -R -H <span class="nv">$CURLOUT</span> &gt; <span class="nv">$CURL
 
 </td><td class=code><div class=highlight><pre>
 
-<span class="k">if</span> ! xmlstarlet sel -N <span class="nv">x</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/1999/xhtml&quot;</span> -t -m <span class="s2">&quot;//x:span[@class=&#39;apitoken&#39;]&quot;</span> -v . -n <span class="nv">$CURLOUT</span>.userprofile | grep -q -v <span class="nv">$TOKEN</span>
+<span class="k">if</span> ! xmlstarlet sel -N <span class="nv">x</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/1999/xhtml&quot;</span> <span class="se">\</span>
+	-t -m <span class="s2">&quot;//x:span[@class=&#39;apitoken&#39;]&quot;</span> -v . -n <span class="nv">$CURLOUT</span> | grep -q -v <span class="nv">$TOKEN</span>
 <span class="k">then</span>
 <span class="k">    </span>rerun_die 3 <span class="s2">&quot;failed to remove token.&quot;</span>
 <span class="k">fi</span>
 
 
-
+rm <span class="nv">$CURLOUT</span>
 
 </pre></div></td></tr><tr><td class=docs>
 

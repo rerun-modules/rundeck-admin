@@ -164,7 +164,7 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 </td><td class=code><div class=highlight><pre>
 <span class="k">if</span> ! timeout 60s sudo -u <span class="k">${</span><span class="nv">SSH_HOST_USER</span><span class="k">}</span> ssh <span class="k">${</span><span class="nv">SSH_OPTIONS</span><span class="k">}</span> <span class="k">${</span><span class="nv">SSH_HOST</span><span class="k">}</span> /bin/true 2&gt;&amp;1 &gt;/dev/null
 <span class="k">then</span>
-<span class="k">    </span><span class="nb">echo</span> <span class="s2">&quot;Copying secondary&#39;s ssh key to ${SSH_HOST_USER}@${SSH_HOST}...&quot;</span>
+<span class="k">    </span><span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Copying secondary&#39;s ssh key to ${SSH_HOST_USER}@${SSH_HOST}...&quot;</span>
 
     expect <span class="nv">$EXPECT_SCRIPT</span> <span class="k">${</span><span class="nv">SSH_HOST</span><span class="k">}</span> <span class="k">${</span><span class="nv">SSH_HOST_USER</span><span class="k">}</span> <span class="k">${</span><span class="nv">SSH_HOST_PASSWD</span><span class="k">}</span> <span class="k">${</span><span class="nv">SSH_KEY_PATH_PUB</span><span class="k">}</span>
 
@@ -173,7 +173,7 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 <p>Test the key-based ssh access to the primary.</p>
 
 </td><td class=code><div class=highlight><pre>
-    <span class="nb">echo</span> <span class="s2">&quot;Testing ssh access...&quot;</span>
+    <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Testing ssh access...&quot;</span>
     <span class="k">if</span> ! timeout 60s sudo -u <span class="k">${</span><span class="nv">SSH_HOST_USER</span><span class="k">}</span> ssh <span class="k">${</span><span class="nv">SSH_OPTIONS</span><span class="k">}</span> <span class="k">${</span><span class="nv">SSH_HOST_USER</span><span class="k">}</span>@<span class="k">${</span><span class="nv">SSH_HOST</span><span class="k">}</span> uptime
     <span class="k">then </span>
 <span class="k">        </span>rerun_die <span class="s2">&quot;Could not ssh to ${SSH_HOST} after key was copied.&quot;</span>

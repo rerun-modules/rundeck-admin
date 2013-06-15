@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+
+# To implement this command, edit the "Command implementation" section below. 
+
+# Usage
+# -----
+
+# Comments prefixed with `#/` are managed by stubbs.
+# The `command` and `usage` comments describe the command
+# and show its options.
+# 
+#/ command: rundeck-admin:jobs-archive: "Archive the jobs suitable for project import."
+#/ usage: rerun rundeck-admin:jobs-archive [ --dir <>] [ --archive <>] 
+
+# Load common functions
+# ---------------------
+
+# Load the function library for this module.
+# This loads rerun functions, too.
+. $RERUN_MODULE_DIR/lib/functions.sh jobs-archive || { 
+  echo >&2 "Failed loading function library." ; exit 1 ; 
+}
+
+# Error handling
+# ---------------
+
+# This script is designed to _fail-fast_.
+
+# Trap errors and exit. The call to `rerun_die` will print the
+# the error message and exit with the error command exit status. 
+
+trap 'rerun_die $? "*** command failed: rundeck-admin:jobs-archive. ***"' ERR
+
+# Run [set] `nounset` to treat unset variables as errors. Set [pipefail]
+# so a pipeline return status is the value of the last 
+# (rightmost) command to exit with non-zero status.
+#
+# [set]: http://ss64.com/bash/set.html
+# [pipefail]: http://www.gnu.org/software/bash/manual/html_node/Pipelines.html
+
+set -o nounset -o pipefail
+
+# Command variables
+# -----------------
+
+# This command script can access the following variables
+# declared by `rerun` or by the option parser function.
+
+#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
+#/ option-variables: DIR ARCHIVE
+
+# The `rerun_options_parse` function processes the command line
+# arguments. Each accepted command line flag results in setting 
+# one the corresponding option variables.
+
+rerun_options_parse "$@"
+
+
+# Command implementation
+# ----------------------
+
+# Set the options to sensible defaults.
+# 
+# Check DIR exists and if not set, use current working directory.
+: ${DIR:=$(pwd)}
+# Ensure it exists in case it was user specified.
+if [[ ! -d "${DIR}" ]]
+then
+	rerun_die 2 "directory not found: $DIR"
+fi
+# PROJECT is really just informational.
+: ${PROJECT:=ANY}
+
+: ${ARCHIVE:=$(basename $DIR)}
+# Ensure the archive is absolute and relative to PWD
+ARCHIVE=$(rerun_path_absolute $ARCHIVE)
+
+
+# Create a workspace directory structure for the archive.
+WORKDIR=$(mktemp -d "/tmp/archive.XXXX")
+
+# Create the metadata for the archive.
+mkdir $WORKDIR/META-INF
+cat >$WORKDIR/META-INF/MANIFEST.MF <<EOF
+Manifest-Version: 1.0
+Rundeck-Archive-Project-Name: $PROJECT
+Rundeck-Archive-Export-Date: $(date "+%Y-%m-%dT%TZ")
+Rundeck-Archive-Format-Version: 1.0
+Rundeck-Application-Version: 1.5.3
+EOF
+
+# Create the archive payload for the job definitions.
+# The executions and reports subdirs will stay empty.
+mkdir -p $WORKDIR/rundeck-archive/{jobs,executions,reports}
+
+# Process any XML files that contain //job elements and add them to the archive dir.
+declare -i count=0
+for f in $(find $DIR -name \*.xml)
+do 
+	if ! xmlstarlet sel -t -m /joblist/job -v id $f >/dev/null
+	then			
+		# ignore the file. it's not a job definition.
+		continue
+	else
+		# copy the job definition to the work dir.
+		cp $f $WORKDIR/rundeck-archive/jobs/job-$count.xml 
+		count=$((count+1))
+	fi 
+done 
+
+# Create the archive if there were any jobs copied into the archive dir.
+if (( $count > 0 ))
+then 
+	# change directory to the workdir so the archive files are relative.
+	(cd $WORKDIR; 
+		zip -r $ARCHIVE .)
+else
+     rerun_die "No job definitions found. No archive created."	
+fi
+
+# Done. Exit with last command exit status.
+exit $?
+

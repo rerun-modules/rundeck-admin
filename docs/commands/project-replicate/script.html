@@ -133,22 +133,22 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 <p>The credentials used to login to the rundecks</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">CREDS</span><span class="o">=</span><span class="s2">&quot;--user ${USER} --password ${PASSWORD}&quot;</span>
+<span class="nb">declare</span> -r <span class="nv">CREDS</span><span class="o">=</span><span class="s2">&quot;--user ${USER} --password ${PASSWORD}&quot;</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
 <p>List the projects in the source rundeck.</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">rundeck1_projects</span><span class="o">=(</span> <span class="k">$(</span>rerun rundeck-admin:project-list <span class="nv">$CREDS</span> --url <span class="nv">$URL</span><span class="k">)</span> <span class="o">)</span>
+<span class="nb">declare</span> -ar <span class="nv">rundeck1_projects</span><span class="o">=(</span> <span class="k">$(</span>rerun rundeck-admin:project-list <span class="nv">$CREDS</span> --url <span class="nv">$URL</span><span class="k">)</span> <span class="o">)</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
 <p>Generate the list of projects matching the specified name or regexp.</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">projects_to_replicate</span><span class="o">=(</span> <span class="o">)</span>
-<span class="k">for </span>p in <span class="k">${</span><span class="nv">rundeck1_projects</span><span class="p">[*]</span><span class="k">}</span>
+<span class="nb">declare</span> -a projects_to_replicate
+<span class="k">for </span>p in <span class="k">${</span><span class="nv">rundeck1_projects</span><span class="p">[*]</span><span class="k">:-}</span>
 <span class="k">do</span>
     <span class="o">[[</span> <span class="nv">$p</span> <span class="o">=</span>~ <span class="nv">$PROJECT</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nv">projects_to_replicate</span><span class="o">=(</span> <span class="k">${</span><span class="nv">projects_to_replicate</span><span class="p">[*]</span><span class="k">:-}</span> <span class="nv">$p</span> <span class="o">)</span>
 <span class="k">done</span>
@@ -164,14 +164,14 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 <p>List the existing projects in the target rundecks.</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">rundeck2_projects</span><span class="o">=(</span> <span class="k">$(</span>rerun rundeck-admin:project-list <span class="nv">$CREDS</span> --url <span class="nv">$TO_URL</span><span class="k">)</span> <span class="o">)</span>
+<span class="nb">declare</span> -ar <span class="nv">rundeck2_projects</span><span class="o">=(</span> <span class="k">$(</span>rerun rundeck-admin:project-list <span class="nv">$CREDS</span> --url <span class="nv">$TO_URL</span><span class="k">)</span> <span class="o">)</span>
 
 <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Replicating projects: [${projects_to_replicate[*]:-}] ...&quot;</span>
 
 <span class="k">for </span>project in <span class="k">${</span><span class="nv">projects_to_replicate</span><span class="p">[*]</span><span class="k">:-}</span>
 <span class="k">do</span>
 <span class="k">     </span>rerun rundeck-admin:project-export <span class="nv">$CREDS</span> --url <span class="nv">$URL</span> <span class="se">\</span>
-        --project <span class="k">${</span><span class="nv">project</span><span class="k">}</span> --admin <span class="nv">$project</span>.zip
+        --project <span class="k">${</span><span class="nv">project</span><span class="k">}</span> --archive <span class="nv">$project</span>.zip
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -195,7 +195,8 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </td><td class=code><div class=highlight><pre>
      rerun rundeck-admin:project-import <span class="nv">$CREDS</span> --url <span class="nv">$TO_URL</span> <span class="se">\</span>
-        --project <span class="k">${</span><span class="nv">project</span><span class="k">}</span> --admin <span class="nv">$project</span>.zip 
+        --project <span class="k">${</span><span class="nv">project</span><span class="k">}</span> --archive <span class="nv">$project</span>.zip 
+        <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Imported ${project} to $TO_URL.&quot;</span>
 <span class="k">done</span>
 
 

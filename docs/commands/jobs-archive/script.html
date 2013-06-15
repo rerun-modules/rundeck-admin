@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <title>jobs-archive</title>
+    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+</head>
+<body>
+<div id=container>
+    <div id=background></div>
+    <table cellspacing=0 cellpadding=0>
+    <thead>
+      <tr>
+        <th class=docs><h1>jobs-archive</h1></th>
+        <th class=code></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr><td class='docs'><p>To implement this command, edit the "Command implementation" section below.</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="c">#!/usr/bin/env bash</span>
+
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Usage</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Comments prefixed with <code>#/</code> are managed by stubbs.
+The <code>command</code> and <code>usage</code> comments describe the command
+and show its options.</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="c">#/ command: rundeck-admin:jobs-archive: &quot;Archive the jobs suitable for project import.&quot;</span>
+<span class="c">#/ usage: rerun rundeck-admin:jobs-archive [ --dir &lt;&gt;] [ --archive &lt;&gt;] </span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Load common functions</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Load the function library for this module.
+This loads rerun functions, too.</p>
+
+</td><td class=code><div class=highlight><pre>
+. <span class="nv">$RERUN_MODULE_DIR</span>/lib/functions.sh <span class="nb">jobs</span>-archive <span class="o">||</span> <span class="o">{</span> 
+  <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Failed loading function library.&quot;</span> ; <span class="nb">exit </span>1 ; 
+<span class="o">}</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Error handling</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>This script is designed to <em>fail-fast</em>.</p>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Trap errors and exit. The call to <code>rerun_die</code> will print the
+the error message and exit with the error command exit status. </p>
+
+</td><td class=code><div class=highlight><pre>
+
+<span class="nb">trap</span> <span class="s1">&#39;rerun_die $? &quot;*** command failed: rundeck-admin:jobs-archive. ***&quot;&#39;</span> ERR
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Run [set] <code>nounset</code> to treat unset variables as errors. Set [pipefail]
+so a pipeline return status is the value of the last 
+(rightmost) command to exit with non-zero status.</p>
+
+</td><td class=code><div class=highlight><pre>
+
+<span class="nb">set</span> -o nounset -o pipefail
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Command variables</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>This command script can access the following variables
+declared by <code>rerun</code> or by the option parser function.</p>
+
+</td><td class=code><div class=highlight><pre>
+
+<span class="c">#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR</span>
+<span class="c">#/ option-variables: DIR ARCHIVE</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>The <code>rerun_options_parse</code> function processes the command line
+arguments. Each accepted command line flag results in setting 
+one the corresponding option variables.</p>
+
+</td><td class=code><div class=highlight><pre>
+
+rerun_options_parse <span class="s2">&quot;$@&quot;</span>
+
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Command implementation</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Set the options to sensible defaults.</p>
+
+<p>Check DIR exists and if not set, use current working directory.</p>
+
+</td><td class=code><div class=highlight><pre>
+: <span class="k">${</span><span class="nv">DIR</span><span class="p">:=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)}</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Ensure it exists in case it was user specified.</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="k">if</span> <span class="o">[[</span> ! -d <span class="s2">&quot;${DIR}&quot;</span> <span class="o">]]</span>
+<span class="k">then</span>
+<span class="k">	</span>rerun_die 2 <span class="s2">&quot;directory not found: $DIR&quot;</span>
+<span class="k">fi</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<p>PROJECT is really just informational.</p>
+
+</td><td class=code><div class=highlight><pre>
+: <span class="k">${</span><span class="nv">PROJECT</span><span class="p">:=ANY</span><span class="k">}</span>
+
+: <span class="k">${</span><span class="nv">ARCHIVE</span><span class="p">:=</span><span class="k">$(</span>basename <span class="nv">$DIR</span><span class="k">)}</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Ensure the archive is absolute and relative to PWD</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="nv">ARCHIVE</span><span class="o">=</span><span class="k">$(</span>rerun_path_absolute <span class="nv">$ARCHIVE</span><span class="k">)</span>
+
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Create a workspace directory structure for the archive.</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="nv">WORKDIR</span><span class="o">=</span><span class="k">$(</span>mktemp -d <span class="s2">&quot;/tmp/archive.XXXX&quot;</span><span class="k">)</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Create the metadata for the archive.</p>
+
+</td><td class=code><div class=highlight><pre>
+mkdir <span class="nv">$WORKDIR</span>/META-INF
+cat &gt;<span class="nv">$WORKDIR</span>/META-INF/MANIFEST.MF <span class="s">&lt;&lt;EOF</span>
+<span class="s">Manifest-Version: 1.0</span>
+<span class="s">Rundeck-Archive-Project-Name: $PROJECT</span>
+<span class="s">Rundeck-Archive-Export-Date: $(date &quot;+%Y-%m-%dT%TZ&quot;)</span>
+<span class="s">Rundeck-Archive-Format-Version: 1.0</span>
+<span class="s">Rundeck-Application-Version: 1.5.3</span>
+<span class="s">EOF</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Create the archive payload for the job definitions.
+The executions and reports subdirs will stay empty.</p>
+
+</td><td class=code><div class=highlight><pre>
+mkdir -p <span class="nv">$WORKDIR</span>/rundeck-archive/<span class="o">{</span><span class="nb">jobs</span>,executions,reports<span class="o">}</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Process any XML files that contain //job elements and add them to the archive dir.</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="nb">declare</span> -i <span class="nv">count</span><span class="o">=</span>0
+<span class="k">for </span>f in <span class="k">$(</span>find <span class="nv">$DIR</span> -name <span class="se">\*</span>.xml<span class="k">)</span>
+<span class="k">do </span>
+<span class="k">	if</span> ! xmlstarlet sel -t -m /joblist/job -v id <span class="nv">$f</span> &gt;/dev/null
+	<span class="k">then</span>			
+</pre></div></td></tr><tr><td class=docs>
+
+<p>ignore the file. it's not a job definition.</p>
+
+</td><td class=code><div class=highlight><pre>
+		<span class="k">continue</span>
+<span class="k">	else</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<p>copy the job definition to the work dir.</p>
+
+</td><td class=code><div class=highlight><pre>
+		cp <span class="nv">$f</span> <span class="nv">$WORKDIR</span>/rundeck-archive/jobs/job-<span class="nv">$count</span>.xml 
+		<span class="nv">count</span><span class="o">=</span><span class="k">$((</span>count+1<span class="k">))</span>
+	<span class="k">fi </span>
+<span class="k">done</span> 
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Create the archive if there were any jobs copied into the archive dir.</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="k">if</span> <span class="o">((</span> <span class="nv">$count</span> &gt; 0 <span class="o">))</span>
+<span class="k">then</span> 
+</pre></div></td></tr><tr><td class=docs>
+
+<p>change directory to the workdir so the archive files are relative.</p>
+
+</td><td class=code><div class=highlight><pre>
+	<span class="o">(</span><span class="nb">cd</span> <span class="nv">$WORKDIR</span>; 
+		zip -r <span class="nv">$ARCHIVE</span> .<span class="o">)</span>
+<span class="k">else</span>
+<span class="k">     </span>rerun_die <span class="s2">&quot;No job definitions found. No archive created.&quot;</span>	
+<span class="k">fi</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Done. Exit with last command exit status.</p>
+
+</td><td class=code><div class=highlight><pre>
+<span class="nb">exit</span> <span class="nv">$?</span>
+
+
+
+</td><td class=code><div class=highlight><pre>
+</pre></div></td></tr><tr><td class=docs>
+
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs></td><td class='code'></td></tr>
+    </tbody>
+    </table>
+</div>
+</body>
+</html>

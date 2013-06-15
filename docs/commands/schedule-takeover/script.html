@@ -117,44 +117,40 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 <h2>Command implementation</h2>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/curl.out.XXXXX&quot;</span><span class="k">)</span>
-<span class="nv">COOKIES</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/cookies.XXXXX&quot;</span><span class="k">)</span>
-<span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-f -s -S -L -c $COOKIES -b $COOKIES&quot;</span>
-<span class="nv">CURL</span><span class="o">=</span><span class="s2">&quot;curl $CURLOPTS&quot;</span>
-
-
 
 </pre></div></td></tr><tr><td class=docs>
 
-<p>Authenticate.</p>
+<h2>Authenticate.</h2>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">loginurl</span><span class="o">=</span><span class="s2">&quot;${URL}/j_security_check&quot;</span>
-<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; <span class="nv">$CURL_OUT</span>
-<span class="k">if</span> ! <span class="nv">$CURL</span> -d <span class="nv">j_username</span><span class="o">=</span><span class="nv">$USER</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="nv">$PASSWORD</span>  -X POST <span class="nv">$loginurl</span> &gt; <span class="nv">$CURL_OUT</span>
-<span class="k">then</span>
-<span class="k">    </span>rerun_die 3 <span class="s2">&quot;FAIL: login unsuccessful.&quot;</span>
-<span class="k">fi</span>
+rundeck_login <span class="nv">$URL</span> <span class="nv">$USER</span> <span class="nv">$PASSWORD</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
-<p>Takeover schedule.
-See http://rundeck.org/docs/api/index.html#takeover-schedule-in-cluster-mode</p>
+<h2>Takeover schedule.</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/curl.out.XXXXX&quot;</span><span class="k">)</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>See http://rundeck.org/docs/api/index.html#takeover-schedule-in-cluster-mode</p>
 
 </td><td class=code><div class=highlight><pre>
 <span class="nv">APIURL</span><span class="o">=</span><span class="s2">&quot;${URL}/api/7/incubator/jobs/takeoverSchedule&quot;</span>
 
-<span class="k">if</span> ! <span class="nv">$CURL</span> -H <span class="s2">&quot;Content-Type: application/xml&quot;</span> <span class="se">\</span>
+<span class="k">if</span> ! rundeck_curl -H <span class="s2">&quot;Content-Type: application/xml&quot;</span> <span class="se">\</span>
     --data <span class="s2">&quot;&lt;server uuid=\&quot;$UUID\&quot;/&gt;&quot;</span> -X PUT <span class="nv">$APIURL</span> &gt; <span class="nv">$CURL_OUT</span>
 <span class="k">then</span>
-<span class="k">    </span>rerun_die 3 <span class="s2">&quot;FAIL: API error: $APIURL&quot;</span>
+<span class="k">    </span>rerun_die 3 <span class="s2">&quot;API error: $APIURL&quot;</span>
 <span class="k">fi</span>
 
 xmlstarlet val -q <span class="nv">$CURL_OUT</span>
 
 <span class="k">if</span> ! xmlstarlet sel -T -t -v <span class="s2">&quot;/result/@success&quot;</span> <span class="nv">$CURL_OUT</span> &gt;/dev/null
 <span class="k">then</span>
-<span class="k">    </span><span class="nb">printf</span> &gt;&amp;2 <span class="s2">&quot;FAIL: API error: $APIURL&quot;</span>
+<span class="k">    </span><span class="nb">printf</span> &gt;&amp;2 <span class="s2">&quot;API error: $APIURL&quot;</span>
     xmlstarlet sel -T -t -m <span class="s2">&quot;/result/error/message&quot;</span> -v <span class="s2">&quot;.&quot;</span>  <span class="nv">$CURL_OUT</span>
     <span class="nb">exit </span>1
 <span class="k">fi</span>
@@ -189,6 +185,7 @@ xmlstarlet val -q <span class="nv">$CURL_OUT</span>
     rerun_die 3 <span class="s2">&quot;Not all jobs taken over: $failed out of $((successful+failed)). jobs: $failed_ids&quot;</span>
 <span class="k">fi</span>
 
+rm <span class="nv">$CURL_OUT</span>
 </pre></div></td></tr><tr><td class=docs>
 
 <p>Done. Exit with last command exit status.</p>

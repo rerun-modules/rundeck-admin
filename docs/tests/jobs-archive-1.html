@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <title>jobs-archive-1</title>
+    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+</head>
+<body>
+<div id=container>
+    <div id=background></div>
+    <table cellspacing=0 cellpadding=0>
+    <thead>
+      <tr>
+        <th class=docs><h1>jobs-archive-1</h1></th>
+        <th class=code></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr><td class='docs'></pre></div></td></tr><tr><td class=docs>
+
+</td><td class=code><div class=highlight><pre>
+<span class="c">#!/usr/bin/env roundup</span>
+<span class="c">#/ usage:  rerun stubbs:test -m rundeck-admin -p jobs-archive [--answers &lt;&gt;]</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Helpers</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>The Plan</h2>
+
+</td><td class=code><div class=highlight><pre>
+<span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Global settings.</h2>
+
+</td><td class=code><div class=highlight><pre>
+describe <span class="s2">&quot;jobs-archive&quot;</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Tests.</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>job file 1</p>
+
+</td><td class=code><div class=highlight><pre>
+
+it_fails_if_no_job_files_found<span class="o">()</span> <span class="o">{</span>
+
+	<span class="nv">empty_dir</span><span class="o">=</span><span class="k">$(</span>mktemp -d <span class="s2">&quot;/tmp/empty.XXXX&quot;</span><span class="k">)</span>
+
+	! rerun rundeck-admin: <span class="nb">jobs</span>-archive --dir <span class="nv">$empty_dir</span> --archive empty.zip
+	! <span class="nb">test</span> -f empty.zip
+
+	rmdir <span class="nv">$empty_dir</span>
+<span class="o">}</span>
+
+it_archives_job_file_dirs_recursively<span class="o">()</span> <span class="o">{</span>
+
+	<span class="nv">jobs_dir</span><span class="o">=</span><span class="k">$(</span>mktemp -d <span class="s2">&quot;/tmp/jobs.XXXX&quot;</span><span class="k">)</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>job file 2, in a subdirectory</p>
+
+</td><td class=code><div class=highlight><pre>
+	cat &gt; <span class="nv">$jobs_dir</span>/job1.xml <span class="s">&lt;&lt;EOF</span>
+<span class="s">&lt;joblist&gt;</span>
+<span class="s">  &lt;job&gt;</span>
+<span class="s">    &lt;id&gt;1946fe1c-93f0-4d67-8ddf-6d263bbb2ce4&lt;/id&gt;</span>
+<span class="s">    &lt;loglevel&gt;INFO&lt;/loglevel&gt;</span>
+<span class="s">    &lt;sequence keepgoing=&#39;false&#39; strategy=&#39;node-first&#39;&gt;</span>
+<span class="s">      &lt;command&gt;</span>
+<span class="s">        &lt;exec&gt;echo hi&lt;/exec&gt;</span>
+<span class="s">      &lt;/command&gt;</span>
+<span class="s">    &lt;/sequence&gt;</span>
+<span class="s">    &lt;description&gt;&lt;/description&gt;</span>
+<span class="s">    &lt;name&gt;hi2&lt;/name&gt;</span>
+<span class="s">    &lt;context&gt;</span>
+<span class="s">      &lt;project&gt;examples&lt;/project&gt;</span>
+<span class="s">    &lt;/context&gt;</span>
+<span class="s">    &lt;uuid&gt;1946fe1c-93f0-4d67-8ddf-6d263bbb2ce4&lt;/uuid&gt;</span>
+<span class="s">  &lt;/job&gt;</span>
+<span class="s">  &lt;job&gt;</span>
+<span class="s">    &lt;id&gt;1946fe1c-93f0-4d67-8ddf-6d263bbb2ce5&lt;/id&gt;</span>
+<span class="s">    &lt;loglevel&gt;INFO&lt;/loglevel&gt;</span>
+<span class="s">    &lt;sequence keepgoing=&#39;false&#39; strategy=&#39;node-first&#39;&gt;</span>
+<span class="s">      &lt;command&gt;</span>
+<span class="s">        &lt;exec&gt;echo blar&lt;/exec&gt;</span>
+<span class="s">      &lt;/command&gt;</span>
+<span class="s">    &lt;/sequence&gt;</span>
+<span class="s">    &lt;description&gt;&lt;/description&gt;</span>
+<span class="s">    &lt;name&gt;blar&lt;/name&gt;</span>
+<span class="s">    &lt;context&gt;</span>
+<span class="s">      &lt;project&gt;examples&lt;/project&gt;</span>
+<span class="s">    &lt;/context&gt;</span>
+<span class="s">    &lt;uuid&gt;1946fe1c-93f0-4d67-8ddf-6d263bbb2ce5&lt;/uuid&gt;</span>
+<span class="s">  &lt;/job&gt;</span>
+<span class="s">&lt;/joblist&gt;</span>
+<span class="s">EOF</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<p>create the archive and check it's created.</p>
+
+</td><td class=code><div class=highlight><pre>
+	mkdir -p <span class="nv">$jobs_dir</span>/subdir
+	cat &gt; <span class="nv">$jobs_dir</span>/subdir/job2.xml <span class="s">&lt;&lt;EOF</span>
+<span class="s">&lt;joblist&gt;</span>
+<span class="s">  &lt;job&gt;</span>
+<span class="s">    &lt;id&gt;9448156e-1bd5-43af-8f24-4d866143ee9c&lt;/id&gt;</span>
+<span class="s">    &lt;loglevel&gt;INFO&lt;/loglevel&gt;</span>
+<span class="s">    &lt;sequence keepgoing=&#39;false&#39; strategy=&#39;node-first&#39;&gt;</span>
+<span class="s">      &lt;command&gt;</span>
+<span class="s">        &lt;exec&gt;echo hi&lt;/exec&gt;</span>
+<span class="s">      &lt;/command&gt;</span>
+<span class="s">    &lt;/sequence&gt;</span>
+<span class="s">    &lt;description&gt;&lt;/description&gt;</span>
+<span class="s">    &lt;name&gt;hi&lt;/name&gt;</span>
+<span class="s">    &lt;context&gt;</span>
+<span class="s">      &lt;project&gt;examples&lt;/project&gt;</span>
+<span class="s">    &lt;/context&gt;</span>
+<span class="s">    &lt;uuid&gt;9448156e-1bd5-43af-8f24-4d866143ee9c&lt;/uuid&gt;</span>
+<span class="s">  &lt;/job&gt;</span>
+<span class="s">&lt;/joblist&gt;</span>
+<span class="s">EOF</span>
+	
+</pre></div></td></tr><tr><td class=docs>
+
+<p>unzip it to confirm the content of the archive.</p>
+
+</td><td class=code><div class=highlight><pre>
+	<span class="nv">archive_dir</span><span class="o">=</span><span class="k">$(</span>mktemp -d <span class="s2">&quot;/tmp/archive.dir.XXXX&quot;</span><span class="k">)</span>
+	rerun rundeck-admin: <span class="nb">jobs</span>-archive --dir <span class="nv">$jobs_dir</span> --archive <span class="nv">$archive_dir</span>/archive.zip
+	<span class="nb">test</span> -f <span class="nv">$archive_dir</span>/archive.zip
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>check the manifest.</p>
+
+</td><td class=code><div class=highlight><pre>
+	<span class="nv">extract_dir</span><span class="o">=</span><span class="k">$(</span>mktemp -d <span class="s2">&quot;/tmp/archive-extract.XXXXX&quot;</span><span class="k">)</span>
+	unzip -d <span class="nv">$extract_dir</span> <span class="nv">$archive_dir</span>/archive.zip
+	<span class="nb">cd</span> <span class="nv">$extract_dir</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<p>strip whitespace from the value.</p>
+
+</td><td class=code><div class=highlight><pre>
+	<span class="nb">test</span> -f META-INF/MANIFEST.MF
+	<span class="nv">vers</span><span class="o">=</span><span class="k">$(</span>awk -F: <span class="s1">&#39;/Rundeck-Archive-Format-Version/ {print $2}&#39;</span> META-INF/MANIFEST.MF<span class="k">)</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<p>check the job content. Job files are listed by count.</p>
+
+</td><td class=code><div class=highlight><pre>
+	<span class="nb">test</span> <span class="s2">&quot;${vers//[[:space:]]/}&quot;</span> <span class="o">=</span> 1.0
+</pre></div></td></tr><tr><td class=docs>
+
+<p>check the required (but empty reports and executions directories).</p>
+
+</td><td class=code><div class=highlight><pre>
+	<span class="nb">test</span> -d rundeck-archive/jobs
+	<span class="nb">test</span> -f rundeck-archive/jobs/job-0.xml
+	<span class="nv">nJobs</span><span class="o">=</span><span class="k">$(</span>xmlstarlet sel -t -v <span class="s2">&quot;count(//job)&quot;</span>  rundeck-archive/jobs/job-0.xml<span class="k">)</span>
+	<span class="nb">test</span> <span class="s2">&quot;$nJobs&quot;</span> <span class="o">=</span> 2
+	<span class="nb">test</span> -f rundeck-archive/jobs/job-1.xml; <span class="c"># the job def in a subdirectory.</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<p>Looks good. Clean up the test data.</p>
+
+</td><td class=code><div class=highlight><pre>
+	<span class="nb">test</span> -d rundeck-archive/reports
+	<span class="o">[</span> <span class="k">$(</span>ls -A rundeck-archive/reports<span class="k">)</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>1
+	<span class="nb">test</span> -d rundeck-archive/executions
+	<span class="o">[</span> <span class="k">$(</span>ls -A rundeck-archive/executions<span class="k">)</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>1
+
+</pre></div></td></tr><tr><td class=docs>
+
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre>
+	rm -r <span class="nv">$jobs_dir</span> <span class="nv">$extract_dir</span> <span class="nv">$archive_dir</span>
+<span class="o">}</span>
+
+
+
+
+</td><td class=code><div class=highlight><pre>
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre></td><td class='code'></td></tr>
+    </tbody>
+    </table>
+</div>
+</body>
+</html>

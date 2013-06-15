@@ -126,38 +126,24 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
-<hr />
-
-<p>Put the command implementation here.</p>
-
-<hr />
+<h2>Authenticate.</h2>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">COOKIES</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/cookies.XXXXX&quot;</span><span class="k">)</span>
-
-<span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-k -f -s -S -L -c $COOKIES -b $COOKIES&quot;</span>
-<span class="nv">CURL</span><span class="o">=</span><span class="s2">&quot;curl $CURLOPTS&quot;</span>
-
-<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/curl.out.XXXXX&quot;</span><span class="k">)</span>
-
+rundeck_login <span class="nv">$URL</span> <span class="nv">$USER</span> <span class="nv">$PASSWORD</span>
 
 
 </pre></div></td></tr><tr><td class=docs>
 
-<p>Authenticate.</p>
-
-</td><td class=code><div class=highlight><pre>
-<span class="nv">loginurl</span><span class="o">=</span><span class="s2">&quot;${URL}/j_security_check&quot;</span>
-<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; /dev/null
-<span class="nv">$CURL</span> -d <span class="nv">j_username</span><span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="k">${</span><span class="nv">PASSWORD</span><span class="k">}</span> -X POST <span class="nv">$loginurl</span> &gt; /dev/null
-
-</pre></div></td></tr><tr><td class=docs>
-
-<p>Get the resources for the project.</p>
+<h2>Get the resources for the project.</h2>
 
 </td><td class=code><div class=highlight><pre>
 <span class="nv">APIURL</span><span class="o">=</span><span class="s2">&quot;${URL}/api/3/resource/$RESOURCE?project=${PROJECT}&amp;format=${FORMAT}&quot;</span>
-<span class="nv">$CURL</span> -o <span class="nv">$CURL_OUT</span> -X GET <span class="nv">$APIURL</span>
+<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/curl.out.XXXXX&quot;</span><span class="k">)</span>
+
+<span class="k">if</span> ! rundeck_curl -o <span class="nv">$CURL_OUT</span> -X GET <span class="nv">$APIURL</span>
+<span class="k">then</span>
+<span class="k">    </span>rerun_die 3 <span class="s2">&quot;API error: $APIURL&quot;</span>
+<span class="k">fi</span>    
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -168,19 +154,19 @@ Fail the command if the api returned an error.</p>
 </td><td class=code><div class=highlight><pre>
 
 <span class="k">if</span> ! xmlstarlet val -q <span class="nv">$CURL_OUT</span>
-<span class="k">then</span> :;# <span class="k">do </span>nothing. it<span class="err">&#39;</span>s not xml.
+<span class="k">then</span> :; <span class="c"># do nothing. it is not xml.</span>
 <span class="k">else</span>
 </pre></div></td></tr><tr><td class=docs>
 
-<p>it's xml. check if it has an api result.</p>
+<p>it is xml. check if it has an api result.</p>
 
 </td><td class=code><div class=highlight><pre>
     <span class="k">if</span> ! <span class="nv">error</span><span class="o">=</span><span class="k">$(</span>xmlstarlet sel -t -m <span class="s2">&quot;/result&quot;</span> -v @error <span class="nv">$CURL_OUT</span><span class="k">)</span>
-    <span class="k">then</span> :;# <span class="k">do </span>nothing. it is not a result xml.
+    <span class="k">then</span> :; <span class="c"># do nothing. it is not a result xml.</span>
     <span class="k">else</span>
 </pre></div></td></tr><tr><td class=docs>
 
-<p>fail the command if the api returned an error.</p>
+<p>it is an api result. fail the command if the api returned an error.</p>
 
 </td><td class=code><div class=highlight><pre>
         <span class="o">[</span> <span class="s2">&quot;$error&quot;</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">{</span>

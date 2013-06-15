@@ -1,6 +1,7 @@
 * [apitoken-create-1](tests/apitoken-create-1.html)
 * [apitoken-list-1](tests/apitoken-list-1.html)
 * [apitoken-remove-1](tests/apitoken-remove-1.html)
+* [jobs-archive-1](tests/jobs-archive-1.html)
 * [project-create-1](tests/project-create-1.html)
 * [project-export-1](tests/project-export-1.html)
 * [project-list-1](tests/project-list-1.html)

@@ -1,4 +1,5 @@
 * [archive](options/archive/index.html): the archive file.
+* [dir](options/dir/index.html): directory path
 * [file](options/file/index.html): file to store result.
 * [format](options/format/index.html): the file format.
 * [hostname](options/hostname/index.html): the server hostname.

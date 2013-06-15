@@ -120,43 +120,33 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
-<hr />
-
-<p>Put the command implementation here.</p>
-
-<hr />
-
-</td><td class=code><div class=highlight><pre>
-<span class="nv">COOKIES</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/cookies.XXXXX&quot;</span><span class="k">)</span>
-<span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-k -f -s -S -L -c $COOKIES -b $COOKIES&quot;</span>
-<span class="nv">CURL</span><span class="o">=</span><span class="s2">&quot;curl $CURLOPTS&quot;</span>
-<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp -t curl.out.XXXXXXXXXX<span class="k">)</span>
-    
-</pre></div></td></tr><tr><td class=docs>
-
 <h2>Authenticate</h2>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">loginurl</span><span class="o">=</span><span class="s2">&quot;${URL}/j_security_check&quot;</span>
-<span class="nv">$CURL</span> <span class="nv">$loginurl</span> &gt; <span class="nv">$CURL_OUT</span>
-<span class="nv">$CURL</span> -X POST -d <span class="nv">j_username</span><span class="o">=</span><span class="k">${</span><span class="nv">USER</span><span class="k">}</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="k">${</span><span class="nv">PASSWORD</span><span class="k">}</span> <span class="nv">$loginurl</span> &gt; /dev/null
-
+rundeck_login <span class="nv">$URL</span> <span class="nv">$USER</span> <span class="nv">$PASSWORD</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
 <h2>Request the projet. </h2>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">createurl</span><span class="o">=</span><span class="s2">&quot;${URL}/resources/createProject&quot;</span>
-<span class="nv">$CURL</span> -F <span class="nv">project</span><span class="o">=</span><span class="nv">$PROJECT</span> -X POST <span class="nv">$createurl</span> &gt; /dev/null
+<span class="k">if</span> ! rundeck_curl -F <span class="nv">project</span><span class="o">=</span><span class="nv">$PROJECT</span> -X POST <span class="k">${</span><span class="nv">URL</span><span class="k">}</span>/resources/createProject &gt; /dev/null
+<span class="k">then</span>
+<span class="k">    </span>rerun_die 3 <span class="s2">&quot;API error: ${URL}/resources/createProject&quot;</span>
+<span class="k">fi</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
 <p>Check the project was created.</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">projecturl</span><span class="o">=</span><span class="s2">&quot;${URL}/api/1/project/$PROJECT&quot;</span>
-<span class="nv">$CURL</span> -X GET <span class="nv">$projecturl</span> &gt; <span class="nv">$CURL_OUT</span>
+
+<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp -t curl.out.XXXXXXXXXX<span class="k">)</span>
+
+<span class="k">if</span> ! rundeck_curl -X GET <span class="k">${</span><span class="nv">URL</span><span class="k">}</span>/api/1/project/<span class="nv">$PROJECT</span> &gt; <span class="nv">$CURL_OUT</span>
+<span class="k">then</span>
+<span class="k">	</span>rerun_die 3 <span class="s2">&quot;API error: ${URL}/api/1/project/$PROJECT&quot;</span>
+<span class="k">fi</span>
 xmlstarlet val <span class="nv">$CURL_OUT</span> &gt;/dev/null
 
 <span class="k">if</span> ! xmlstarlet sel -t -m <span class="s2">&quot;/result[@success=&#39;true&#39;]&quot;</span>  -v . <span class="nv">$CURL_OUT</span> &gt;/dev/null
@@ -166,7 +156,7 @@ xmlstarlet val <span class="nv">$CURL_OUT</span> &gt;/dev/null
 <span class="k">    </span>xmlstarlet sel -t -m <span class="s2">&quot;/result/projects/project&quot;</span>  -v name <span class="nv">$CURL_OUT</span> 
 <span class="k">fi</span>
 
-
+rm <span class="nv">$CURL_OUT</span>
 
 </pre></div></td></tr><tr><td class=docs>
 

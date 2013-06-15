@@ -1,11 +1,11 @@
-.TH rundeck-admin 1 "Mon Jun  3 18:43:20 PDT 2013" "Version 1.0.8" "RERUN User Manual" 
+.TH rundeck-admin 1 "Fri Jun 14 17:05:35 PDT 2013" "Version 1.0.11" "RERUN User Manual" 
 .SH NAME
 rundeck-admin \- commands to manage your rundecks
 .PP
 .SH SYNOPSIS
 .PP
 \f[CR] 
-rerun [ARGS] rundeck-admin: [ apitoken-create | apitoken-list | apitoken-remove | project-create | project-export | project-import | project-list | project-replicate | resource-add | resource-get | schedule-takeover | ssh-copy-id ] [OPTIONS]
+rerun [ARGS] rundeck-admin: [ apitoken-create | apitoken-list | apitoken-remove | jobs-archive | project-create | project-export | project-import | project-list | project-replicate | resource-add | resource-get | schedule-takeover | ssh-copy-id ] [OPTIONS]
 \f[]
 
 .SH COMMANDS
@@ -81,6 +81,23 @@ arguments: \f[I]true\f[]
 .TP
 .B \--url \f[]rundeck server url.\f[]
 required: \f[I]true\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.SH rundeck-admin:jobs-archive \f[][--dir <>] [--archive <>]
+
+Archive job files suitable for project import.
+.PP
+\f[I]OPTIONS\f[]
+.TP
+.B \--dir \f[]directory path\f[]
+required: \f[I]false\f[] ,
+arguments: \f[I]true\f[]
+.RS
+.RE
+.TP
+.B \--archive \f[]the archive file.\f[]
+required: \f[I]false\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
@@ -386,7 +403,7 @@ arguments: \f[I]true\f[]
 .PP
 Successful completion: 0
 .SH AUTHORS
-admin
+alexh
 .SH "SEE ALSO"
 rerun
 .SH KEYWORDS
