@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:project-import: "import a project"
-#/ usage: rerun rundeck-admin:project-import  --project <>  --url <>  --user <>  --password <> [ --admin <>] 
+#/ usage: rerun rundeck-admin:project-import  --project <>  --url <>  --user <>  --password <> [ --archive <>] 
 
 # Load common functions
 # ---------------------

@@ -4,7 +4,8 @@ The `--dir <>` option specifies the directory to look for jobs. Any jobs in subd
 will also be included.
 If no `--dir <>` is specified, the current working directory is used.    
 
-Job definitions must be files in [Job XML format](http://rundeck.org/docs/manpages/man5/job-v20.html). Job definitions can contain more than one job.
+Job definitions must be files in [Job XML format](http://rundeck.org/docs/manpages/man5/job-v20.html). Job definitions can contain more than one job. This command specifically checks
+a /joblist/job/name element in the job definition files.
 
 
 Examples

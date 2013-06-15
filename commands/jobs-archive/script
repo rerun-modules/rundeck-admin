@@ -65,18 +65,17 @@ rerun_options_parse "$@"
 : ${DIR:=$(pwd)}
 # Ensure it exists in case it was user specified.
 if [[ ! -d "${DIR}" ]]
-then
-	rerun_die 2 "directory not found: $DIR"
+then rerun_die 2 "directory not found: $DIR"
 fi
 # PROJECT is really just informational.
 : ${PROJECT:=ANY}
-
+# Default the archive to the name of the specified directory.
 : ${ARCHIVE:=$(basename $DIR)}
 # Ensure the archive is absolute and relative to PWD
 ARCHIVE=$(rerun_path_absolute $ARCHIVE)
 
 
-# Create a workspace directory structure for the archive.
+# Create a workspace directory structure for the archive content.
 WORKDIR=$(mktemp -d "/tmp/archive.XXXX")
 
 # Create the metadata for the archive.
@@ -89,26 +88,27 @@ Rundeck-Archive-Format-Version: 1.0
 Rundeck-Application-Version: 1.5.3
 EOF
 
-# Create the archive payload for the job definitions.
+# Create the archive payload. Just looking for job definitions files.
 # The executions and reports subdirs will stay empty.
 mkdir -p $WORKDIR/rundeck-archive/{jobs,executions,reports}
 
-# Process any XML files that contain //job elements and add them to the archive dir.
+# Process any XML files that contain /joblist/job elements and add them to the archive dir.
+# Each file found will be counted and named after its position in the count.
 declare -i count=0
 for f in $(find $DIR -name \*.xml)
 do 
-	if ! xmlstarlet sel -t -m /joblist/job -v id $f >/dev/null
+	if ! xmlstarlet sel -t -m /joblist/job -v name $f >/dev/null
 	then			
-		# ignore the file. it's not a job definition.
+		# ignore the file. it does not look like a job definition.
 		continue
 	else
-		# copy the job definition to the work dir.
+		# copy the job definition to the work dir. job file name pattern: job-{text}.xml
 		cp $f $WORKDIR/rundeck-archive/jobs/job-$count.xml 
 		count=$((count+1))
 	fi 
 done 
 
-# Create the archive if there were any jobs copied into the archive dir.
+# Create the archive only if there were job(s) copied to the work dir.
 if (( $count > 0 ))
 then 
 	# change directory to the workdir so the archive files are relative.
