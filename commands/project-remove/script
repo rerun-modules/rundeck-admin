@@ -62,6 +62,15 @@ rerun_options_parse "$@"
 [[ -z "${RDECK_BASE:-}" ]] && rerun_die 2 "RDECK_BASE environment variable unset."
 [[ -d "${RDECK_BASE:-}" ]] || rerun_die 2 "RDECK_BASE directory does not exist: $RDECK_BASE."
 
+# Set the directory where project files reside.
+# Check if this is a system install otherwise make it relative to RDECK_BASE.
+if [ "$RDECK_BASE" = "/var/lib/rundeck" -a -d "/var/rundeck/projects" ]
+then
+	PROJECTS_DIR=/var/rundeck/projects
+else
+	PROJECTS_DIR=$RDECK_BASE/projects
+fi	
+
 # Authenticate
 # ------------
 rundeck_login $URL $USER $PASSWORD
@@ -70,17 +79,17 @@ rundeck_login $URL $USER $PASSWORD
 
 # Request the projet. 
 # -------------------
-
-
 if ! rundeck_curl -X GET ${URL}/api/1/project/$PROJECT | xmlstarlet sel -t -m "/result/projects/project" -v name
 then
 	:; # already removed.	
 	exit 0
 fi
 
-if [ -d $RDECK_BASE/projects/$PROJECT ]
+# Remove the project directory.
+# -----------------------------
+if [ -d $PROJECTS_DIR/$PROJECT ]
 then	
-    echo rm -rf $RDECK_BASE/projects/$PROJECT
+    rm -rf $PROJECTS_DIR/$PROJECT
 fi
 
 

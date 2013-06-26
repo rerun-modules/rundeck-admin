@@ -33,9 +33,15 @@ it_removes_a_projects() {
 
     rerun rundeck-admin:project-list --url http://localhost:4440 --user admin --password admin | 
     if ! grep test-$$
-    then exit 1 ;
+    then : ;# no longer exists.
+	else exit 1 ;
 	fi
 
+	if [ "$RDECK_BASE" = "/var/lib/rundeck" -a -d "/var/rundeck/projects" ]
+	then PROJECTS_DIR=/var/rundeck/projects
+	else PROJECTS_DIR=$RDECK_BASE/projects
+	fi	
+	! test -d $PROJECTS_DIR/test-$$
 }
 
 
