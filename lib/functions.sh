@@ -26,8 +26,8 @@ fi
 
 # Where to store the login cookies
 COOKIES=$(mktemp "/tmp/cookies.XXXXX")
-# Curl opts to use a cookie jar, follow redirects, showing only errors, failing fast.
-CURLOPTS="-f -s -S -L -c $COOKIES -b $COOKIES"
+# Curl opts to accept insecure certs, use a cookie jar, follow redirects, show only errors, fail fast.
+CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
 
 
 #
