@@ -132,8 +132,7 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </td><td class=code><div class=highlight><pre>
 <span class="k">if</span> <span class="o">[[</span> ! -d <span class="s2">&quot;${DIR}&quot;</span> <span class="o">]]</span>
-<span class="k">then</span>
-<span class="k">	</span>rerun_die 2 <span class="s2">&quot;directory not found: $DIR&quot;</span>
+<span class="k">then </span>rerun_die 2 <span class="s2">&quot;directory not found: $DIR&quot;</span>
 <span class="k">fi</span>
 </pre></div></td></tr><tr><td class=docs>
 
@@ -141,7 +140,11 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </td><td class=code><div class=highlight><pre>
 : <span class="k">${</span><span class="nv">PROJECT</span><span class="p">:=ANY</span><span class="k">}</span>
+</pre></div></td></tr><tr><td class=docs>
 
+<p>Default the archive to the name of the specified directory.</p>
+
+</td><td class=code><div class=highlight><pre>
 : <span class="k">${</span><span class="nv">ARCHIVE</span><span class="p">:=</span><span class="k">$(</span>basename <span class="nv">$DIR</span><span class="k">)}</span>
 </pre></div></td></tr><tr><td class=docs>
 
@@ -153,7 +156,7 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
-<p>Create a workspace directory structure for the archive.</p>
+<p>Create a workspace directory structure for the archive content.</p>
 
 </td><td class=code><div class=highlight><pre>
 <span class="nv">WORKDIR</span><span class="o">=</span><span class="k">$(</span>mktemp -d <span class="s2">&quot;/tmp/archive.XXXX&quot;</span><span class="k">)</span>
@@ -174,7 +177,7 @@ cat &gt;<span class="nv">$WORKDIR</span>/META-INF/MANIFEST.MF <span class="s">&l
 
 </pre></div></td></tr><tr><td class=docs>
 
-<p>Create the archive payload for the job definitions.
+<p>Create the archive payload. Just looking for job definitions files.
 The executions and reports subdirs will stay empty.</p>
 
 </td><td class=code><div class=highlight><pre>
@@ -182,24 +185,25 @@ mkdir -p <span class="nv">$WORKDIR</span>/rundeck-archive/<span class="o">{</spa
 
 </pre></div></td></tr><tr><td class=docs>
 
-<p>Process any XML files that contain //job elements and add them to the archive dir.</p>
+<p>Process any XML files that contain /joblist/job elements and add them to the archive dir.
+Each file found will be counted and named after its position in the count.</p>
 
 </td><td class=code><div class=highlight><pre>
 <span class="nb">declare</span> -i <span class="nv">count</span><span class="o">=</span>0
 <span class="k">for </span>f in <span class="k">$(</span>find <span class="nv">$DIR</span> -name <span class="se">\*</span>.xml<span class="k">)</span>
 <span class="k">do </span>
-<span class="k">	if</span> ! xmlstarlet sel -t -m /joblist/job -v id <span class="nv">$f</span> &gt;/dev/null
+<span class="k">	if</span> ! xmlstarlet sel -t -m /joblist/job -v name <span class="nv">$f</span> &gt;/dev/null
 	<span class="k">then</span>			
 </pre></div></td></tr><tr><td class=docs>
 
-<p>ignore the file. it's not a job definition.</p>
+<p>ignore the file. it does not look like a job definition.</p>
 
 </td><td class=code><div class=highlight><pre>
 		<span class="k">continue</span>
 <span class="k">	else</span>
 </pre></div></td></tr><tr><td class=docs>
 
-<p>copy the job definition to the work dir.</p>
+<p>copy the job definition to the work dir. job file name pattern: job-{text}.xml</p>
 
 </td><td class=code><div class=highlight><pre>
 		cp <span class="nv">$f</span> <span class="nv">$WORKDIR</span>/rundeck-archive/jobs/job-<span class="nv">$count</span>.xml 
@@ -209,7 +213,7 @@ mkdir -p <span class="nv">$WORKDIR</span>/rundeck-archive/<span class="o">{</spa
 
 </pre></div></td></tr><tr><td class=docs>
 
-<p>Create the archive if there were any jobs copied into the archive dir.</p>
+<p>Create the archive only if there were job(s) copied to the work dir.</p>
 
 </td><td class=code><div class=highlight><pre>
 <span class="k">if</span> <span class="o">((</span> <span class="nv">$count</span> &gt; 0 <span class="o">))</span>

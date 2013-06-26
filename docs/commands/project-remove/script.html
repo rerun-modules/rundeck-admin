@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
-    <title>project-import</title>
+    <title>project-remove</title>
     <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <table cellspacing=0 cellpadding=0>
     <thead>
       <tr>
-        <th class=docs><h1>project-import</h1></th>
+        <th class=docs><h1>project-remove</h1></th>
         <th class=code></th>
       </tr>
     </thead>
@@ -35,8 +35,8 @@ The <code>command</code> and <code>usage</code> comments describe the command
 and show its options.</p>
 
 </td><td class=code><div class=highlight><pre>
-<span class="c">#/ command: rundeck-admin:project-import: &quot;import a project&quot;</span>
-<span class="c">#/ usage: rerun rundeck-admin:project-import  --project &lt;&gt;  --url &lt;&gt;  --user &lt;&gt;  --password &lt;&gt; [ --archive &lt;&gt;] </span>
+<span class="c">#/ command: rundeck-admin:project-remove: &quot;remove a project&quot;</span>
+<span class="c">#/ usage: rerun rundeck-admin:project-remove  --project &lt;&gt;  --url &lt;&gt;  --user &lt;&gt;  --password &lt;&gt;</span>
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -50,7 +50,7 @@ and show its options.</p>
 This loads rerun functions, too.</p>
 
 </td><td class=code><div class=highlight><pre>
-. <span class="nv">$RERUN_MODULE_DIR</span>/lib/functions.sh project-import <span class="o">||</span> <span class="o">{</span> 
+. <span class="nv">$RERUN_MODULE_DIR</span>/lib/functions.sh project-remove <span class="o">||</span> <span class="o">{</span> 
   <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Failed loading function library.&quot;</span> ; <span class="nb">exit </span>1 ; 
 <span class="o">}</span>
 
@@ -73,7 +73,7 @@ the error message and exit with the error command exit status. </p>
 
 </td><td class=code><div class=highlight><pre>
 
-<span class="nb">trap</span> <span class="s1">&#39;rerun_die $? &quot;*** command failed: rundeck:project-import. ***&quot;&#39;</span> ERR
+<span class="nb">trap</span> <span class="s1">&#39;rerun_die $? &quot;*** command failed: rundeck:project-remove. ***&quot;&#39;</span> ERR
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -99,7 +99,7 @@ declared by <code>rerun</code> or by the option parser function.</p>
 </td><td class=code><div class=highlight><pre>
 
 <span class="c">#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR</span>
-<span class="c">#/ option-variables: PROJECT URL USER PASSWORD ARCHIVE</span>
+<span class="c">#/ option-variables: PROJECT URL USER PASSWORD </span>
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -118,28 +118,21 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 
 </td><td class=code><div class=highlight><pre>
 
+<span class="o">[[</span> -z <span class="s2">&quot;${RDECK_BASE:-}&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> rerun_die 2 <span class="s2">&quot;RDECK_BASE environment variable unset.&quot;</span>
+<span class="o">[[</span> -d <span class="s2">&quot;${RDECK_BASE:-}&quot;</span> <span class="o">]]</span> <span class="o">||</span> rerun_die 2 <span class="s2">&quot;RDECK_BASE directory does not exist: $RDECK_BASE.&quot;</span>
+
 </pre></div></td></tr><tr><td class=docs>
 
-<hr />
-
-<p>Put the command implementation here.</p>
-
-<hr />
+<p>Set the directory where project files reside.
+Check if this is a system install otherwise make it relative to RDECK_BASE.</p>
 
 </td><td class=code><div class=highlight><pre>
-
-<span class="k">if</span> <span class="o">[</span> ! -f <span class="s2">&quot;$ARCHIVE&quot;</span> <span class="o">]</span>
+<span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;$RDECK_BASE&quot;</span> <span class="o">=</span> <span class="s2">&quot;/var/lib/rundeck&quot;</span> -a -d <span class="s2">&quot;/var/rundeck/projects&quot;</span> <span class="o">]</span>
 <span class="k">then</span>
-<span class="k">    </span><span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Archive not found: $ARCHIVE&quot;</span>
-    <span class="nb">exit </span>2
-<span class="k">fi</span>
-
-<span class="k">if</span> ! file <span class="s2">&quot;$ARCHIVE&quot;</span> | grep -q -i zip
-<span class="k">then</span>
-<span class="k">    </span><span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Archive file does not appear to be a zip file.&quot;</span>
-    <span class="nb">exit </span>2
-<span class="k">fi</span>
-
+<span class="k">	</span><span class="nv">PROJECTS_DIR</span><span class="o">=</span>/var/rundeck/projects
+<span class="k">else</span>
+<span class="k">	</span><span class="nv">PROJECTS_DIR</span><span class="o">=</span><span class="nv">$RDECK_BASE</span>/projects
+<span class="k">fi</span>	
 
 </pre></div></td></tr><tr><td class=docs>
 
@@ -149,38 +142,29 @@ rerun_options_parse <span class="s2">&quot;$@&quot;</span>
 rundeck_login <span class="nv">$URL</span> <span class="nv">$USER</span> <span class="nv">$PASSWORD</span>
 
 
+
 </pre></div></td></tr><tr><td class=docs>
 
-<h2>Import</h2>
+<h2>Request the projet. </h2>
 
 </td><td class=code><div class=highlight><pre>
-<span class="nv">importurl</span><span class="o">=</span><span class="s2">&quot;${URL}/project/importArchive&quot;</span>
-: <span class="k">${</span><span class="nv">ARCHIVE</span><span class="p">:=</span><span class="k">${</span><span class="nv">PROJECT</span><span class="k">}</span><span class="p">.zip</span><span class="k">}</span>
-<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp -t curl.out.XXXXXXXXXX<span class="k">)</span>
-
-<span class="k">if</span> ! rundeck_curl -F <span class="nv">zipFile</span><span class="o">=</span>@<span class="nv">$ARCHIVE</span> -F <span class="nv">name</span><span class="o">=</span><span class="nv">$PROJECT</span> <span class="se">\</span>
-    -X POST <span class="k">${</span><span class="nv">URL</span><span class="k">}</span>/project/importArchive  | 
-</pre></div></td></tr><tr><td class=docs>
-
-<p>Convert the result into well formed xhtml so we can query it.</p>
-
-</td><td class=code><div class=highlight><pre>
-    xmlstarlet fo -R -H &gt; <span class="nv">$CURL_OUT</span> 2&gt;/dev/null
+<span class="k">if</span> ! rundeck_curl -X GET <span class="k">${</span><span class="nv">URL</span><span class="k">}</span>/api/1/project/<span class="nv">$PROJECT</span> | xmlstarlet sel -t -m <span class="s2">&quot;/result/projects/project&quot;</span> -v name
 <span class="k">then</span>
-<span class="k">    </span>rerun_die 3 <span class="s2">&quot;API error: ${URL}/project/importArchive&quot;</span>
+	:; <span class="c"># already removed.	</span>
+	<span class="nb">exit </span>0
 <span class="k">fi</span>
 
-<span class="k">if </span>xmlstarlet sel  -N <span class="nv">x</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/1999/xhtml&quot;</span> <span class="se">\</span>
-    -t -m <span class="s2">&quot;//x:div[@id=&#39;error&#39;]&quot;</span> <span class="nv">$CURL_OUT</span>
-<span class="k">then</span>
-<span class="k">    </span><span class="nv">mesg</span><span class="o">=</span><span class="k">$(</span>xmlstarlet sel  -N <span class="nv">x</span><span class="o">=</span><span class="s2">&quot;http://www.w3.org/1999/xhtml&quot;</span> <span class="se">\</span>
-        -t -m <span class="s2">&quot;//x:div[@id=&#39;error&#39;]&quot;</span> -v . -n <span class="nv">$CURL_OUT</span><span class="k">)</span>
-    <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Error importing archive: ${mesg}&quot;</span>
-    <span class="nb">exit </span>1
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Remove the project directory.</h2>
+
+</td><td class=code><div class=highlight><pre>
+<span class="k">if</span> <span class="o">[</span> -d <span class="nv">$PROJECTS_DIR</span>/<span class="nv">$PROJECT</span> <span class="o">]</span>
+<span class="k">then	</span>
+<span class="k">    </span>rm -rf <span class="nv">$PROJECTS_DIR</span>/<span class="nv">$PROJECT</span>
 <span class="k">fi</span>
 
 
-rm <span class="nv">$CURL_OUT</span>
 </pre></div></td></tr><tr><td class=docs>
 
 <p>Done. Exit with last command exit status.</p>

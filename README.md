@@ -14,12 +14,16 @@ the module contents.
 
 [![Build Status](https://travis-ci.org/ahonor/rundeck-admin.png?branch=master)](https://travis-ci.org/ahonor/rundeck-admin)
 
-[Download a shell archive from bintray](http://dl.bintray.com/ahonor/rerun-modules). This is a self-contained module and does not require a rerun installation
+You can download a build of this module either as a shell archive or an RPM.
 
-Or install it via yum:
+* [Download a shell archive from bintray](http://dl.bintray.com/ahonor/rerun-modules/rundeck-admin). This is a self-contained module and does not require a rerun installation. Simply download the rerun.bin file and make it executable.
+       
+         chmod +x ./rerun.bin
 
-    curl -s -f -L -o /etc/yum.repos.d/rerun.repo "https://bintray.com/ahonor/rerun-rpm/rpm"
-    yum -y install rerun rerun-rundeck-admin
+* Or install it via RPM and yum:
+
+         curl -s -f -L -o /etc/yum.repos.d/rerun.repo "https://bintray.com/ahonor/rerun-rpm/rpm" ;# Add bintray yum repo.
+         yum -y install rerun rerun-rundeck-admin
 
 **Using**
 
@@ -52,7 +56,7 @@ here is an answers files that stores the user, password and url values:
     URL=http://localhost:4440
     EOF
 
-Here's an example showing `project-list` using input from the answers file:
+Here's `project-list` using the user,password and url info from the answer file:
 
     $ rerun --answers creds rundeck-admin:project-list
     examples

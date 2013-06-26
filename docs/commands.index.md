@@ -6,6 +6,7 @@
 * [project-export](commands/project-export/index.html): Export a project.
 * [project-import](commands/project-import/index.html): Import a project archive.
 * [project-list](commands/project-list/index.html): List the projects.
+* [project-remove](commands/project-remove/index.html): Remove a project.
 * [project-replicate](commands/project-replicate/index.html): Replicate the project(s) from one rundeck to another.
 * [resource-add](commands/resource-add/index.html): add a resource to a project resource model.
 * [resource-get](commands/resource-get/index.html): get resource info.

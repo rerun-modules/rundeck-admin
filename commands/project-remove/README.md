@@ -1,6 +1,6 @@
 Use **project-remove** to remove a project in the specified rundeck.
 
-*Note*: You must be on the rundeck server to run this command. It cannot be run remotely.
+*Note*: You must be on the rundeck server to run this command. It cannot be run remotely. The command requires the `RDECK_BASE` environment variable set correctly to the location of the Rundeck installation.
 
 Examples
 --------

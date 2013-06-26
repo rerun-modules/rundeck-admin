@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <title>project-remove-1</title>
+    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+</head>
+<body>
+<div id=container>
+    <div id=background></div>
+    <table cellspacing=0 cellpadding=0>
+    <thead>
+      <tr>
+        <th class=docs><h1>project-remove-1</h1></th>
+        <th class=code></th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr><td class='docs'></pre></div></td></tr><tr><td class=docs>
+
+</td><td class=code><div class=highlight><pre>
+<span class="c">#!/usr/bin/env roundup</span>
+<span class="c">#/ usage:  rerun stubbs:test -m rundeck-admin -p project-remove [--answers &lt;&gt;]</span>
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>Helpers</h2>
+
+</td><td class=code><div class=highlight><pre>
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>The Plan</h2>
+
+</td><td class=code><div class=highlight><pre>
+<span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
+
+</pre></div></td></tr><tr><td class=docs>
+
+<h2>The Tests</h2>
+
+</td><td class=code><div class=highlight><pre>
+describe <span class="s2">&quot;project-remove&quot;</span>
+
+</pre></div></td></tr><tr><td class=docs>
+
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre>
+
+it_fails_if_RDECK_BASE_unset<span class="o">()</span> <span class="o">{</span>
+	<span class="nb">unset </span>RDECK_BASE
+   ! rerun rundeck-admin:project-remove --project <span class="nb">test</span>-<span class="nv">$$</span> <span class="se">\</span>
+        --url http://localhost:4440 <span class="se">\</span>
+        --user admin --password admin	
+<span class="o">}</span>
+
+it_removes_a_projects<span class="o">()</span> <span class="o">{</span>
+    rerun rundeck-admin:project-create --project <span class="nb">test</span>-<span class="nv">$$</span> <span class="se">\</span>
+        --url http://localhost:4440 <span class="se">\</span>
+        --user admin --password admin
+
+   rerun rundeck-admin:project-remove --project <span class="nb">test</span>-<span class="nv">$$</span> <span class="se">\</span>
+        --url http://localhost:4440 <span class="se">\</span>
+        --user admin --password admin
+
+
+    rerun rundeck-admin:project-list --url http://localhost:4440 --user admin --password admin | 
+    <span class="k">if</span> ! grep <span class="nb">test</span>-<span class="nv">$$</span>
+    <span class="k">then</span> : ;<span class="c"># no longer exists.</span>
+	<span class="k">else </span><span class="nb">exit </span>1 ;
+	<span class="k">fi</span>
+
+<span class="k">	if</span> <span class="o">[</span> <span class="s2">&quot;$RDECK_BASE&quot;</span> <span class="o">=</span> <span class="s2">&quot;/var/lib/rundeck&quot;</span> -a -d <span class="s2">&quot;/var/rundeck/projects&quot;</span> <span class="o">]</span>
+	<span class="k">then </span><span class="nv">PROJECTS_DIR</span><span class="o">=</span>/var/rundeck/projects
+	<span class="k">else </span><span class="nv">PROJECTS_DIR</span><span class="o">=</span><span class="nv">$RDECK_BASE</span>/projects
+	<span class="k">fi</span>	
+	! <span class="nb">test</span> -d <span class="nv">$PROJECTS_DIR</span>/test-<span class="nv">$$</span>
+<span class="o">}</span>
+
+
+
+
+</td><td class=code><div class=highlight><pre>
+</pre></div></td></tr><tr><td class=docs>
+</td><td class=code><div class=highlight><pre></td><td class='code'></td></tr>
+    </tbody>
+    </table>
+</div>
+</body>
+</html>
