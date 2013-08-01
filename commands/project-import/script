@@ -9,8 +9,8 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 # 
-#/ command: rundeck-admin:project-import: "import a project"
-#/ usage: rerun rundeck-admin:project-import  --project <>  --url <>  --user <>  --password <> [ --archive <>] 
+#/ command: rundeck-admin:project-import: "Import a project archive."
+#/ usage: rerun rundeck-admin:project-import  --project <>  --url <>  --user <>  --password <> [ --archive <>] [ --retain-uuids <true>] [ --import-executions <true>] 
 
 # Load common functions
 # ---------------------
@@ -47,7 +47,7 @@ set -o nounset -o pipefail
 # declared by `rerun` or by the option parser function.
 
 #/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
-#/ option-variables: PROJECT URL USER PASSWORD ARCHIVE
+#/ option-variables: PROJECT URL USER PASSWORD ARCHIVE RETAIN_UUIDS IMPORT_EXECUTIONS
 
 # The `rerun_options_parse` function processes the command line
 # arguments. Each accepted command line flag results in setting 
@@ -75,20 +75,42 @@ then
     exit 2
 fi
 
+: ${ARCHIVE:=${PROJECT}.zip}
+
+
+if [[ "${RETAIN_UUIDS:-}" = "true" ]] 
+then jobUUIDBehavior="preserve"
+else jobUUIDBehavior="remove"
+fi
+
+if [[ "${IMPORT_EXECUTIONS:-}" = "true" ]] 
+then executionImportBehavior="import"
+else executionImportBehavior="skip"
+fi
 
 # Authenticate
 # ------------
 rundeck_login $URL $USER $PASSWORD
 
+# Obtain the rundeck version info.
+rundeck_version=$(rundeck_version $URL)
+
 
 # Import
 # ------
 importurl="${URL}/project/importArchive"
-: ${ARCHIVE:=${PROJECT}.zip}
+
+params=(-F name=$PROJECT -F zipFile=@$ARCHIVE)
+
+if [[ "$rundeck_version" =~ 1.6.* ]]
+then
+    params=(${params[*]} -F import.executionImportBehavior=$executionImportBehavior 
+    -F import.jobUUIDBehavior=$jobUUIDBehavior )
+fi
+
 CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
-if ! rundeck_curl -F zipFile=@$ARCHIVE -F name=$PROJECT \
-    -X POST ${URL}/project/importArchive  | 
+if ! rundeck_curl  ${params[@]} -X POST ${URL}/project/importArchive  | 
     # Convert the result into well formed xhtml so we can query it.
     xmlstarlet fo -R -H > $CURL_OUT 2>/dev/null
 then

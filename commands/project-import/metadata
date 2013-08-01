@@ -3,4 +3,4 @@
 # Mon May 20 11:16:53 PDT 2013
 NAME=project-import
 DESCRIPTION="Import a project archive."
-OPTIONS="project url user password archive"
+OPTIONS="project url user password archive retain-uuids import-executions"

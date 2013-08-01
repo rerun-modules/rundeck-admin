@@ -104,3 +104,29 @@ rundeck_login(){
 	return 0
 }
 
+rundeck_version() {
+	local -r url=$1 
+
+    # Temporary file to store results.
+    local -r curl_out=$(mktemp "/tmp/login.out.XXXXX")
+
+	if ! errors=$(rundeck_curl -X GET $url/user/login 2>&1> $curl_out)
+	then
+		rerun_die 3 "login failure. error: $errors"
+	fi
+
+	# Parse the login result page.
+	# Convert the result into well formed xhtml so we can query it for version.
+	if ! version=$(xmlstarlet fo -R -H $curl_out 2>/dev/null |
+		# Query the result page for the error message.
+		xmlstarlet sel -N x=http://www.w3.org/1999/xhtml \
+			-t -m "//x:div[@id='footer']/x:span[@class='num']" -v . )
+    then
+    	:; # no version info
+    fi
+    rm "${curl_out}"; # clean up.
+    echo ${version:-}
+    return 0
+}
+
+
