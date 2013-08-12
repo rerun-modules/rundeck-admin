@@ -41,7 +41,7 @@ CURLOPTS="-k -f -s -S -L -c $COOKIES -b $COOKIES"
 #
 # Notes: 
 rundeck_curl() {
-	command curl $CURLOPTS "$@"
+	command curl --user-agent "rerun/$RERUN_VERSION rundeck-admin/${RERUN_MODULE_VERSION:-}" $CURLOPTS "$@"
 }
 
 #
