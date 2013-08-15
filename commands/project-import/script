@@ -92,27 +92,21 @@ fi
 # ------------
 rundeck_login $URL $USER $PASSWORD
 
-# Obtain the rundeck version info.
-rundeck_version=$(rundeck_version $URL)
-
-
 # Import
 # ------
 importurl="${URL}/project/importArchive"
-
+# project and archive file options
 params=(-F name=$PROJECT -F zipFile=@$ARCHIVE)
-
-if [[ "$rundeck_version" =~ 1.6.* ]]
-then
-    params=(${params[*]} -F import.executionImportBehavior=$executionImportBehavior 
+# Add the imoport options
+params=(${params[*]} -F import.executionImportBehavior=$executionImportBehavior 
     -F import.jobUUIDBehavior=$jobUUIDBehavior )
-fi
+
 
 CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
 if ! rundeck_curl  ${params[@]} -X POST ${URL}/project/importArchive  | 
     # Convert the result into well formed xhtml so we can query it.
-    xmlstarlet fo -R -H > $CURL_OUT 2>/dev/null
+    (xmlstarlet fo -R -H 2>/dev/null) > $CURL_OUT 
 then
     rerun_die 3 "API error: ${URL}/project/importArchive"
 fi
