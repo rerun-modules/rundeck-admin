@@ -69,14 +69,19 @@ rundeck_login $URL $USER $PASSWORD
 
 CURL_OUT=$(mktemp "/tmp/curl.out.XXXXX")
 
-if ! rundeck_curl -X GET ${URL}/user/profile > $CURL_OUT
+
+if ! rundeck_curl -X GET ${URL}/user/profile |
+	(xmlstarlet fo --recover --html --nsclean 2>/dev/null ) |
+	# Get rid of this extraneous class and lang attritues in the html element.		
+	xmlstarlet ed -d "/html[@class]/@class"  |	
+	xmlstarlet ed -d "/html[@lang]/@lang"    > $CURL_OUT
 then
     rerun_die 3 "API error: ${URL}/user/profile"
 fi
-xmlstarlet fo -R -H $CURL_OUT > $CURL_OUT.userprofile.html 2>/dev/null
+
 
 # List the tokens.
-if ! xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" -t -m "//x:span[@class='apitoken']" -v . -n $CURL_OUT.userprofile.html
+if ! xmlstarlet sel -t -m "//span[@class='apitoken']" -v . -n $CURL_OUT
 then
     :; # no tokens
 fi

@@ -79,8 +79,8 @@ fi
 
 # Check the result from the user profile.
 
-if ! xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" \
-	-t -m "//x:span[@class='apitoken']" -v . -n $CURLOUT | grep -q -v $TOKEN
+if ! xmlstarlet sel 
+	-t -m "//span[@class='apitoken']" -v . -n $CURLOUT | grep -q -v $TOKEN
 then
     rerun_die 3 "failed to remove token."
 fi

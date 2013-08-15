@@ -67,20 +67,29 @@ rundeck_login $URL $USER $PASSWORD
 # Request a new token.
 # ---------------------
 
-CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX)
+CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX.xml)
 
 if ! rundeck_curl $URL/user/generateApiToken?login=${USER} |
 	# Convert the result into well formed xhtml so we can query it.
-	xmlstarlet fo -R -H > $CURLOUT 2>/dev/null
+	(xmlstarlet fo --recover --html --nsclean 2>/dev/null) |
+	# Get rid of this extraneous class and lang attritues in the html element.
+	xmlstarlet ed -d "/html[@class]/@class"                |
+	xmlstarlet ed -d "/html[@lang]/@lang"                  > $CURLOUT
 then
     rerun_die 3 "API error: $URL/user/generateApiToken"
 fi
 
+
+
+
 # Check the result from the user profile.
 # Tokens are printed in the order they were created.
 declare -a tokens
-tokens=( $(xmlstarlet sel -N x="http://www.w3.org/1999/xhtml" \
-	-t -m "//x:span[@class='apitoken']" -v . -n $CURLOUT) )
+if ! tokens=( $(xmlstarlet sel \
+	-t -m "//span[@class='apitoken']" -v . -n $CURLOUT) )
+then
+	rerun_die "Server response did not contain token. $CURLOUT"
+fi
 
 [ -z "${tokens:-}" -a ${#tokens[*]} -lt 1 ] && {
     rerun_die "Failed to generate a token."
