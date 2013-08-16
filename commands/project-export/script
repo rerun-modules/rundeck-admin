@@ -63,6 +63,15 @@ rerun_options_parse "$@"
 # ------------
 rundeck_login $URL $USER $PASSWORD
 
+# Check project exists
+#
+
+CREDS="--user $USER --password $PASSWORD --url $URL"
+if ! rerun rundeck-admin:project-list $CREDS | grep $PROJECT
+then
+	rerun_die 1 "Project not found: $PROJECT"
+fi	
+
 # Export
 # ------
 
@@ -82,6 +91,12 @@ then
     exit 1
 fi
 
+if [[ $(file $ARCHIVE) =~ .*HTML.* ]]
+then
+	error_message=$((xmlstarlet fo --recover --html --nsclean $ARCHIVE 2>/dev/null ) | 
+	xmlstarlet sel -t -m "//div[@id='error']" -v .)
+	rerun_die 1 $error_message
+fi	
 
 # Done. Exit with last command exit status.
 exit $?

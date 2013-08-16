@@ -27,5 +27,15 @@ it_exports_a_project() {
     rerun rundeck-admin:project-export $CREDS --project test-$$ --archive $ARCHIVE
     test -f $ARCHIVE
     file $ARCHIVE | grep -i zip
+
+    rm $ARCHIVE
 }
 
+it_fails_for_bogus_project() {
+
+    ARCHIVE=$(mktemp "/tmp/project.archive.XXXX")
+  	! rerun rundeck-admin:project-export $CREDS --project b0guZ --archive $ARCHIVE
+
+
+  rm $ARCHIVE
+}
