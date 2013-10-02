@@ -67,7 +67,7 @@ rundeck_login $URL $USER $PASSWORD
 #
 
 CREDS="--user $USER --password $PASSWORD --url $URL"
-if ! rerun rundeck-admin:project-list $CREDS | grep $PROJECT
+if ! rerun rundeck-admin:project-list $CREDS | grep -q $PROJECT
 then
 	rerun_die 1 "Project not found: $PROJECT"
 fi	
@@ -76,8 +76,8 @@ fi
 # ------
 
 [[ -z "$ARCHIVE" ]] && {
-	ARCHIVE=${PROJECT}.zip}
-	echo "Project export to archive: $ARCHIVE"
+	ARCHIVE=${PROJECT}.zip
+	echo "Project exported to archive: $ARCHIVE"
 }
 
 if ! rundeck_curl -X GET ${URL}/project/export?name=$PROJECT > $ARCHIVE
