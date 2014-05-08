@@ -9,8 +9,8 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 # 
-#/ command: rundeck-admin:project-remove: "remove a project"
-#/ usage: rerun rundeck-admin:project-remove  --project <>  --url <>  --user <>  --password <>
+#/ command: rundeck-admin:project-remove: "Remove a project."
+#/ usage: rerun rundeck-admin:project-remove  --project <>  --url <http://192.168.50.2:4440>  --user <admin>  --password <admin> 
 
 # Load common functions
 # ---------------------
@@ -47,7 +47,7 @@ set -o nounset -o pipefail
 # declared by `rerun` or by the option parser function.
 
 #/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
-#/ option-variables: PROJECT URL USER PASSWORD 
+#/ option-variables: PROJECT URL USER PASSWORD
 
 # The `rerun_options_parse` function processes the command line
 # arguments. Each accepted command line flag results in setting 
@@ -59,37 +59,21 @@ rerun_options_parse "$@"
 # Command implementation
 # ----------------------
 
-[[ -z "${RDECK_BASE:-}" ]] && rerun_die 2 "RDECK_BASE environment variable unset."
-[[ -d "${RDECK_BASE:-}" ]] || rerun_die 2 "RDECK_BASE directory does not exist: $RDECK_BASE."
-
-# Set the directory where project files reside.
-# Check if this is a system install otherwise make it relative to RDECK_BASE.
-if [ "$RDECK_BASE" = "/var/lib/rundeck" -a -d "/var/rundeck/projects" ]
-then
-	PROJECTS_DIR=/var/rundeck/projects
-else
-	PROJECTS_DIR=$RDECK_BASE/projects
-fi	
-
 # Authenticate
 # ------------
 rundeck_login $URL $USER $PASSWORD
 
 
-
-# Request the projet. 
+# Delete the projet. 
 # -------------------
-if ! rundeck_curl -X GET ${URL}/api/1/project/$PROJECT | xmlstarlet sel -t -m "/result/projects/project" -v name
+if ! http_code=$(rundeck_curl -w "%{http_code}"\
+	-X DELETE ${URL}/api/11/project/$PROJECT 2>/dev/null)
 then
-	:; # already removed.	
-	exit 0
-fi
-
-# Remove the project directory.
-# -----------------------------
-if [ -d $PROJECTS_DIR/$PROJECT ]
-then	
-    rm -rf $PROJECTS_DIR/$PROJECT
+    case ${http_code:-} in
+    	204) : ;; # successful removal
+    	404) : ;; # project did not exist.
+		* ) rerun_die 3 "API error: DELETE ${URL}/api/11/project/$PROJECT" ;;
+	esac    
 fi
 
 

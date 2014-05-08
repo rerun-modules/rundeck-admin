@@ -9,8 +9,8 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 # 
-#/ command: rundeck-archive:project-create: "create a project"
-#/ usage: rerun rundeck:project-create  --project <>  --url <>  --user <>  --password <>
+#/ command: rundeck-admin:project-create: "Create a project."
+#/ usage: rerun rundeck-admin:project-create  --project <>  --url <http://192.168.50.2:4440>  --user <admin>  --password <admin> 
 
 # Load common functions
 # ---------------------
@@ -47,7 +47,7 @@ set -o nounset -o pipefail
 # declared by `rerun` or by the option parser function.
 
 #/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR
-#/ option-variables: PROJECT URL USER PASSWORD 
+#/ option-variables: PROJECT URL USER PASSWORD
 
 # The `rerun_options_parse` function processes the command line
 # arguments. Each accepted command line flag results in setting 
@@ -63,11 +63,18 @@ rerun_options_parse "$@"
 # ------------
 rundeck_login $URL $USER $PASSWORD
 
+POST_CONTENT=$(mktemp -t project_create.XXXXXXXXXX)
+cat > $POST_CONTENT <<END
+<project>
+    <name>$PROJECT</name>
+    <description>$PROJECT</description>
+</project>
+END
 # Request the projet. 
 # -------------------
-if ! rundeck_curl -F project=$PROJECT -X POST ${URL}/resources/createProject > /dev/null
+if ! rundeck_curl --data-binary @$POST_CONTENT -H Content-Type:application/xml -X POST ${URL}/api/11/projects > /dev/null
 then
-    rerun_die 3 "API error: ${URL}/resources/createProject"
+    rerun_die 3 "API error: POST ${URL}/api/11/projects"
 fi
 
 # Check the project was created.

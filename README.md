@@ -12,7 +12,7 @@ the module contents.
 
 **Download**
 
-[![Build Status](https://travis-ci.org/ahonor/rundeck-admin.png?branch=master)](https://travis-ci.org/ahonor/rundeck-admin)
+[![Build Status](https://travis-ci.org/rerun-modules/rundeck-admin.png?branch=master)](https://travis-ci.org/rerun-modules/rundeck-admin)
 
 You can download a build of this module either as a shell archive or an RPM.
 
@@ -47,13 +47,21 @@ The rundeck-admin commands require three common options used to access rundeck:
 
 It can be repetitive to always specify these options each time you run a command
 or you may not like passing the credential information on the command line.
+You have two options: environment variables or answers file.
+
+To use defaults from environment variables, declare the following
+
+    export RUNDECK_USER=admin
+    export RUNDECK_PASSWORD=admin
+    export RUNDECK_URL=http://rundeck:4440
+
 Rerun can help populate options and their arguments via an answer file. For example,
 here is an answers files that stores the user, password and url values:
 
     cat >creds<<EOF
     USER=admin
     PASSWORD=admin
-    URL=http://localhost:4440
+    URL=http://rundeck:4440
     EOF
 
 Here's `project-list` using the user,password and url info from the answer file:

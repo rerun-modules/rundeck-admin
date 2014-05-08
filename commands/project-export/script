@@ -9,8 +9,8 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 # 
-#/ command: rundeck-admin:project-export: "export a project"
-#/ usage: rerun rundeck-admin:project-export  --project <>  --url <>  --user <>  --password <> [ --admin <>] 
+#/ command: rundeck-admin:project-export: "Export a project."
+#/ usage: rerun rundeck-admin:project-export  --project <>  --url <http://192.168.50.2:4440>  --user <admin>  --password <admin> [ --archive <>] 
 
 # Load common functions
 # ---------------------
@@ -80,23 +80,16 @@ fi
 	echo "Project exported to archive: $ARCHIVE"
 }
 
-if ! rundeck_curl -X GET ${URL}/project/export?name=$PROJECT > $ARCHIVE
+if ! rundeck_curl -X GET ${URL}/project/$PROJECT/export > $ARCHIVE
 then
-    rerun_die 3 "API error: ${URL}/project/export"
+    rerun_die 3 "API error: GET ${URL}/project/$PROJECT/export"
 fi
 
-if [ ! -f $ARCHIVE ]
+if [[ ! -f "$ARCHIVE" ]]
 then
    	rerun_die 3 "Unexpected error. Archive file not found after export requested."
-    exit 1
 fi
 
-if [[ $(file $ARCHIVE) =~ .*HTML.* ]]
-then
-	error_message=$((xmlstarlet fo --recover --html --nsclean $ARCHIVE 2>/dev/null ) | 
-	xmlstarlet sel -t -m "//div[@id='error']" -v .)
-	rerun_die 1 $error_message
-fi	
 
 # Done. Exit with last command exit status.
 exit $?

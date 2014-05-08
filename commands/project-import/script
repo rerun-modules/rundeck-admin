@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:project-import: "Import a project archive."
-#/ usage: rerun rundeck-admin:project-import  --project <>  --url <>  --user <>  --password <> [ --archive <>] [ --retain-uuids <true>] [ --import-executions <true>] 
+#/ usage: rerun rundeck-admin:project-import  --project <>  --url <http://192.168.50.2:4440>  --user <admin>  --password <admin> [ --archive <>] [ --retain-uuids <true>] [ --import-executions <true>] 
 
 # Load common functions
 # ---------------------
@@ -63,7 +63,7 @@ rerun_options_parse "$@"
 # Put the command implementation here.
 # - - -
 
-if [ ! -f "$ARCHIVE" ]
+if [[ ! -f "$ARCHIVE" ]]
 then
     echo >&2 "Archive not found: $ARCHIVE"
     exit 2
@@ -75,17 +75,15 @@ then
     exit 2
 fi
 
-: ${ARCHIVE:=${PROJECT}.zip}
-
 
 if [[ "${RETAIN_UUIDS:-}" = "true" ]] 
-then jobUUIDBehavior="preserve"
-else jobUUIDBehavior="remove"
+then jobUuidOption="preserve"
+else jobUuidOption="remove"
 fi
 
 if [[ "${IMPORT_EXECUTIONS:-}" = "true" ]] 
-then executionImportBehavior="import"
-else executionImportBehavior="skip"
+then importExecutions="true"
+else importExecutions="false"
 fi
 
 # Authenticate
@@ -94,31 +92,20 @@ rundeck_login $URL $USER $PASSWORD
 
 # Import
 # ------
-importurl="${URL}/project/importArchive"
-# project and archive file options
-params=(-F name=$PROJECT -F zipFile=@$ARCHIVE)
-# Add the imoport options
-params=(${params[*]} -F import.executionImportBehavior=$executionImportBehavior 
-    -F import.jobUUIDBehavior=$jobUUIDBehavior )
 
+# Add the import query parameters
+qparams="importExecutions=$importExecutions&jobUuidOption=$jobUuidOption"
 
 CURL_OUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
-if ! rundeck_curl  ${params[@]} -X POST ${URL}/project/importArchive  | 
-    # Convert the result into well formed xhtml so we can query it.
-    (xmlstarlet fo -R -H 2>/dev/null) > $CURL_OUT 
+if ! rundeck_curl -H 'Content-Type: application/zip' --data-binary @"$ARCHIVE" \
+    -H 'Accept: application/xml' \
+    -X PUT "${URL}/api/11/project/$PROJECT/import?${qparams}"  > $CURL_OUT  
 then
-    rerun_die 3 "API error: ${URL}/project/importArchive"
+    [[ -s $CURL_OUT ]] && msgs="Messages: $(xmlstarlet sel -t -m '//error' -v message -n $CURL_OUT)"
+    rerun_die 3 "API error: PUT ${URL}/api/11/project/$PROJECT/import. ${msgs:-})"
 fi
 
-if xmlstarlet sel  -N x="http://www.w3.org/1999/xhtml" \
-    -t -m "//x:div[@id='error']" $CURL_OUT
-then
-    mesg=$(xmlstarlet sel  -N x="http://www.w3.org/1999/xhtml" \
-        -t -m "//x:div[@id='error']" -v . -n $CURL_OUT)
-    echo >&2 "Error importing archive: ${mesg}"
-    exit 1
-fi
 
 
 rm $CURL_OUT
