@@ -7,7 +7,7 @@ CURL="curl $CURLOPTS"
 CURLOUT=$(mktemp -t curl.out.XXXXXXXXXX)
 
 apitoken_list() {
-    echo 'insdie apitoken_list' >>/tmp/blar
+    echo 'inside apitoken_list' >>/tmp/blar
 
     [ $# -ne 3 ] && {
         echo >&2 'usage: apitoken_list user password url'
