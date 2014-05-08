@@ -1,11 +1,11 @@
-Use **apitoken-list** to list all API tokens for the specified user.
+Use **token-list** to list all API tokens for the specified user.
 
 Example
 -------
 
 List the API tokens for the "admin" user:
 
-    rerun rundeck-admin: apitoken-list --url http://localhost:4440 --user admin --password admin
+    rerun rundeck-admin: token-list --url http://localhost:4440 --user admin --password admin
     
 Each token is printed on a separate line.
 In this example there are 3:
