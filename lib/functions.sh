@@ -66,23 +66,23 @@ rundeck_login(){
 	}
 	local -r url=$1 user=$2 password=$3
 
-	local errors
+	local http_code errors
+	local -r loginurl="${url}/j_security_check"
 
 	# Request the login form.
-	local -r loginurl="${url}/j_security_check"
-	if ! errors=$(rundeck_curl $loginurl 2>&1> /dev/null)
+	if ! http_code=$(rundeck_curl  -w "%{http_code}"  $loginurl 2> /dev/null)
 	then
-		rerun_die 3 "login failure. error: $errors"
+		rerun_die 3 "login failure. http_code: $http_code"
     fi
 
     # Temporary file to store results.
-    local -r curl_out=$(mktemp "/tmp/login.out.XXXXX")
+    local -r curl_out=$(mktemp "/tmp/login.XXXXX")
 
     # Submit the username and password to the login form.
-	if ! errors=$(rundeck_curl -d j_username=$user -d j_password=$password \
-		-X POST $loginurl 2>&1> $curl_out)
+	if ! http_code=$(rundeck_curl -w "%{http_code}"  -d j_username=$user -d j_password=$password \
+		-X POST $loginurl 2>/dev/null -o $curl_out)
 	then
-		rerun_die 3 "login failure. error: $errors"
+		rerun_die 3 "login failure. http_code: $http_code"
 	fi
 
 	# Parse the login result page. It might contain an error.
