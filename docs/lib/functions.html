@@ -1,56 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <meta http-equiv='content-type' content='text/html;charset=utf-8'>
     <title>functions.sh</title>
-    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/public/stylesheets/normalize.css" />
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/docco.css" />
 </head>
 <body>
-<div id=container>
-    <div id=background></div>
-    <table cellspacing=0 cellpadding=0>
-    <thead>
-      <tr>
-        <th class=docs><h1>functions.sh</h1></th>
-        <th class=code></th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr><td class='docs'><p>Shell functions for the rundeck module.</p>
+<div class="container">
+  <div class="page">
+        <div class="header"><h1>functions.sh</h1></div>
+        <p>Shell functions for the rundeck module.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="c">#/ usage: source RERUN_MODULE_DIR/lib/functions.sh command</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Read rerun's public functions</p>
 
-</td><td class=code><div class=highlight><pre>
-. <span class="nv">$RERUN</span> <span class="o">||</span> <span class="o">{</span>
-    <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;ERROR: Failed sourcing rerun function library: \&quot;$RERUN\&quot;&quot;</span>
-    <span class="k">return </span>1
-<span class="o">}</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Check usage. Argument should be command name.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="o">[[</span> <span class="nv">$# </span><span class="o">=</span> 1 <span class="o">]]</span> <span class="o">||</span> rerun_option_usage
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Source the option parser script.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="k">if</span> <span class="o">[[</span> -r <span class="nv">$RERUN_MODULE_DIR</span>/commands/<span class="nv">$1</span>/options.sh <span class="o">]]</span> 
-<span class="k">then</span>
-    . <span class="nv">$RERUN_MODULE_DIR</span>/commands/<span class="nv">$1</span>/options.sh <span class="o">||</span> <span class="o">{</span>
-        rerun_die <span class="s2">&quot;Failed loading options parser.&quot;</span>
-    <span class="o">}</span>
-<span class="k">fi</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <hr />
 
@@ -58,23 +32,15 @@
 
 <hr />
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Where to store the login cookies</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nv">COOKIES</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/cookies.XXXXX&quot;</span><span class="k">)</span>
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
-<p>Curl opts to use a cookie jar, follow redirects, showing only errors, failing fast.</p>
+<p>Curl opts to accept insecure certs, use a cookie jar, follow redirects, show only errors, fail fast.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nv">CURLOPTS</span><span class="o">=</span><span class="s2">&quot;-f -s -S -L -c $COOKIES -b $COOKIES&quot;</span>
-
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p><em>rundeck</em>curl_ - The curl wrapper function</p>
 
@@ -89,18 +55,11 @@
 
 <p>Notes: </p>
 
-</td><td class=code><div class=highlight><pre>
-rundeck_curl<span class="o">()</span> <span class="o">{</span>
-	<span class="nb">command </span>curl <span class="nv">$CURLOPTS</span> <span class="s2">&quot;$@&quot;</span>
-<span class="o">}</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <hr />
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p><em>rundeck</em>login_ - Login to rundeck</p>
 
@@ -117,86 +76,51 @@ rundeck_curl<span class="o">()</span> <span class="o">{</span>
 
 <p>Notes: </p>
 
-</td><td class=code><div class=highlight><pre>
-rundeck_login<span class="o">(){</span>
-	<span class="o">[[</span> <span class="nv">$# </span>-ne 3 <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="o">{</span>
-		rerun_die 2 <span class="s2">&quot;usage: rundeck_login: url user password&quot;</span>
-	<span class="o">}</span>
-	<span class="nb">local</span> -r <span class="nv">url</span><span class="o">=</span><span class="nv">$1</span> <span class="nv">user</span><span class="o">=</span><span class="nv">$2</span> <span class="nv">password</span><span class="o">=</span><span class="nv">$3</span>
-
-	<span class="nb">local </span>errors
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Request the login form.</p>
 
-</td><td class=code><div class=highlight><pre>
-	<span class="nb">local</span> -r <span class="nv">loginurl</span><span class="o">=</span><span class="s2">&quot;${url}/j_security_check&quot;</span>
-	<span class="k">if</span> ! <span class="nv">errors</span><span class="o">=</span><span class="k">$(</span>rundeck_curl <span class="nv">$loginurl</span> 2&gt;&amp;1&gt; /dev/null<span class="k">)</span>
-	<span class="k">then</span>
-<span class="k">		</span>rerun_die 3 <span class="s2">&quot;login failure. error: $errors&quot;</span>
-    <span class="k">fi</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Temporary file to store results.</p>
 
-</td><td class=code><div class=highlight><pre>
-    <span class="nb">local</span> -r <span class="nv">curl_out</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/login.out.XXXXX&quot;</span><span class="k">)</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Submit the username and password to the login form.</p>
 
-</td><td class=code><div class=highlight><pre>
-	<span class="k">if</span> ! <span class="nv">errors</span><span class="o">=</span><span class="k">$(</span>rundeck_curl -d <span class="nv">j_username</span><span class="o">=</span><span class="nv">$user</span> -d <span class="nv">j_password</span><span class="o">=</span><span class="nv">$password</span> <span class="se">\</span>
-		-X POST <span class="nv">$loginurl</span> 2&gt;&amp;1&gt; <span class="nv">$curl_out</span><span class="k">)</span>
-	<span class="k">then</span>
-<span class="k">		</span>rerun_die 3 <span class="s2">&quot;login failure. error: $errors&quot;</span>
-	<span class="k">fi</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Parse the login result page. It might contain an error.
 Convert the result into well formed xhtml so we can query it.</p>
 
-</td><td class=code><div class=highlight><pre>
-	<span class="k">if</span> ! <span class="nv">errors</span><span class="o">=</span><span class="k">$(</span>xmlstarlet fo -R -H <span class="nv">$curl_out</span> 2&gt;/dev/null |
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Query the result page for the error message.</p>
 
-</td><td class=code><div class=highlight><pre>
-		xmlstarlet sel -N <span class="nv">x</span><span class="o">=</span>http://www.w3.org/1999/xhtml <span class="se">\</span>
-			-t -m <span class="s2">&quot;//x:div[@class=&#39;login&#39;]/x:form/x:div[@class=&#39;message&#39;]/x:span[@class=&#39;error&#39;]&quot;</span> -v .<span class="k">)</span>
-    <span class="k">then</span>
-    	:; <span class="c"># no login error message. successfully logged in.</span>
-    <span class="k">fi</span>
-<span class="k">    </span>rm <span class="s2">&quot;${curl_out}&quot;</span>; <span class="c"># clean up.</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Fail if there was an error.</p>
 
-</td><td class=code><div class=highlight><pre>
-    <span class="o">[[</span> -n <span class="s2">&quot;${errors:-}&quot;</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="o">{</span>
-		rerun_die 3 <span class="s2">&quot;Login failure. error: $errors&quot;</span>
-	<span class="o">}</span>
+</pre></div>
 
-	<span class="k">return </span>0
-<span class="o">}</span>
+<p>Temporary file to store results.</p>
 
+</pre></div>
 
+<p>Parse the login result page.
+Convert the result into well formed xhtml so we can query it for version.</p>
 
-</td><td class=code><div class=highlight><pre>
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre>
+<p>Query the result page for the error message.</p>
 
-</pre></div></td></tr><tr><td class=docs></td><td class='code'></td></tr>
-    </tbody>
-    </table>
+</pre></div>
+
+</pre></div>
+</pre></div>
+  </div>
+  <div class="fleur">h</div>
+
 </div>
 </body>
 </html>

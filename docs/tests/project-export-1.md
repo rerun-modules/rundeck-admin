@@ -7,4 +7,5 @@ Use the `stubbs:test` command to to run test plans.
 
 * [project-export-1](tests/project-export-1.html)
   * it exports a project
+  * it fails for bogus project
 

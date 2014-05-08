@@ -1,76 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <meta http-equiv='content-type' content='text/html;charset=utf-8'>
     <title>project-export-1</title>
-    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/public/stylesheets/normalize.css" />
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/docco.css" />
 </head>
 <body>
-<div id=container>
-    <div id=background></div>
-    <table cellspacing=0 cellpadding=0>
-    <thead>
-      <tr>
-        <th class=docs><h1>project-export-1</h1></th>
-        <th class=code></th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr><td class='docs'></pre></div></td></tr><tr><td class=docs>
+<div class="container">
+  <div class="page">
+        <div class="header"><h1>project-export-1</h1></div>
+        </pre></div>
 
-</td><td class=code><div class=highlight><pre>
-<span class="c">#!/usr/bin/env roundup</span>
-<span class="c">#/ usage:  rerun stubbs:test -m rundeck-admin -p project-export [--answers &lt;&gt;]</span>
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Helpers</h2>
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>The Plan</h2>
 
-</td><td class=code><div class=highlight><pre>
-<span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Global settings.</h2>
 
-</td><td class=code><div class=highlight><pre>
-describe <span class="s2">&quot;project-export&quot;</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Tests.</h2>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nv">CREDS</span><span class="o">=</span><span class="s2">&quot;--user admin --password admin --url http://localhost:4440&quot;</span>
+</pre></div>
 
-rerun rundeck-admin:project-create <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span>
+</pre></div>
+</pre></div>
+  </div>
+  <div class="fleur">h</div>
 
-</pre></div></td></tr><tr><td class=docs>
-
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre>
-
-it_exports_a_project<span class="o">()</span> <span class="o">{</span>
-
-    <span class="nv">ARCHIVE</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/project.archive.XXXX&quot;</span><span class="k">)</span>
-
-    rerun rundeck-admin:project-export <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span> --archive <span class="nv">$ARCHIVE</span>
-    <span class="nb">test</span> -f <span class="nv">$ARCHIVE</span>
-    file <span class="nv">$ARCHIVE</span> | grep -i zip
-<span class="o">}</span>
-
-
-
-</td><td class=code><div class=highlight><pre>
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre></td><td class='code'></td></tr>
-    </tbody>
-    </table>
 </div>
 </body>
 </html>

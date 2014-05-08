@@ -14,7 +14,7 @@
 
 <h2>SYNOPSIS</h2>
 
-<pre><code>rerun [ARGS] rundeck-admin: [ apitoken-create | apitoken-list | apitoken-remove | jobs-archive | project-create | project-export | project-import | project-list | project-remove | project-replicate | resource-add | resource-get | schedule-takeover | ssh-copy-id ] [OPTIONS]
+<pre><code>rerun [ARGS] rundeck-admin: [ jobs-archive | key-content | key-list | key-remove | key-upload | project-configure | project-create | project-export | project-import | project-info | project-list | project-remove | project-replicate | resource-add | resource-get | schedule-takeover | ssh-copy-id | token-create | token-list | token-remove ] [OPTIONS]
 </code></pre>
 
 <h2>README</h2>
@@ -35,7 +35,7 @@ the module contents.</p>
 
 <p><strong>Download</strong></p>
 
-<p><a href="https://travis-ci.org/ahonor/rundeck-admin"><img src="https://travis-ci.org/ahonor/rundeck-admin.png?branch=master" alt="Build Status" title="" /></a></p>
+<p><a href="https://travis-ci.org/rerun-modules/rundeck-admin"><img src="https://travis-ci.org/rerun-modules/rundeck-admin.png?branch=master" alt="Build Status" title="" /></a></p>
 
 <p>You can download a build of this module either as a shell archive or an RPM.</p>
 
@@ -77,13 +77,22 @@ executable that contains the module:</p>
 
 <p>It can be repetitive to always specify these options each time you run a command
 or you may not like passing the credential information on the command line.
-Rerun can help populate options and their arguments via an answer file. For example,
+You have two options: environment variables or answers file.</p>
+
+<p>To use defaults from environment variables, declare the following</p>
+
+<pre><code>export RUNDECK_USER=admin
+export RUNDECK_PASSWORD=admin
+export RUNDECK_URL=http://rundeck:4440
+</code></pre>
+
+<p>Rerun can help populate options and their arguments via an answer file. For example,
 here is an answers files that stores the user, password and url values:</p>
 
 <pre><code>cat &gt;creds&lt;&lt;EOF
 USER=admin
 PASSWORD=admin
-URL=http://localhost:4440
+URL=http://rundeck:4440
 EOF
 </code></pre>
 
@@ -96,20 +105,26 @@ examples
 <h2>COMMANDS</h2>
 
 <ul>
-<li><a href="commands/apitoken-create/index.html">apitoken-create</a>: Create an API token.</li>
-<li><a href="commands/apitoken-list/index.html">apitoken-list</a>: List the API tokens.</li>
-<li><a href="commands/apitoken-remove/index.html">apitoken-remove</a>: remove an api token</li>
 <li><a href="commands/jobs-archive/index.html">jobs-archive</a>: Archive job files suitable for project import.</li>
+<li><a href="commands/key-content/index.html">key-content</a>: Get the key data content.</li>
+<li><a href="commands/key-list/index.html">key-list</a>: List the key paths in the store.</li>
+<li><a href="commands/key-remove/index.html">key-remove</a>: Remove a key from the store.</li>
+<li><a href="commands/key-upload/index.html">key-upload</a>: Upload key data and store it in the path.</li>
+<li><a href="commands/project-configure/index.html">project-configure</a>: Configure a project.</li>
 <li><a href="commands/project-create/index.html">project-create</a>: Create a project.</li>
 <li><a href="commands/project-export/index.html">project-export</a>: Export a project.</li>
 <li><a href="commands/project-import/index.html">project-import</a>: Import a project archive.</li>
+<li><a href="commands/project-info/index.html">project-info</a>: Get info about a project.</li>
 <li><a href="commands/project-list/index.html">project-list</a>: List the projects.</li>
 <li><a href="commands/project-remove/index.html">project-remove</a>: Remove a project.</li>
 <li><a href="commands/project-replicate/index.html">project-replicate</a>: Replicate the project(s) from one rundeck to another.</li>
-<li><a href="commands/resource-add/index.html">resource-add</a>: add a resource to a project resource model.</li>
-<li><a href="commands/resource-get/index.html">resource-get</a>: get resource info.</li>
+<li><a href="commands/resource-add/index.html">resource-add</a>: Add a resource to a project resource model.</li>
+<li><a href="commands/resource-get/index.html">resource-get</a>: Get resource info.</li>
 <li><a href="commands/schedule-takeover/index.html">schedule-takeover</a>: Claim all scheduled jobs from another cluster server.</li>
 <li><a href="commands/ssh-copy-id/index.html">ssh-copy-id</a>: Copy an SSH key to another server.</li>
+<li><a href="commands/token-create/index.html">token-create</a>: Create an API token.</li>
+<li><a href="commands/token-list/index.html">token-list</a>: List the API tokens.</li>
+<li><a href="commands/token-remove/index.html">token-remove</a>: Remove an api token.</li>
 </ul>
 
 <h2>OPTIONS</h2>
@@ -120,11 +135,13 @@ examples
 <li><a href="options/file/index.html">file</a>: file to store result.</li>
 <li><a href="options/format/index.html">format</a>: the file format.</li>
 <li><a href="options/hostname/index.html">hostname</a>: the server hostname.</li>
-<li><a href="options/keypath/index.html">keypath</a>: path to ssh key file.</li>
+<li><a href="options/import-executions/index.html">import-executions</a>: Creates new Executions and History reports from the archive.</li>
+<li><a href="options/keypath/index.html">keypath</a>: path to key file.</li>
 <li><a href="options/model/index.html">model</a>: the resource model.</li>
 <li><a href="options/password/index.html">password</a>: the login password.</li>
 <li><a href="options/project/index.html">project</a>: the project name.</li>
 <li><a href="options/resource/index.html">resource</a>: the resource name.</li>
+<li><a href="options/retain-uuids/index.html">retain-uuids</a>: Create Jobs with their defined UUIDs or a new UUID will be generated for each Job created.</li>
 <li><a href="options/to-url/index.html">to-url</a>: target rundeck instance.</li>
 <li><a href="options/token/index.html">token</a>: the login token.</li>
 <li><a href="options/url/index.html">url</a>: rundeck server url.</li>
@@ -139,8 +156,10 @@ examples
 <li><a href="tests/apitoken-list-1.html">apitoken-list-1</a></li>
 <li><a href="tests/apitoken-remove-1.html">apitoken-remove-1</a></li>
 <li><a href="tests/jobs-archive-1.html">jobs-archive-1</a></li>
+<li><a href="tests/keys-upload-1.html">keys-upload-1</a></li>
 <li><a href="tests/project-create-1.html">project-create-1</a></li>
 <li><a href="tests/project-export-1.html">project-export-1</a></li>
+<li><a href="tests/project-import-1.html">project-import-1</a></li>
 <li><a href="tests/project-list-1.html">project-list-1</a></li>
 <li><a href="tests/project-remove-1.html">project-remove-1</a></li>
 <li><a href="tests/resource-add-1.html">resource-add-1</a></li>
@@ -160,7 +179,7 @@ examples
 <li><code>NAME</code> = rundeck-admin</li>
 <li><code>DESCRIPTION</code> = "commands to manage your rundecks"</li>
 <li><code>SHELL</code> = "bash"</li>
-<li><code>VERSION</code> = 1.2.1</li>
+<li><code>VERSION</code> = 2.1.0</li>
 <li><code>REQUIRES</code> = </li>
 <li><code>EXTERNALS</code> = "curl,xmlstarlet,expect"</li>
 <li><code>LICENSE</code> = </li>
@@ -168,7 +187,7 @@ examples
 
 <hr />
 
-<p><em>Generated by stubbs:docs Wed Jun 26 07:21:51 PDT 2013</em></p>
+<p><em>Generated by stubbs:docs Thu May  8 13:59:46 PDT 2014</em></p>
  </div>
 </body>
 </html>

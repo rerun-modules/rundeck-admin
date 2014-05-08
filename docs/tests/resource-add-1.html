@@ -1,79 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <meta http-equiv='content-type' content='text/html;charset=utf-8'>
     <title>resource-add-1</title>
-    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/public/stylesheets/normalize.css" />
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/docco.css" />
 </head>
 <body>
-<div id=container>
-    <div id=background></div>
-    <table cellspacing=0 cellpadding=0>
-    <thead>
-      <tr>
-        <th class=docs><h1>resource-add-1</h1></th>
-        <th class=code></th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr><td class='docs'></pre></div></td></tr><tr><td class=docs>
+<div class="container">
+  <div class="page">
+        <div class="header"><h1>resource-add-1</h1></div>
+        </pre></div>
 
-</td><td class=code><div class=highlight><pre>
-<span class="c">#!/usr/bin/env roundup</span>
-<span class="c">#/ usage:  rerun stubbs:test -m rundeck-admin -p resource-add [--answers &lt;&gt;]</span>
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Helpers</h2>
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>The Plan</h2>
 
-</td><td class=code><div class=highlight><pre>
-<span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Global settings.</h2>
 
-</td><td class=code><div class=highlight><pre>
-describe <span class="s2">&quot;resource-add&quot;</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Tests.</h2>
 
 <h2>##### DIVIDER</h2>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nv">CREDS</span><span class="o">=</span><span class="s2">&quot;--user admin --password admin --url http://localhost:4440&quot;</span>
-rerun rundeck-admin:project-create <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span>
+</pre></div>
 
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
+</pre></div>
+  </div>
+  <div class="fleur">h</div>
 
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre>
-
-it_creates_a_resource<span class="o">()</span> <span class="o">{</span>
-    rerun rundeck-admin:resource-add <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span> --model <span class="s2">&quot;-name gilligan -description &#39;silly sailor&#39;&quot;</span>
-<span class="o">}</span>
-
-it_updates_a_resource<span class="o">()</span> <span class="o">{</span>
-    <span class="nv">CREDS</span><span class="o">=</span><span class="s2">&quot;--user admin --password admin --url http://localhost:4440&quot;</span>
-    rerun rundeck-admin:resource-add <span class="nv">$CREDS</span> --project <span class="nb">test</span>-<span class="nv">$$</span> --model <span class="s2">&quot;-name gilligan -description &#39;silly sailor&#39; -osFamily comedian -blar blar&quot;</span>
-<span class="o">}</span>
-
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre>
-
-
-
-</td><td class=code><div class=highlight><pre>
-</td><td class=code><div class=highlight><pre></td><td class='code'></td></tr>
-    </tbody>
-    </table>
 </div>
 </body>
 </html>

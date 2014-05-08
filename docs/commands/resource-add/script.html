@@ -1,267 +1,127 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <meta http-equiv='content-type' content='text/html;charset=utf-8'>
     <title>resource-add</title>
-    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/public/stylesheets/normalize.css" />
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/docco.css" />
 </head>
 <body>
-<div id=container>
-    <div id=background></div>
-    <table cellspacing=0 cellpadding=0>
-    <thead>
-      <tr>
-        <th class=docs><h1>resource-add</h1></th>
-        <th class=code></th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr><td class='docs'><p>To implement this command, edit the "Command implementation" section below.</p>
+<div class="container">
+  <div class="page">
+        <div class="header"><h1>resource-add</h1></div>
+        <p>To implement this command, edit the "Command implementation" section below.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="c">#!/usr/bin/env bash</span>
-
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Usage</h2>
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Comments prefixed with <code>#/</code> are managed by stubbs.
 The <code>command</code> and <code>usage</code> comments describe the command
 and show its options.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="c">#/ command: rundeck-admin:resource-add: &quot;add a resource.&quot;</span>
-<span class="c">#/ usage: rerun rundeck-admin:resource-add  --password &lt;&gt;  --project &lt;&gt;  --user &lt;&gt;  --url &lt;&gt;  --model &lt;&gt; </span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Load common functions</h2>
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Load the function library for this module.
 This loads rerun functions, too.</p>
 
-</td><td class=code><div class=highlight><pre>
-. <span class="nv">$RERUN_MODULE_DIR</span>/lib/functions.sh resource-add <span class="o">||</span> <span class="o">{</span> 
-  <span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;Failed loading function library.&quot;</span> ; <span class="nb">exit </span>1 ; 
-<span class="o">}</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Error handling</h2>
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>This script is designed to <em>fail-fast</em>.</p>
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Trap errors and exit. The call to <code>rerun_die</code> will print the
 the error message and exit with the error command exit status. </p>
 
-</td><td class=code><div class=highlight><pre>
-
-<span class="nb">trap</span> <span class="s1">&#39;rerun_die $? &quot;*** command failed: rundeck-admin:resource-add. ***&quot;&#39;</span> ERR
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Run [set] <code>nounset</code> to treat unset variables as errors. Set [pipefail]
 so a pipeline return status is the value of the last 
 (rightmost) command to exit with non-zero status.</p>
 
-</td><td class=code><div class=highlight><pre>
-
-<span class="nb">set</span> -o nounset -o pipefail
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Command variables</h2>
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>This command script can access the following variables
 declared by <code>rerun</code> or by the option parser function.</p>
 
-</td><td class=code><div class=highlight><pre>
-
-<span class="c">#/ rerun-variables: RERUN, RERUN_VERSION, RERUN_MODULES, RERUN_MODULE_DIR</span>
-<span class="c">#/ option-variables: PASSWORD PROJECT USER URL MODEL</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>The <code>rerun_options_parse</code> function processes the command line
 arguments. Each accepted command line flag results in setting 
 one the corresponding option variables.</p>
 
-</td><td class=code><div class=highlight><pre>
-
-rerun_options_parse <span class="s2">&quot;$@&quot;</span>
-
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Command implementation</h2>
 
-</td><td class=code><div class=highlight><pre>
-
-<span class="k">function </span>quote_whitespace<span class="o">()</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">[[</span> <span class="s2">&quot;$*&quot;</span> <span class="o">=</span>~ <span class="se">\ </span>|<span class="se">\&#39;</span> <span class="o">]]</span>
-    <span class="k">then  </span><span class="nb">echo</span> <span class="se">\&quot;</span><span class="nv">$*</span><span class="se">\&quot;</span>
-    <span class="k">else  </span><span class="nb">echo</span> <span class="nv">$*</span>
-    <span class="k">fi</span>
-<span class="o">}</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Parse the resource metamodel.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nb">eval set</span> -- <span class="nv">$MODEL</span>
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>XML<em>ED</em>ATTRS contains the xmlstarlet edit options</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nb">declare</span> -a XML_ED_ATTRS
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Each metamodel property is prefixed with a leading dash.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="k">while</span> <span class="o">[</span> <span class="s2">&quot;$#&quot;</span> -gt 1 <span class="o">]</span>
-<span class="k">do</span>
-<span class="k">    </span><span class="nv">PROP</span><span class="o">=</span><span class="s2">&quot;$1&quot;</span> <span class="nv">VALUE</span><span class="o">=</span><span class="s2">&quot;$2&quot;</span>
-    <span class="k">case</span> <span class="s2">&quot;$PROP&quot;</span> in
-        -name<span class="o">)</span> <span class="nv">NAME</span><span class="o">=</span><span class="k">${</span><span class="nv">VALUE</span><span class="k">}</span> 
-            <span class="nb">shift</span>;;
-        -description<span class="o">)</span> <span class="nv">DESCRIPTION</span><span class="o">=</span><span class="k">${</span><span class="nv">VALUE</span><span class="k">}</span> 
-            <span class="nb">shift</span>;;
-        -*<span class="o">)</span> <span class="nv">XML_ED_ATTRS</span><span class="o">=(</span> <span class="k">${</span><span class="nv">XML_ED_ATTRS</span><span class="p">[*]</span><span class="k">:-}</span> 
-                -i //NodeTMP -t attr -n <span class="k">${</span><span class="nv">PROP</span><span class="p">#-*</span><span class="k">}</span> -v <span class="k">$(</span>quote_whitespace <span class="k">${</span><span class="nv">VALUE</span><span class="k">})</span> <span class="o">)</span>
-            <span class="nb">shift</span>;;
-    <span class="k">esac</span>
-<span class="k">    </span><span class="nb">shift</span>
-<span class="k">done</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Make sure -name was declared.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="o">[</span> -z <span class="s2">&quot;${NAME:-}&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">{</span> 
-    rerun_die 2 <span class="s2">&quot;--model did not contain a required property: -name &lt;&gt;&quot;</span>
-<span class="o">}</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Authenticate.</h2>
 
-</td><td class=code><div class=highlight><pre>
-rundeck_login <span class="nv">$URL</span> <span class="nv">$USER</span> <span class="nv">$PASSWORD</span>
-
-
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Get the resources for the project.</h2>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nv">APIURL</span><span class="o">=</span><span class="s2">&quot;${URL}/api/3/resources?project=$PROJECT&amp;name=.*&quot;</span>
-<span class="c">#APIURL=&quot;${URL}/api/3/project/$PROJECT/resources&quot; ;#buggy?</span>
-
-<span class="nv">CURL_OUT</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/curl.out.XXXXX&quot;</span><span class="k">)</span>
-<span class="nv">RESOURCES</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/resources.xml.XXXXX&quot;</span><span class="k">)</span>
-
-<span class="k">if</span> ! rundeck_curl -o <span class="nv">$RESOURCES</span> <span class="nv">$APIURL</span>
-<span class="k">then</span>
-<span class="k">    </span>rerun_die 3 <span class="s2">&quot;API error: $APIURL&quot;</span>
-<span class="k">fi</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Check if the resource is already defined.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="k">if</span> ! xmlstarlet sel -t -m <span class="s2">&quot;/project/node[@name=&#39;${NAME}&#39;]&quot;</span> -v @name <span class="nv">$RESOURCES</span>
-<span class="k">then</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Generate a new node definition.
 An xml element called <code>NodeTMP</code> is used to declare node attributes
 and later renamed back to <code>node</code>.</p>
 
-</td><td class=code><div class=highlight><pre>
-    xmlstarlet ed -L -s /project -t elem -n NodeTMP -v <span class="s2">&quot;&quot;</span><span class="se">\</span>
-       -i //NodeTMP -t attr -n name -v <span class="s2">&quot;$NAME&quot;</span> <span class="se">\</span>
-       -i //NodeTMP -t attr -n description -v <span class="s2">&quot;${DESCRIPTION:-none}&quot;</span> <span class="se">\</span>
-       <span class="k">${</span><span class="nv">XML_ED_ATTRS</span><span class="p">[*]</span><span class="k">:-}</span> -r //NodeTMP -v node <span class="nv">$RESOURCES</span>
-    <span class="c">#cat $RESOURCES ;# debug</span>
-<span class="k">else</span>
-<span class="k">    </span><span class="nb">echo</span> <span class="s2">&quot;node:$NAME already defined in project:$PROJECT.&quot;</span>
-    <span class="nb">exit </span>0
-<span class="k">fi</span>
-
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Post the updated resources.xml back to rundeck.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nv">APIURL</span><span class="o">=</span><span class="s2">&quot;${URL}/api/3/project/$PROJECT/resources&quot;</span>
-<span class="k">if</span> ! rundeck_curl -X POST -H <span class="s2">&quot;Content-Type: text/xml&quot;</span> -d @<span class="nv">$RESOURCES</span> -o <span class="nv">$CURL_OUT</span> <span class="nv">$APIURL</span>
-<span class="k">then</span>
-<span class="k">    </span>rerun_die 3 <span class="s2">&quot;API error: $APIURL&quot;</span>
-<span class="k">fi</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Check results.</p>
 
-</td><td class=code><div class=highlight><pre>
-
-<span class="k">if</span> ! xmlstarlet sel -T -t -v <span class="s2">&quot;/result/@success&quot;</span> <span class="nv">$CURL_OUT</span>
-<span class="k">then</span>
-<span class="k">    </span><span class="nb">echo</span> &gt;&amp;2 <span class="s2">&quot;ERROR: Request failed: &quot;</span>
-    xmlstarlet sel -T -t -m <span class="s2">&quot;/result/error/message&quot;</span> -v <span class="s2">&quot;.&quot;</span> -n  <span class="nv">$CURL_OUT</span>
-    <span class="nb">exit </span>2
-<span class="k">fi</span>
-
-
-rm <span class="nv">$CURL_OUT</span> <span class="nv">$RESOURCES</span>
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Done. Exit with last command exit status.</p>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nb">exit</span> <span class="nv">$?</span>
+</pre></div>
 
+</pre></div>
+</pre></div>
+  </div>
+  <div class="fleur">h</div>
 
-
-</td><td class=code><div class=highlight><pre>
-</pre></div></td></tr><tr><td class=docs>
-
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs></td><td class='code'></td></tr>
-    </tbody>
-    </table>
 </div>
 </body>
 </html>

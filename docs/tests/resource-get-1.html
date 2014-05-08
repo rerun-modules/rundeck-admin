@@ -1,125 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <meta http-equiv='content-type' content='text/html;charset=utf-8'>
     <title>resource-get-1</title>
-    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/public/stylesheets/normalize.css" />
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/docco.css" />
 </head>
 <body>
-<div id=container>
-    <div id=background></div>
-    <table cellspacing=0 cellpadding=0>
-    <thead>
-      <tr>
-        <th class=docs><h1>resource-get-1</h1></th>
-        <th class=code></th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr><td class='docs'></pre></div></td></tr><tr><td class=docs>
+<div class="container">
+  <div class="page">
+        <div class="header"><h1>resource-get-1</h1></div>
+        </pre></div>
 
-</td><td class=code><div class=highlight><pre>
-<span class="c">#!/usr/bin/env roundup</span>
-<span class="c">#/ usage:  rerun stubbs:test -m rundeck-admin -p resource-get [--answers &lt;&gt;]</span>
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Helpers</h2>
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>The Plan</h2>
 
-</td><td class=code><div class=highlight><pre>
-<span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Global settings.</h2>
 
-</td><td class=code><div class=highlight><pre>
-describe <span class="s2">&quot;resource-get&quot;</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Tests.</h2>
 
-</td><td class=code><div class=highlight><pre>
-<span class="nv">CREDS</span><span class="o">=</span><span class="s2">&quot;--user admin --password admin --url http://localhost:4440&quot;</span>
-<span class="nv">PROJECT</span><span class="o">=</span><span class="s2">&quot;test-resource-get&quot;</span>
-rerun rundeck-admin:project-create <span class="nv">$CREDS</span> --project <span class="nv">$PROJECT</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Add a resource.</p>
 
-</td><td class=code><div class=highlight><pre>
-
-it_fails_for_unpported_format<span class="o">()</span> <span class="o">{</span>
-    <span class="k">if</span> ! rerun rundeck-admin:resource-get <span class="nv">$CREDS</span> --project <span class="nv">$PROJECT</span> --resource skipper --format B0GUS --file skipper.xml
-    <span class="k">then</span>
-        :;#yay
-    <span class="k">else</span>
-<span class="k">        </span><span class="nb">exit </span>1
-    <span class="k">fi</span>
-<span class="o">}</span>
-
-it_gets_a_resource<span class="o">()</span> <span class="o">{</span>
-    
-    <span class="nv">name</span><span class="o">=</span><span class="s2">&quot;skipper-$$&quot;</span>
-    <span class="nv">description</span><span class="o">=</span><span class="s2">&quot;a bumbling captain&quot;</span>
-    <span class="nv">resultfile</span><span class="o">=</span><span class="k">$(</span>mktemp <span class="s2">&quot;/tmp/resource.xml.XXXX&quot;</span><span class="k">)</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Get the resource.</p>
 
-</td><td class=code><div class=highlight><pre>
-    rerun rundeck-admin:resource-add <span class="nv">$CREDS</span> --project <span class="nv">$PROJECT</span>  --model <span class="s2">&quot;-name ${name} -description &#39;${description}&#39;&quot;</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Specify an output file store the result.</p>
 
-</td><td class=code><div class=highlight><pre>
-    
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Confirm the model has the input data.</p>
 
-</td><td class=code><div class=highlight><pre>
-    rerun rundeck-admin:resource-get <span class="nv">$CREDS</span> --project <span class="nv">$PROJECT</span> --resource <span class="k">${</span><span class="nv">name</span><span class="k">}</span> --format xml --file <span class="k">${</span><span class="nv">resultfile</span><span class="k">}</span>
-    xmlstarlet val <span class="k">${</span><span class="nv">resultfile</span><span class="k">}</span>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <p>Test it writes to standard out when no --file is specified. Redirect standard output to a file.</p>
 
 <h2>##### DIVIDER</h2>
 
-</td><td class=code><div class=highlight><pre>
-    <span class="nb">test</span> <span class="s2">&quot;$name&quot;</span> <span class="o">=</span> <span class="s2">&quot;$(xmlstarlet sel -t -m &quot;</span>/project/node<span class="s2">&quot; -v @name ${resultfile})&quot;</span>
-    <span class="nb">test</span> <span class="s2">&quot;$description&quot;</span> <span class="o">=</span> <span class="s2">&quot;$(xmlstarlet sel -t -m &quot;</span>/project/node<span class="s2">&quot; -v @description ${resultfile})&quot;</span>
+</pre></div>
 
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
+</pre></div>
+  </div>
+  <div class="fleur">h</div>
 
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre>
-    rerun rundeck-admin:resource-get <span class="nv">$CREDS</span> --project <span class="nv">$PROJECT</span> --resource <span class="k">${</span><span class="nv">name</span><span class="k">}</span> --format xml &gt; <span class="nv">$resultfile</span>
-    xmlstarlet val <span class="k">${</span><span class="nv">resultfile</span><span class="k">}</span>
-
-    rm <span class="k">${</span><span class="nv">resultfile</span><span class="k">}</span>
-<span class="o">}</span>
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre>
-
-
-
-</td><td class=code><div class=highlight><pre>
-</td><td class=code><div class=highlight><pre></td><td class='code'></td></tr>
-    </tbody>
-    </table>
 </div>
 </body>
 </html>

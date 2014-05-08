@@ -4,7 +4,7 @@ commands to manage your rundecks
 
 ## SYNOPSIS
 
-    rerun [ARGS] rundeck-admin: [ apitoken-create | apitoken-list | apitoken-remove | jobs-archive | project-create | project-export | project-import | project-list | project-remove | project-replicate | resource-add | resource-get | schedule-takeover | ssh-copy-id ] [OPTIONS]
+    rerun [ARGS] rundeck-admin: [ jobs-archive | key-content | key-list | key-remove | key-upload | project-configure | project-create | project-export | project-import | project-info | project-list | project-remove | project-replicate | resource-add | resource-get | schedule-takeover | ssh-copy-id | token-create | token-list | token-remove ] [OPTIONS]
 
 ## README
 
@@ -22,7 +22,7 @@ the module contents.
 
 **Download**
 
-[![Build Status](https://travis-ci.org/ahonor/rundeck-admin.png?branch=master)](https://travis-ci.org/ahonor/rundeck-admin)
+[![Build Status](https://travis-ci.org/rerun-modules/rundeck-admin.png?branch=master)](https://travis-ci.org/rerun-modules/rundeck-admin)
 
 You can download a build of this module either as a shell archive or an RPM.
 
@@ -57,13 +57,21 @@ The rundeck-admin commands require three common options used to access rundeck:
 
 It can be repetitive to always specify these options each time you run a command
 or you may not like passing the credential information on the command line.
+You have two options: environment variables or answers file.
+
+To use defaults from environment variables, declare the following
+
+    export RUNDECK_USER=admin
+    export RUNDECK_PASSWORD=admin
+    export RUNDECK_URL=http://rundeck:4440
+
 Rerun can help populate options and their arguments via an answer file. For example,
 here is an answers files that stores the user, password and url values:
 
     cat >creds<<EOF
     USER=admin
     PASSWORD=admin
-    URL=http://localhost:4440
+    URL=http://rundeck:4440
     EOF
 
 Here's `project-list` using the user,password and url info from the answer file:
@@ -73,20 +81,26 @@ Here's `project-list` using the user,password and url info from the answer file:
 
 ## COMMANDS
 
-* [apitoken-create](commands/apitoken-create/index.html): Create an API token.
-* [apitoken-list](commands/apitoken-list/index.html): List the API tokens.
-* [apitoken-remove](commands/apitoken-remove/index.html): remove an api token
 * [jobs-archive](commands/jobs-archive/index.html): Archive job files suitable for project import.
+* [key-content](commands/key-content/index.html): Get the key data content.
+* [key-list](commands/key-list/index.html): List the key paths in the store.
+* [key-remove](commands/key-remove/index.html): Remove a key from the store.
+* [key-upload](commands/key-upload/index.html): Upload key data and store it in the path.
+* [project-configure](commands/project-configure/index.html): Configure a project.
 * [project-create](commands/project-create/index.html): Create a project.
 * [project-export](commands/project-export/index.html): Export a project.
 * [project-import](commands/project-import/index.html): Import a project archive.
+* [project-info](commands/project-info/index.html): Get info about a project.
 * [project-list](commands/project-list/index.html): List the projects.
 * [project-remove](commands/project-remove/index.html): Remove a project.
 * [project-replicate](commands/project-replicate/index.html): Replicate the project(s) from one rundeck to another.
-* [resource-add](commands/resource-add/index.html): add a resource to a project resource model.
-* [resource-get](commands/resource-get/index.html): get resource info.
+* [resource-add](commands/resource-add/index.html): Add a resource to a project resource model.
+* [resource-get](commands/resource-get/index.html): Get resource info.
 * [schedule-takeover](commands/schedule-takeover/index.html): Claim all scheduled jobs from another cluster server.
 * [ssh-copy-id](commands/ssh-copy-id/index.html): Copy an SSH key to another server.
+* [token-create](commands/token-create/index.html): Create an API token.
+* [token-list](commands/token-list/index.html): List the API tokens.
+* [token-remove](commands/token-remove/index.html): Remove an api token.
 
 ## OPTIONS
 
@@ -95,11 +109,13 @@ Here's `project-list` using the user,password and url info from the answer file:
 * [file](options/file/index.html): file to store result.
 * [format](options/format/index.html): the file format.
 * [hostname](options/hostname/index.html): the server hostname.
-* [keypath](options/keypath/index.html): path to ssh key file.
+* [import-executions](options/import-executions/index.html): Creates new Executions and History reports from the archive.
+* [keypath](options/keypath/index.html): path to key file.
 * [model](options/model/index.html): the resource model.
 * [password](options/password/index.html): the login password.
 * [project](options/project/index.html): the project name.
 * [resource](options/resource/index.html): the resource name.
+* [retain-uuids](options/retain-uuids/index.html): Create Jobs with their defined UUIDs or a new UUID will be generated for each Job created.
 * [to-url](options/to-url/index.html): target rundeck instance.
 * [token](options/token/index.html): the login token.
 * [url](options/url/index.html): rundeck server url.
@@ -112,8 +128,10 @@ Here's `project-list` using the user,password and url info from the answer file:
 * [apitoken-list-1](tests/apitoken-list-1.html)
 * [apitoken-remove-1](tests/apitoken-remove-1.html)
 * [jobs-archive-1](tests/jobs-archive-1.html)
+* [keys-upload-1](tests/keys-upload-1.html)
 * [project-create-1](tests/project-create-1.html)
 * [project-export-1](tests/project-export-1.html)
+* [project-import-1](tests/project-import-1.html)
 * [project-list-1](tests/project-list-1.html)
 * [project-remove-1](tests/project-remove-1.html)
 * [resource-add-1](tests/resource-add-1.html)
@@ -129,11 +147,11 @@ Here's `project-list` using the user,password and url info from the answer file:
 * `NAME` = rundeck-admin
 * `DESCRIPTION` = "commands to manage your rundecks"
 * `SHELL` = "bash"
-* `VERSION` = 1.2.1
+* `VERSION` = 2.1.0
 * `REQUIRES` = 
 * `EXTERNALS` = "curl,xmlstarlet,expect"
 * `LICENSE` = 
 
 ----
 
-*Generated by stubbs:docs Wed Jun 26 07:21:51 PDT 2013*
+*Generated by stubbs:docs Thu May  8 13:59:46 PDT 2014*

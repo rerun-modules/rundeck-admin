@@ -1,65 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-eqiv='content-type' content='text/html;charset=utf-8'>
+    <meta http-equiv='content-type' content='text/html;charset=utf-8'>
     <title>project-create-1</title>
-    <link rel=stylesheet href="http://jashkenas.github.com/docco/resources/classic/docco.css">
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/public/stylesheets/normalize.css" />
+    <link rel="stylesheet" media="all" href="http://jashkenas.github.io/docco/resources/linear/docco.css" />
 </head>
 <body>
-<div id=container>
-    <div id=background></div>
-    <table cellspacing=0 cellpadding=0>
-    <thead>
-      <tr>
-        <th class=docs><h1>project-create-1</h1></th>
-        <th class=code></th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr><td class='docs'></pre></div></td></tr><tr><td class=docs>
+<div class="container">
+  <div class="page">
+        <div class="header"><h1>project-create-1</h1></div>
+        </pre></div>
 
-</td><td class=code><div class=highlight><pre>
-<span class="c">#!/usr/bin/env roundup</span>
-<span class="c">#/ usage:  rerun stubbs:test -m rundeck-admin -p project-create [--answers &lt;&gt;]</span>
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>Helpers</h2>
 
-</td><td class=code><div class=highlight><pre>
-
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
 
 <h2>The Plan</h2>
 
-</td><td class=code><div class=highlight><pre>
-<span class="o">[[</span> -f ./functions.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> . ./functions.sh
+</pre></div>
 
-</pre></div></td></tr><tr><td class=docs>
+</pre></div>
+</pre></div>
+  </div>
+  <div class="fleur">h</div>
 
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre>
-describe <span class="s2">&quot;project-create&quot;</span>
-
-
-it_creates_a_projects<span class="o">()</span> <span class="o">{</span>
-    rerun rundeck-admin:project-create --project <span class="nb">test</span>-<span class="nv">$$</span> <span class="se">\</span>
-        --url http://localhost:4440 <span class="se">\</span>
-        --user admin --password admin
-
-
-    <span class="nv">projects</span><span class="o">=(</span><span class="k">$(</span>rerun rundeck-admin:project-list --url http://localhost:4440 <span class="se">\</span>
-        --user admin --password admin<span class="k">)</span><span class="o">)</span>
-    <span class="nb">echo</span> <span class="s2">&quot;${projects[*]}&quot;</span> | grep <span class="nb">test</span>-<span class="nv">$$</span>
-<span class="o">}</span>
-
-
-
-
-</td><td class=code><div class=highlight><pre>
-</pre></div></td></tr><tr><td class=docs>
-</td><td class=code><div class=highlight><pre></td><td class='code'></td></tr>
-    </tbody>
-    </table>
 </div>
 </body>
 </html>
