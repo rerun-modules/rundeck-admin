@@ -1,6 +1,6 @@
 #!/usr/bin/env roundup
 #
-#/ usage:  rerun stubbs:test -m rundeck-admin -p apitoken-create [--answers <>]
+#/ usage:  rerun stubbs:test -m rundeck-admin -p token-create [--answers <>]
 #
 
 # Helpers
@@ -9,14 +9,14 @@
 
 # The Plan
 # --------
-describe "apitoken-create"
+describe "token-create"
 
 
 # ------------------------------
 
 it_creates_a_token() {
 
-    API_KEY=$(rerun rundeck-admin:apitoken-create --user admin --password admin --url http://localhost:4440)
+    API_KEY=$(rerun rundeck-admin:token-create --user admin --password admin --url http://localhost:4440)
 
     test -n "$API_KEY"
 
