@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:key-list: "list keys"
-#/ usage: rerun rundeck-admin:key-list  --keypath <>  --user <admin>  --password <admin>  --url <http://192.168.50.2:4440> 
+#/ usage: rerun rundeck-admin:key-list  --keypath <>  --user <>  --password <>  --url <> 
 
 # Load common functions
 # ---------------------

@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:project-configure: "Configure a project."
-#/ usage: rerun rundeck-admin:project-configure  --project <>  --url <http://192.168.50.2:4440>  --user <admin>  --password <admin> [ --file <>] [ --format <>] 
+#/ usage: rerun rundeck-admin:project-configure  --project <>  --url <>  --user <>  --password <> [ --file <>] [ --format <>] 
 
 # Load common functions
 # ---------------------

@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:token-create: "Create an API token."
-#/ usage: rerun rundeck-admin:token-create  --password <admin>  --url <http://localhost:4440>  --user <admin> 
+#/ usage: rerun rundeck-admin:token-create  --password <>  --url <>  --user <> 
 
 # Load common functions
 # ---------------------

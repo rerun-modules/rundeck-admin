@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:token-list: "List the API tokens."
-#/ usage: rerun rundeck-admin:token-list  --password <admin>  --url <http://192.168.50.2:4440>  --user <admin> 
+#/ usage: rerun rundeck-admin:token-list  --password <>  --url <>  --user <> 
 
 # Load common functions
 # ---------------------

@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:key-upload: "Upload key data and store it in the path."
-#/ usage: rerun rundeck-admin:key-upload [ --file <>]  --keypath <>  --user <admin>  --password <admin>  --url <http://localhost:4440> [ --format <>] 
+#/ usage: rerun rundeck-admin:key-upload [ --file <>]  --keypath <>  --user <>  --password <>  --url <> [ --format <>] 
 
 # Load common functions
 # ---------------------

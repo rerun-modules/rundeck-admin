@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:token-remove: "remove an api token"
-#/ usage: rerun rundeck-admin:token-remove  --user <admin>  --password <admin>  --token <>  --url <http://localhost:4440> 
+#/ usage: rerun rundeck-admin:token-remove  --user <>  --password <>  --token <>  --url <> 
 
 # Load common functions
 # ---------------------

@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:project-info: "Get info about a project."
-#/ usage: rerun rundeck-admin:project-info  --project <>  --url <http://192.168.50.2:4440>  --user <admin>  --password <admin> [ --format <>] 
+#/ usage: rerun rundeck-admin:project-info  --project <>  --url <>  --user <>  --password <> [ --format <>] 
 
 # Load common functions
 # ---------------------

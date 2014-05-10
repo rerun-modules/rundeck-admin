@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:project-export: "Export a project."
-#/ usage: rerun rundeck-admin:project-export  --project <>  --url <http://192.168.50.2:4440>  --user <admin>  --password <admin> [ --archive <>] 
+#/ usage: rerun rundeck-admin:project-export  --project <>  --url <>  --user <>  --password <> [ --archive <>] 
 
 # Load common functions
 # ---------------------

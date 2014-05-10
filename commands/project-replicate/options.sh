@@ -40,7 +40,9 @@ rerun_options_parse() {
     done
 
     # Set defaultable options.
-
+    [ -z "$URL" ] && URL="$(rerun_property_get $RERUN_MODULE_DIR/options/url DEFAULT)"
+    [ -z "$USER" ] && USER="$(rerun_property_get $RERUN_MODULE_DIR/options/user DEFAULT)"
+    [ -z "$PASSWORD" ] && PASSWORD="$(rerun_property_get $RERUN_MODULE_DIR/options/password DEFAULT)"
     # Check required options are set
     [ -z "$URL" ] && { echo >&2 "missing required option: --url" ; return 2 ; }
     [ -z "$TO_URL" ] && { echo >&2 "missing required option: --to-url" ; return 2 ; }

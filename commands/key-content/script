@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:key-content: "Get the key data content."
-#/ usage: rerun rundeck-admin:key-content  --keypath <>  --user <admin>  --password <admin>  --url <http://localhost:4440> 
+#/ usage: rerun rundeck-admin:key-content  --keypath <>  --user <>  --password <>  --url <> 
 
 # Load common functions
 # ---------------------

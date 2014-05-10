@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:project-remove: "Remove a project."
-#/ usage: rerun rundeck-admin:project-remove  --project <>  --url <http://192.168.50.2:4440>  --user <admin>  --password <admin> 
+#/ usage: rerun rundeck-admin:project-remove  --project <>  --url <>  --user <>  --password <> 
 
 # Load common functions
 # ---------------------

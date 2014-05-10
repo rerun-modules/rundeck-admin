@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:key-remove: "remove a key"
-#/ usage: rerun rundeck-admin:key-remove  --keypath <>  --user <admin>  --password <admin>  --url <http://192.168.50.2:4440> 
+#/ usage: rerun rundeck-admin:key-remove  --keypath <>  --user <>  --password <>  --url <> 
 
 # Load common functions
 # ---------------------

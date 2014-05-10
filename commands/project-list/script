@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:project-list: "List the projects."
-#/ usage: rerun rundeck-admin:project-list 
+#/ usage: rerun rundeck-admin:project-list  --url <$RUNDECK_URL>  --user <$RUNDECK_USER>  --password <$RUNDECK_PASSWORD> 
 
 # Load common functions
 # ---------------------
