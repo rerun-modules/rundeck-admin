@@ -10,7 +10,7 @@
 # and show its options.
 # 
 #/ command: rundeck-admin:project-create: "Create a project."
-#/ usage: rerun rundeck-admin:project-create  --project <>  --url <>  --user <>  --password <> 
+#/ usage: rerun rundeck-admin:project-create  --project <>  --url <$RUNDECK_URL>  --user <$RUNDECK_USER>  --password <$RUNDECK_PASSWORD> 
 
 # Load common functions
 # ---------------------
