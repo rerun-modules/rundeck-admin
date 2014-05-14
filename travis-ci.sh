@@ -70,8 +70,7 @@ $RERUN bintray:package-upload \
     --file rerun.bin
 
 # Build a deb
-RELEASE=0
-$RERUN stubbs:archive --modules $MODULE --format deb
+$RERUN stubbs:archive --modules $MODULE --format deb --version ${VERSION} --release ${RELEASE}
 DEB=rerun-${MODULE}_${VERSION}-${RELEASE}_all.deb
 [ ! -f $DEB ] && {
     echo >&2 "ERROR: $DEB file was not created."
