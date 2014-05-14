@@ -67,17 +67,17 @@ $RERUN bintray:package-upload \
     --package $MODULE      --version $VERSION \
     --file rerun.bin
 
-# Build an RPM
-$RERUN stubbs:archive --modules $MODULE --format rpm --file rerun-$MODULE-$VERSION.rpm
-[ ! -f rerun-$MODULE-$VERSION.rpm ] && {
-    echo >&2 "ERROR: rpm was not created."; exit 1
+# Build a deb
+$RERUN stubbs:archive --modules $MODULE --format deb --file rerun-$MODULE-$VERSION.deb
+[ ! -f rerun-$MODULE-$VERSION.deb ] && {
+    echo >&2 "ERROR: deb was not created."; exit 1
 }
-echo "Uploading rerun-$MODULE-$VERSION.rpm to bintray: /rerun/rerun-rpm/${MODULE}/${VERSION}..."
+echo "Uploading rerun-$MODULE-$VERSION.deb to bintray: /rerun/rerun-deb/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
-    --org rerun   --repo rerun-rpm \
+    --org rerun   --repo rerun-deb \
     --package rerun-$MODULE      --version $VERSION \
-    --file rerun-$MODULE-$VERSION.rpm
+    --file rerun-$MODULE-$VERSION.deb
 
 
 
