@@ -78,11 +78,11 @@ DEB=rerun-${MODULE}_${VERSION}-${RELEASE}_all.deb
     echo >&2 "ERROR: ${#files[*]} files matching .deb: ${files[*]}"
     exit 1
 }
-echo "Uploading debian package $DEB to bintray: /${BINTRAY_ORG}/rerun-deb/${MODULE}/${VERSION}..."
+echo "Uploading debian package $DEB to bintray: /${BINTRAY_ORG}/rerun-deb ..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
     --org ${BINTRAY_ORG}   --repo rerun-deb \
-    --package ${MODULE}      --version $VERSION \
+    --package rerun-${MODULE}      --version $VERSION \
     --file $DEB
 
 # Build a rpm
@@ -95,7 +95,7 @@ RPM=rerun-${MODULE}-${VERSION}-${RELEASE}.noarch.rpm
     echo >&2 "ERROR: ${#files[*]} files matching .rpm: ${files[*]}"
     exit 1
 }
-echo "Uploading rpm package $RPM to bintray: /${BINTRAY_ORG}/rerun-rpm/${MODULE}/${VERSION}..."
+echo "Uploading rpm package $RPM to bintray: /${BINTRAY_ORG}/rerun-rpm ..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
     --org ${BINTRAY_ORG}   --repo rerun-rpm \
