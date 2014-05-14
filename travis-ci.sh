@@ -60,11 +60,27 @@ $RERUN stubbs:archive --modules $MODULE
 ./rerun.bin $MODULE
 
 # Upload and publish to bintray
-echo "Uploading the build to bintray: /${BINTRAY_ORG}/${BINTRAY_REPO}/${MODULE}/${VERSION}..."
+echo "Uploading rerun.bin to bintray: /${BINTRAY_ORG}/${BINTRAY_REPO}/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
     --org ${BINTRAY_ORG}   --repo ${BINTRAY_REPO} \
     --package $MODULE      --version $VERSION \
     --file rerun.bin
+
+# Build an RPM
+$RERUN stubbs:archive --modules $MODULE --format rpm --file rerun-$MODULE-$VERSION.rpm
+[ ! -f rerun-$MODULE-$VERSION.rpm ] && {
+    echo >&2 "ERROR: rpm was not created."; exit 1
+}
+echo "Uploading rerun-$MODULE-$VERSION.rpm to bintray: /rerun/rerun-rpm/${MODULE}/${VERSION}..."
+$RERUN bintray:package-upload \
+    --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
+    --org rerun   --repo rerun-rpm \
+    --package rerun-$MODULE      --version $VERSION \
+    --file rerun-$MODULE-$VERSION.rpm
+
+
+
+
 
 echo "Done."
