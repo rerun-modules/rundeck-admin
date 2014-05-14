@@ -119,4 +119,36 @@ EOF
 	rm -r $jobs_dir $extract_dir $archive_dir
 }
 
+it_ignores_bogus_xml_files() {
+  jobs_dir=$(mktemp -d "/tmp/jobs.XXXX")
+  archive_dir=$(mktemp -d "/tmp/archive.dir.XXXX")
+  extract_dir=$(mktemp -d "/tmp/archive-extract.XXXXX")
+
+  # Legit job definition.
+  cat > $jobs_dir/job1.xml <<EOF
+<joblist>
+  <job>
+    <name>job1</name>
+  </job>
+</joblist>
+EOF
+
+  # Bogus job definition.
+  cat > $jobs_dir/fun.xml <<EOF
+<fun>
+  <haha/>
+</fun>
+EOF
+
+  # Archive the definitions. Only the legit one should be in the archive.
+  rerun rundeck-admin: jobs-archive --dir $jobs_dir --archive $archive_dir/archive.zip
+  unzip -d $extract_dir $archive_dir/archive.zip
+  cd $extract_dir  
+  files=( rundeck-archive/jobs/* )
+  test ${#files[*]} -eq 1
+  test "job1" = $(xmlstarlet sel -t -m /joblist/job -v name rundeck-archive/jobs/job-0.xml)
+
+  # Clean up the test data.
+  rm -r $jobs_dir $extract_dir $archive_dir
+}
 
