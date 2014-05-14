@@ -74,7 +74,10 @@ RELEASE=0
 $RERUN stubbs:archive --modules $MODULE --format deb
 DEB=rerun-${MODULE}_${VERSION}-${RELEASE}_all.deb
 [ ! -f $DEB ] && {
-    echo >&2 "ERROR: $DEB file was not created."; exit 1
+    echo >&2 "ERROR: $DEB file was not created."
+    files=( *.deb )
+    echo >&2 "ERROR: ${#files[*]} files matching .deb: ${files[*]}"
+    exit 1
 }
 echo "Uploading $DEB to bintray: /rerun/rerun-deb/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
