@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # Fail fast on errors and unset variables.
-set -e
-set -u
+set -eu
 
 
 # The module we're building.
