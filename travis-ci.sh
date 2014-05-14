@@ -16,6 +16,8 @@ VERSION=$(awk -F= '/VERSION/ {print $2}' metadata)
 [ -z "${VERSION:-}" ] && {
     echo >&2 "ERROR: Version info could not be found in metadata file."; exit 1
 }
+
+
 echo "Building version $VERSION..."
 # Create a scratch directory and change directory to it.
 WORK_DIR=$(mktemp -d "/tmp/build-$MODULE.XXXXXX")
@@ -68,16 +70,18 @@ $RERUN bintray:package-upload \
     --file rerun.bin
 
 # Build a deb
-$RERUN stubbs:archive --modules $MODULE --format deb --file rerun-$MODULE-$VERSION.deb
-[ ! -f rerun-$MODULE-$VERSION.deb ] && {
-    echo >&2 "ERROR: deb was not created."; exit 1
+RELEASE=0
+$RERUN stubbs:archive --modules $MODULE --format deb
+DEB=rerun-$MODULE_$VERSION-${RELEASE}_all.deb
+[ ! -f $DEB ] && {
+    echo >&2 "ERROR: $DEB file was not created."; exit 1
 }
-echo "Uploading rerun-$MODULE-$VERSION.deb to bintray: /rerun/rerun-deb/${MODULE}/${VERSION}..."
+echo "Uploading $DEB to bintray: /rerun/rerun-deb/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
     --org rerun   --repo rerun-deb \
     --package rerun-$MODULE      --version $VERSION \
-    --file rerun-$MODULE-$VERSION.deb
+    --file $DEB
 
 
 
