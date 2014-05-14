@@ -72,7 +72,7 @@ $RERUN bintray:package-upload \
 # Build a deb
 RELEASE=0
 $RERUN stubbs:archive --modules $MODULE --format deb
-DEB=rerun-$MODULE_$VERSION-${RELEASE}_all.deb
+DEB=rerun-${MODULE}_${VERSION}-${RELEASE}_all.deb
 [ ! -f $DEB ] && {
     echo >&2 "ERROR: $DEB file was not created."; exit 1
 }
@@ -80,7 +80,7 @@ echo "Uploading $DEB to bintray: /rerun/rerun-deb/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
     --org rerun   --repo rerun-deb \
-    --package rerun-$MODULE      --version $VERSION \
+    --package rerun-${MODULE}      --version $VERSION \
     --file $DEB
 
 
