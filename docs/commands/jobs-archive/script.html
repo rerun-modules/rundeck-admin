@@ -106,16 +106,12 @@ The executions and reports subdirs will stay empty.</p>
 
 </pre></div>
 
-<p>Process any XML files that contain /joblist/job elements and add them to the archive dir.
+<p>Recursively, process any XML files that contain /joblist/job elements and add them to the archive dir.
 Each file found will be counted and named after its position in the count.</p>
 
 </pre></div>
 
-<p>ignore the file. it does not look like a job definition.</p>
-
-</pre></div>
-
-<p>copy the job definition to the work dir. job file name pattern: job-{text}.xml</p>
+<p>copy the job definition to the work dir using file name format: job-{count}.{extension}</p>
 
 </pre></div>
 

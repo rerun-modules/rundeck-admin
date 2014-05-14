@@ -1,4 +1,4 @@
-.TH rundeck-admin 1 "Sat May 10 12:28:43 PDT 2014" "Version 1.4.0" "RERUN User Manual" 
+.TH rundeck-admin 1 "Wed May 14 15:58:11 PDT 2014" "Version 1.4.0" "RERUN User Manual" 
 .SH NAME
 rundeck-admin \- commands to manage your rundecks
 .PP
@@ -26,7 +26,7 @@ required: \f[I]false\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:key-content \f[]--keypath <> --user <> --password <> --url <>
+.SH rundeck-admin:key-content \f[]--keypath <> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> --url <$RUNDECK_URL>
 
 Get the key data content.
 .PP
@@ -55,7 +55,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:key-list \f[]--keypath <> --user <> --password <> --url <>
+.SH rundeck-admin:key-list \f[]--keypath <> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> --url <$RUNDECK_URL>
 
 List the key paths in the store.
 .PP
@@ -84,7 +84,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:key-remove \f[]--keypath <> --user <> --password <> --url <>
+.SH rundeck-admin:key-remove \f[]--keypath <> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> --url <$RUNDECK_URL>
 
 Remove a key from the store.
 .PP
@@ -113,7 +113,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:key-upload \f[][--file <>] --keypath <> --user <> --password <> --url <> [--format <>]
+.SH rundeck-admin:key-upload \f[][--file <>] --keypath <> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> --url <$RUNDECK_URL> [--format <>]
 
 Upload key data and store it in the path.
 .PP
@@ -154,7 +154,7 @@ required: \f[I]false\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:project-configure \f[]--project <> --url <> --user <> --password <> [--file <>] [--format <>]
+.SH rundeck-admin:project-configure \f[]--project <> --url <$RUNDECK_URL> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> [--file <>] [--format <>]
 
 Configure a project.
 .PP
@@ -195,7 +195,7 @@ required: \f[I]false\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:project-create \f[]--project <> --url <> --user <> --password <>
+.SH rundeck-admin:project-create \f[]--project <> --url <$RUNDECK_URL> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD>
 
 Create a project.
 .PP
@@ -224,7 +224,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:project-export \f[]--project <> --url <> --user <> --password <> [--archive <>]
+.SH rundeck-admin:project-export \f[]--project <> --url <$RUNDECK_URL> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> [--archive <>]
 
 Export a project.
 .PP
@@ -259,7 +259,7 @@ required: \f[I]false\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:project-import \f[]--project <> --url <> --user <> --password <> [--archive <>] [--retain-uuids <true>] [--import-executions <true>]
+.SH rundeck-admin:project-import \f[]--project <> --url <$RUNDECK_URL> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> [--archive <>] [--retain-uuids <true>] [--import-executions <true>]
 
 Import a project archive.
 .PP
@@ -308,7 +308,7 @@ arguments: \f[I]true\f[]
 , default: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:project-info \f[]--project <> --url <> --user <> --password <> [--format <>]
+.SH rundeck-admin:project-info \f[]--project <> --url <$RUNDECK_URL> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> [--format <>]
 
 Get info about a project.
 .PP
@@ -343,7 +343,7 @@ required: \f[I]false\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:project-list \f[]--url <> --user <> --password <>
+.SH rundeck-admin:project-list \f[]--url <$RUNDECK_URL> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD>
 
 List the projects.
 .PP
@@ -366,7 +366,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:project-remove \f[]--project <> --url <> --user <> --password <>
+.SH rundeck-admin:project-remove \f[]--project <> --url <$RUNDECK_URL> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD>
 
 Remove a project.
 .PP
@@ -395,7 +395,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:project-replicate \f[]--url <> --to-url <> --project <> --user <> --password <>
+.SH rundeck-admin:project-replicate \f[]--url <$RUNDECK_URL> --to-url <> --project <> --user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD>
 
 Replicate the project(s) from one rundeck to another.
 .PP
@@ -430,7 +430,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:resource-add \f[]--user <> --password <> --url <> --project <> --model <>
+.SH rundeck-admin:resource-add \f[]--user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> --url <$RUNDECK_URL> --project <> --model <>
 
 Add a resource to a project resource model.
 .PP
@@ -465,7 +465,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:resource-get \f[]--user <> --password <> --url <> --resource <> --project <> [--format <>] [--file <>]
+.SH rundeck-admin:resource-get \f[]--user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> --url <$RUNDECK_URL> --resource <> --project <> [--format <>] [--file <>]
 
 Get resource info.
 .PP
@@ -512,7 +512,7 @@ required: \f[I]false\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:schedule-takeover \f[]--uuid <> --user <> --url <> --password <>
+.SH rundeck-admin:schedule-takeover \f[]--uuid <> --user <$RUNDECK_USER> --url <$RUNDECK_URL> --password <$RUNDECK_PASSWORD>
 
 Claim all scheduled jobs from another cluster server.
 .PP
@@ -541,7 +541,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:ssh-copy-id \f[]--user <> --password <> --keypath <> --hostname <>
+.SH rundeck-admin:ssh-copy-id \f[]--user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> --keypath <> --hostname <>
 
 Copy an SSH key to another server.
 .PP
@@ -570,7 +570,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:token-create \f[]--password <> --url <> --user <>
+.SH rundeck-admin:token-create \f[]--password <$RUNDECK_PASSWORD> --url <$RUNDECK_URL> --user <$RUNDECK_USER>
 
 Create an API token.
 .PP
@@ -593,7 +593,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:token-list \f[]--password <> --url <> --user <>
+.SH rundeck-admin:token-list \f[]--password <$RUNDECK_PASSWORD> --url <$RUNDECK_URL> --user <$RUNDECK_USER>
 
 List the API tokens.
 .PP
@@ -616,7 +616,7 @@ required: \f[I]true\f[] ,
 arguments: \f[I]true\f[]
 .RS
 .RE
-.SH rundeck-admin:token-remove \f[]--user <> --password <> --token <> --url <>
+.SH rundeck-admin:token-remove \f[]--user <$RUNDECK_USER> --password <$RUNDECK_PASSWORD> --token <> --url <$RUNDECK_URL>
 
 Remove an api token.
 .PP
