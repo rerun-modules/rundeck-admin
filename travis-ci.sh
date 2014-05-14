@@ -82,7 +82,7 @@ echo "Uploading $DEB to bintray: /rerun/rerun-deb/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
     --org rerun   --repo rerun-deb \
-    --package rerun-${MODULE}      --version $VERSION \
+    --package ${MODULE}      --version $VERSION \
     --file $DEB
 
 
