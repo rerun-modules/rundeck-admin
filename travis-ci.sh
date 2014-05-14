@@ -70,7 +70,8 @@ $RERUN bintray:package-upload \
     --file rerun.bin
 
 # Build a deb
-$RERUN stubbs:archive --modules $MODULE --format deb --version ${VERSION} --release ${RELEASE:=0}
+#-------------
+$RERUN stubbs:archive --modules $MODULE --format deb --version ${VERSION} --release ${RELEASE:=1}
 DEB=rerun-${MODULE}_${VERSION}-${RELEASE}_all.deb
 [ ! -f $DEB ] && {
     echo >&2 "ERROR: $DEB file was not created."
@@ -78,12 +79,29 @@ DEB=rerun-${MODULE}_${VERSION}-${RELEASE}_all.deb
     echo >&2 "ERROR: ${#files[*]} files matching .deb: ${files[*]}"
     exit 1
 }
-echo "Uploading $DEB to bintray: /rerun/rerun-deb/${MODULE}/${VERSION}..."
+echo "Uploading debian package $DEB to bintray: /${BINTRAY_ORG}/rerun-deb/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
-    --org rerun   --repo rerun-deb \
+    --org ${BINTRAY_ORG}   --repo rerun-deb \
     --package ${MODULE}      --version $VERSION \
     --file $DEB
+
+# Build a rpm
+#-------------
+$RERUN stubbs:archive --modules $MODULE --format rpm --version ${VERSION} --release ${RELEASE:=1}
+RPM=rerun-${MODULE}-${VERSION}-${RELEASE}.noarch.rpm
+[ ! -f $RPM ] && {
+    echo >&2 "ERROR: $RPM file was not created."
+    files=( *.deb )
+    echo >&2 "ERROR: ${#files[*]} files matching .rpm: ${files[*]}"
+    exit 1
+}
+echo "Uploading rpm package $RPM to bintray: /${BINTRAY_ORG}/rerun-rpm/${MODULE}/${VERSION}..."
+$RERUN bintray:package-upload \
+    --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
+    --org ${BINTRAY_ORG}   --repo rerun-rpm \
+    --package ${MODULE}      --version $VERSION \
+    --file $RPM
 
 
 
