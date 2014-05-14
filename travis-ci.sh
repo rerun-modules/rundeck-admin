@@ -100,7 +100,7 @@ echo "Uploading rpm package $RPM to bintray: /${BINTRAY_ORG}/rerun-rpm/${MODULE}
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
     --org ${BINTRAY_ORG}   --repo rerun-rpm \
-    --package ${MODULE}      --version $VERSION \
+    --package rerun-${MODULE}      --version $VERSION \
     --file $RPM
 
 
