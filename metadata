@@ -5,5 +5,5 @@ DESCRIPTION="commands to manage your rundecks"
 SHELL="bash"
 VERSION=1.4.0
 REQUIRES=
-EXTERNALS="curl,xmlstarlet,expect"
+EXTERNALS="curl,xmlstarlet,expect,zip"
 LICENSE=
