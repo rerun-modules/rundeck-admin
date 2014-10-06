@@ -7,7 +7,7 @@ set -eu
 # The module we're building.
 MODULE=rundeck-admin
 # The bintray info.
-BINTRAY_USER=ahonor BINTRAY_ORG=rerun BINTRAY_REPO=rerun-modules
+BINTRAY_USER=ahonor BINTRAY_ORG=rerun 
 
 # Prepare.
 # --------
@@ -52,21 +52,21 @@ tar cf - * | (cd  $WORK_DIR/rerun/modules/$MODULE/ && tar xvf -)
 pushd $WORK_DIR
 # Build the archive!
 $RERUN stubbs:archive --modules $MODULE
-
-[ ! -f ./rerun.bin ] && {
-    echo >&2 "ERROR: archive was not created."; exit 1
+BIN=rerun.bin
+[ ! -f $BIN ] && {
+    echo >&2 "ERROR: $BIN archive was not created."; exit 1
 }
 
 # Test the archive by making it do a command list.
-./rerun.bin $MODULE
+./$BIN $MODULE
 
 # Upload and publish to bintray
-echo "Uploading rerun.bin to bintray: /${BINTRAY_ORG}/${BINTRAY_REPO}/${MODULE}/${VERSION}..."
+echo "Uploading $BIN to bintray: /${BINTRAY_ORG}/rerun-modules/${MODULE}/${VERSION}..."
 $RERUN bintray:package-upload \
     --user ${BINTRAY_USER} --apikey ${BINTRAY_APIKEY} \
-    --org ${BINTRAY_ORG}   --repo ${BINTRAY_REPO} \
+    --org ${BINTRAY_ORG}   --repo rerun-modules \
     --package $MODULE      --version $VERSION \
-    --file rerun.bin
+    --file $BIN
 
 # Build a deb
 #-------------
@@ -91,7 +91,7 @@ $RERUN stubbs:archive --modules $MODULE --format rpm --version ${VERSION} --rele
 RPM=rerun-${MODULE}-${VERSION}-${RELEASE}.noarch.rpm
 [ ! -f $RPM ] && {
     echo >&2 "ERROR: $RPM file was not created."
-    files=( *.deb )
+    files=( *.rpm )
     echo >&2 "ERROR: ${#files[*]} files matching .rpm: ${files[*]}"
     exit 1
 }

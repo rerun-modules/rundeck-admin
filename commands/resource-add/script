@@ -138,7 +138,7 @@ fi
 
 # Check results.
 
-if ! xmlstarlet sel -T -t -v "/result/@success" $CURL_OUT
+if ! xmlstarlet sel -T -t -v "/result/@success" $CURL_OUT >/dev/null
 then
     echo >&2 "ERROR: Request failed: "
     xmlstarlet sel -T -t -m "/result/error/message" -v "." -n  $CURL_OUT

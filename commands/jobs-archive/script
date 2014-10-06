@@ -92,20 +92,27 @@ EOF
 # The executions and reports subdirs will stay empty.
 mkdir -p $WORKDIR/rundeck-archive/{jobs,executions,reports}
 
-# Process any XML files that contain /joblist/job elements and add them to the archive dir.
+# Recursively, process any XML files that contain /joblist/job elements and add them to the archive dir.
 # Each file found will be counted and named after its position in the count.
 declare -i count=0
-for f in $(find $DIR -name \*.xml)
+for f in $(find $DIR -type f -name \*.xml)
 do 
-	if ! xmlstarlet sel -t -m /joblist/job -v name $f >/dev/null
-	then			
-		# ignore the file. it does not look like a job definition.
-		continue
-	else
-		# copy the job definition to the work dir. job file name pattern: job-{text}.xml
-		cp $f $WORKDIR/rundeck-archive/jobs/job-$count.xml 
-		count=$((count+1))
-	fi 
+	extension=${f##*.}
+	case ${extension:-} in
+		xml) # ignore XML file if it does not look like a valid job definition.
+			if ! xmlstarlet sel -t -m /joblist/job -v name $f >/dev/null
+			then	continue
+			fi
+		;;
+		* )
+			echo >&2 "Ignoring file with unrecognized extenstion: $extension. Supported: xml|yaml"
+			continue
+	esac
+
+	# copy the job definition to the work dir using file name format: job-{count}.{extension}
+	cp $f $WORKDIR/rundeck-archive/jobs/job-${count}.${extension} 
+	((count++))
+	
 done 
 
 # Create the archive only if there were job(s) copied to the work dir.

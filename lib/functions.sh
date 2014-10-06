@@ -70,7 +70,7 @@ rundeck_login(){
 	local -r loginurl="${url}/j_security_check"
 
 	# Request the login form.
-	if ! http_code=$(rundeck_curl  -w "%{http_code}"  $loginurl 2> /dev/null)
+	if ! http_code=$(rundeck_curl  -w "%{http_code}"  $url 2> /dev/null)
 	then
 		rerun_die 3 "login failure. http_code: $http_code"
     fi
