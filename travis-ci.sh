@@ -52,7 +52,7 @@ tar cf - * | (cd  $WORK_DIR/rerun/modules/$MODULE/ && tar xvf -)
 pushd $WORK_DIR
 # Build the archive!
 $RERUN stubbs:archive --modules $MODULE
-BIN=rerun.bin
+BIN=rerun.sh
 [ ! -f $BIN ] && {
     echo >&2 "ERROR: $BIN archive was not created."; exit 1
 }
